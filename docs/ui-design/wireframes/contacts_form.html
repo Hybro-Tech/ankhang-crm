@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thêm Khách hàng - AnKhangCRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#0B387A',
+              red: '#D81620',
+              orange: '#F37021',
+              dark: '#333333'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans text-brand-dark">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-brand-blue text-white flex flex-col flex-shrink-0 transition-all duration-300 shadow-xl z-50">
+      <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
+        <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
+        <a href="dashboard.html" class="font-bold text-xl tracking-wide text-white hover:text-gray-200">AnKhangCRM</a>
+      </div>
+      <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <a href="dashboard.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-line w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Tổng quan</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
+        <a href="contacts_list.html"
+          class="flex items-center px-4 py-3 bg-white text-brand-blue rounded-lg shadow-md font-bold transition-all transform scale-105">
+          <i class="fa-solid fa-users w-6 text-brand-orange"></i>
+          <span>Khách hàng</span>
+        </a>
+        <a href="deals.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-hand-holding-dollar w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Cơ hội bán hàng</span>
+        </a>
+        <a href="products.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-box-open w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Sản phẩm</span>
+        </a>
+        <a href="coupons.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-ticket w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Khuyến mãi</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
+        <a href="teams.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-group w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Đội nhóm</span>
+        </a>
+        <a href="roles.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-shield w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Phân quyền</span>
+        </a>
+        <a href="employees.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-id-card w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhân viên</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Hệ thống</div>
+        <a href="reports.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-pie w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Báo cáo</span>
+        </a>
+        <a href="logs.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-list-check w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhật ký hoạt động</span>
+        </a>
+      </nav>
+      <div class="p-4 border-t border-blue-800 bg-blue-900/50">
+        <a href="notifications.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors">
+          <i class="fa-solid fa-gear w-6 text-blue-300"></i>
+          <span class="font-medium">Cài đặt</span>
+        </a>
+        <div class="mt-4 flex items-center px-2 pt-4 border-t border-blue-800/50">
+          <img class="h-8 w-8 rounded-full border-2 border-blue-300" alt="Admin Avatar"
+            src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin Avatar">
+          <div class="ml-3">
+            <p class="text-sm font-medium text-white">Admin User</p>
+            <p class="text-xs text-blue-300">View Profile</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-white">
+      <!-- Header -->
+      <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-40">
+        <nav class="flex items-center text-sm">
+          <span class="text-gray-500">Kinh doanh</span>
+          <i class="fa-solid fa-chevron-right text-gray-300 text-xs mx-2"></i>
+          <a href="contacts_list.html" class="text-gray-500 hover:text-brand-blue">Khách hàng</a>
+          <i class="fa-solid fa-chevron-right text-gray-300 text-xs mx-2"></i>
+          <span class="text-gray-800 font-medium">Thêm mới</span>
+        </nav>
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <button onclick="document.getElementById('bellDropdown').classList.toggle('hidden')"
+              class="relative focus:outline-none">
+              <i class="fa-solid fa-bell text-gray-500 text-xl hover:text-gray-700"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">3</span>
+            </button>
+            <div id="bellDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+              <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
+                <span class="font-bold text-gray-700">Thông báo</span>
+                <span class="text-xs text-brand-blue cursor-pointer hover:underline">Đánh dấu đã đọc</span>
+              </div>
+              <div class="max-h-64 overflow-y-auto">
+                <div
+                  class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+                  <div class="flex-shrink-0 mt-1"><i class="fa-solid fa-user-plus text-brand-blue"></i></div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Khách hàng mới được gán</p>
+                    <p class="text-xs text-gray-500">KH2026-099 đã được gán cho bạn.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">5 phút trước</p>
+                  </div>
+                  <div class="ml-auto mt-2">
+                    <div class="w-2 h-2 bg-brand-red rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
+                <a href="notifications.html" class="text-xs font-medium text-brand-blue hover:underline">Xem tất cả</a>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <img class="h-8 w-8 rounded-full object-cover border border-gray-200"
+              src="https://ui-avatars.com/api/?name=Admin+User&background=0B387A&color=fff" alt="User Avatar">
+            <span class="ml-3 text-sm font-medium text-gray-700 hidden sm:block">Admin User</span>
+            <i class="fa-solid fa-chevron-down ml-2 text-xs text-gray-400"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="flex-1 overflow-auto">
+        <form action="contacts_list.html">
+          <!-- Page Header -->
+          <div class="px-6 md:px-8 py-6 border-b border-gray-100 bg-white">
+            <div class="flex items-center justify-between">
+              <div>
+                <h1 class="text-2xl font-bold text-gray-900">Thêm Khách hàng mới</h1>
+                <p class="text-sm text-gray-500 mt-1">Nhập thông tin khách hàng tiềm năng</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Main Content: 2 Column Layout -->
+          <div class="p-6 md:p-8 bg-gray-50">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+
+              <!-- LEFT COLUMN: Main Form (2/3) -->
+              <div class="lg:col-span-2 space-y-6">
+
+                <!-- Section 1: Contact Info -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div class="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 rounded-lg bg-brand-blue/10 flex items-center justify-center mr-3">
+                        <i class="fa-solid fa-user text-brand-blue"></i>
+                      </div>
+                      <div>
+                        <h3 class="font-bold text-gray-900">Thông tin liên hệ</h3>
+                        <p class="text-xs text-gray-500">Thông tin cơ bản của khách hàng</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <!-- Mã liên hệ (Auto) -->
+                      <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                          Mã liên hệ
+                        </label>
+                        <div class="relative">
+                          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fa-solid fa-hashtag text-sm"></i>
+                          </span>
+                          <input type="text" id="contact_code" readonly
+                            class="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 bg-gray-50 text-gray-500 cursor-not-allowed"
+                            value="KH2026-XXX (Tự động)">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Mã sẽ được tạo tự động khi lưu</p>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                          Họ và Tên <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="contact_name"
+                          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors"
+                          placeholder="Nguyễn Văn A">
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                          Số điện thoại <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fa-solid fa-phone text-sm"></i>
+                          </span>
+                          <input type="tel" id="contact_phone"
+                            class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors"
+                            placeholder="0901 234 567">
+                        </div>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                        <div class="relative">
+                          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fa-solid fa-envelope text-sm"></i>
+                          </span>
+                          <input type="email" id="contact_email"
+                            class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors"
+                            placeholder="email@example.com">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Section 2: Service Requirements -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div class="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-white">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 rounded-lg bg-brand-orange/10 flex items-center justify-center mr-3">
+                        <i class="fa-solid fa-clipboard-list text-brand-orange"></i>
+                      </div>
+                      <div>
+                        <h3 class="font-bold text-gray-900">Nhu cầu dịch vụ</h3>
+                        <p class="text-xs text-gray-500">Loại dịch vụ và nguồn liên hệ</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                          Loại nhu cầu <span class="text-red-500">*</span>
+                        </label>
+                        <select id="need_type"
+                          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none bg-white transition-colors cursor-pointer">
+                          <option value="">Chọn loại nhu cầu...</option>
+                          <option value="tldn_new">TLDN Mới (Thành lập doanh nghiệp)</option>
+                          <option value="info_change">Thay đổi thông tin</option>
+                          <option value="sub_license">Giấy phép con</option>
+                          <option value="accounting">Kế toán</option>
+                          <option value="fdi">FDI (Đầu tư nước ngoài)</option>
+                          <option value="ip">SHTT (Sở hữu trí tuệ)</option>
+                          <option value="other">Khác</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                          Nguồn liên hệ <span class="text-red-500">*</span>
+                        </label>
+                        <select id="source"
+                          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none bg-white transition-colors cursor-pointer">
+                          <option value="">Chọn nguồn...</option>
+                          <option value="ladi_zalo">Ladi Zalo</option>
+                          <option value="ladi_hotline">Ladi Hotline</option>
+                          <option value="fb_mess">Facebook Messenger</option>
+                          <option value="fb_hotline">Facebook Hotline</option>
+                          <option value="google">Google Ads</option>
+                          <option value="referral">Giới thiệu</option>
+                          <option value="other">Khác</option>
+                        </select>
+                      </div>
+                      <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Ghi chú / Mô tả nhu cầu</label>
+                        <textarea rows="3" id="notes"
+                          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors resize-none"
+                          placeholder="Chi tiết nhu cầu, yêu cầu đặc biệt..."></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RIGHT COLUMN: Sidebar (1/3) -->
+              <div class="space-y-6">
+
+                <!-- Cài đặt Thông báo -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div
+                    class="px-5 py-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white flex items-center justify-between">
+                    <div class="flex items-center">
+                      <i class="fa-solid fa-bell text-brand-blue mr-2"></i>
+                      <span class="font-bold text-gray-900">Thông báo</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" checked class="sr-only peer">
+                      <div
+                        class="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-brand-blue peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
+                      </div>
+                    </label>
+                  </div>
+                  <div class="p-5 space-y-4">
+                    <!-- Gửi đến Team -->
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1.5">Gửi đến Team</label>
+                      <button type="button" onclick="document.getElementById('teamModal').classList.remove('hidden')"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-left text-sm bg-white hover:bg-gray-50 flex items-center justify-between">
+                        <span class="text-gray-600"><i class="fa-solid fa-users text-gray-400 mr-2"></i>2 team</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
+                      </button>
+                      <div class="mt-1.5 flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-xs">Team HN ×</span>
+                        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-xs">Team HCM ×</span>
+                      </div>
+                    </div>
+                    <!-- Gửi đến Nhân viên -->
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1.5">Gửi đến Nhân viên</label>
+                      <button type="button"
+                        onclick="document.getElementById('employeeModal').classList.remove('hidden')"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-left text-sm bg-white hover:bg-gray-50 flex items-center justify-between">
+                        <span class="text-gray-600"><i class="fa-solid fa-user text-gray-400 mr-2"></i>3 nhân
+                          viên</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
+                      </button>
+                      <div class="mt-1.5 flex flex-wrap gap-1">
+                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs">Sale A ×</span>
+                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs">Sale B ×</span>
+                        <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs">Sale C ×</span>
+                      </div>
+                    </div>
+                    <!-- Kênh thông báo -->
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1.5">Kênh thông báo</label>
+                      <div class="space-y-1">
+                        <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer">
+                          <input type="checkbox" checked class="w-4 h-4 text-brand-blue border-gray-300 rounded">
+                          <i class="fa-solid fa-globe text-blue-500 ml-2 w-4"></i>
+                          <span class="ml-2 text-sm text-gray-700">Web Push</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer">
+                          <input type="checkbox" checked class="w-4 h-4 text-brand-blue border-gray-300 rounded">
+                          <i class="fa-brands fa-facebook-messenger text-blue-600 ml-2 w-4"></i>
+                          <span class="ml-2 text-sm text-gray-700">Zalo OA</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer">
+                          <input type="checkbox" class="w-4 h-4 text-brand-blue border-gray-300 rounded">
+                          <i class="fa-solid fa-envelope text-gray-400 ml-2 w-4"></i>
+                          <span class="ml-2 text-sm text-gray-700">Email</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Action Bar (Full-width, Centered) -->
+            <div
+              class="flex items-center justify-center space-x-4 pt-8 mt-8 border-t border-gray-200 max-w-7xl mx-auto">
+              <a href="contacts_list.html"
+                class="px-8 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors">
+                Hủy bỏ
+              </a>
+              <button type="submit" id="submitBtn"
+                class="px-8 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 flex items-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                <i class="fa-solid fa-check mr-2" id="submitIcon"></i>
+                <span id="submitText">Tạo Khách hàng</span>
+              </button>
+            </div>
+        </form>
+      </div>
+  </div>
+  </main>
+  </div>
+
+  <!-- Team Selection Modal -->
+  <div id="teamModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+      <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+        <h3 class="font-bold text-gray-900">Chọn Team</h3>
+        <button type="button" onclick="document.getElementById('teamModal').classList.add('hidden')"
+          class="text-gray-400 hover:text-gray-600">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4">
+        <!-- Check All -->
+        <label class="flex items-center p-3 bg-blue-50 rounded-lg mb-3 cursor-pointer">
+          <input type="checkbox" class="w-4 h-4 text-brand-blue border-gray-300 rounded">
+          <span class="ml-3 font-medium text-gray-800">Chọn tất cả</span>
+        </label>
+        <!-- Team List -->
+        <div class="space-y-2 max-h-64 overflow-y-auto">
+          <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" checked class="w-4 h-4 text-brand-blue border-gray-300 rounded">
+            <span class="ml-3 text-gray-700">Team Hà Nội</span>
+            <span class="ml-auto text-xs text-gray-400">5 thành viên</span>
+          </label>
+          <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" checked class="w-4 h-4 text-brand-blue border-gray-300 rounded">
+            <span class="ml-3 text-gray-700">Team HCM</span>
+            <span class="ml-auto text-xs text-gray-400">8 thành viên</span>
+          </label>
+          <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" class="w-4 h-4 text-brand-blue border-gray-300 rounded">
+            <span class="ml-3 text-gray-700">Team Đà Nẵng</span>
+            <span class="ml-auto text-xs text-gray-400">3 thành viên</span>
+          </label>
+          <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" class="w-4 h-4 text-brand-blue border-gray-300 rounded">
+            <span class="ml-3 text-gray-700">CSKH</span>
+            <span class="ml-auto text-xs text-gray-400">4 thành viên</span>
+          </label>
+        </div>
+      </div>
+      <div class="px-5 py-3 border-t border-gray-200 flex justify-end gap-3">
+        <button type="button" onclick="document.getElementById('teamModal').classList.add('hidden')"
+          class="px-4 py-2 text-gray-600 hover:text-gray-800">Huỷ</button>
+        <button type="button" onclick="document.getElementById('teamModal').classList.add('hidden')"
+          class="px-4 py-2 bg-brand-blue text-white rounded-lg hover:bg-blue-800">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Employee Selection Modal -->
+  <div id="employeeModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+      <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+        <h3 class="font-bold text-gray-900">Chọn Nhân viên</h3>
+        <button type="button" onclick="document.getElementById('employeeModal').classList.add('hidden')"
+          class="text-gray-400 hover:text-gray-600">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4">
+        <!-- Search -->
+        <div class="relative mb-3">
+          <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" placeholder="Tìm nhân viên..."
+            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm">
+        </div>
+        <!-- Check All -->
+        <label class="flex items-center p-3 bg-green-50 rounded-lg mb-3 cursor-pointer">
+          <input type="checkbox" class="w-4 h-4 text-green-600 border-gray-300 rounded">
+          <span class="ml-3 font-medium text-gray-800">Chọn tất cả</span>
+        </label>
+        <!-- Employee List -->
+        <div class="space-y-2 max-h-64 overflow-y-auto">
+          <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" checked class="w-4 h-4 text-green-600 border-gray-300 rounded">
+            <div class="ml-3 flex items-center">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600">
+                A
+              </div>
+              <div class="ml-2">
+                <p class="text-sm text-gray-700">Sale A</p>
+                <p class="text-xs text-gray-400">Team HN</p>
+              </div>
+            </div>
+          </label>
+          <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" checked class="w-4 h-4 text-green-600 border-gray-300 rounded">
+            <div class="ml-3 flex items-center">
+              <div
+                class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-xs font-bold text-green-600">
+                B
+              </div>
+              <div class="ml-2">
+                <p class="text-sm text-gray-700">Sale B</p>
+                <p class="text-xs text-gray-400">Team HCM</p>
+              </div>
+            </div>
+          </label>
+          <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" checked class="w-4 h-4 text-green-600 border-gray-300 rounded">
+            <div class="ml-3 flex items-center">
+              <div
+                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-xs font-bold text-orange-600">
+                C</div>
+              <div class="ml-2">
+                <p class="text-sm text-gray-700">Sale C</p>
+                <p class="text-xs text-gray-400">Team HCM</p>
+              </div>
+            </div>
+          </label>
+          <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" class="w-4 h-4 text-green-600 border-gray-300 rounded">
+            <div class="ml-3 flex items-center">
+              <div
+                class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-xs font-bold text-purple-600">
+                D</div>
+              <div class="ml-2">
+                <p class="text-sm text-gray-700">Sale D</p>
+                <p class="text-xs text-gray-400">Team Đà Nẵng</p>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="px-5 py-3 border-t border-gray-200 flex justify-end gap-3">
+        <button type="button" onclick="document.getElementById('employeeModal').classList.add('hidden')"
+          class="px-4 py-2 text-gray-600 hover:text-gray-800">Huỷ</button>
+        <button type="button" onclick="document.getElementById('employeeModal').classList.add('hidden')"
+          class="px-4 py-2 bg-brand-blue text-white rounded-lg hover:bg-blue-800">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

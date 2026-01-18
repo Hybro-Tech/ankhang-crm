@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thông báo & Cài đặt - AnKhangCRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#0B387A',
+              red: '#D81620',
+              orange: '#F37021',
+              dark: '#333333'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans text-brand-dark">
+
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar (Simplified) -->
+    <aside class="w-64 bg-brand-blue text-white flex flex-col flex-shrink-0 transition-all duration-300 shadow-xl z-50">
+      <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
+        <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
+        <a href="dashboard.html" class="font-bold text-xl tracking-wide text-white hover:text-gray-200">AnKhangCRM</a>
+      </div>
+      <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <a href="dashboard.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-line w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Tổng quan</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
+        <a href="contacts_list.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-users w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Khách hàng</span>
+        </a>
+        <a href="deals.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-hand-holding-dollar w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Cơ hội bán hàng</span>
+        </a>
+        <a href="products.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-box-open w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Sản phẩm</span>
+        </a>
+        <a href="coupons.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-ticket w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Khuyến mãi</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
+        <a href="teams.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-group w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Đội nhóm</span>
+        </a>
+        <a href="roles.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-shield w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Phân quyền</span>
+        </a>
+        <a href="employees.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-id-card w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhân viên</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Hệ thống</div>
+        <a href="reports.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-pie w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Báo cáo</span>
+        </a>
+        <a href="logs.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-list-check w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhật ký hoạt động</span>
+        </a>
+      </nav>
+      <div class="p-4 border-t border-blue-800 bg-blue-900/50">
+        <a href="notifications.html"
+          class="flex items-center px-4 py-2.5 bg-white text-brand-blue rounded-lg shadow-sm font-bold">
+          <i class="fa-solid fa-gear w-6 text-brand-orange"></i>
+          <span class="font-medium">Cài đặt</span>
+        </a>
+        <div class="mt-4 flex items-center px-2 pt-4 border-t border-blue-800/50">
+          <img class="h-8 w-8 rounded-full border-2 border-blue-300" alt="Admin Avatar"
+            src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin Avatar">
+          <div class="ml-3">
+            <p class="text-sm font-medium text-white">Admin User</p>
+            <p class="text-xs text-blue-300">View Profile</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <!-- Fixed Push Notification Demo (Bottom-Right Corner) -->
+      <div id="pushDemo" class="fixed bottom-4 right-4 z-50 transition-all duration-300">
+        <div class="bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200 w-80">
+          <div class="flex items-start p-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-brand-blue rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-scale-balanced text-white text-lg"></i>
+              </div>
+            </div>
+            <div class="ml-3 flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-medium text-gray-500">AnKhangCRM</p>
+                <span class="text-[10px] text-gray-400">vừa xong</span>
+              </div>
+              <p class="text-sm font-bold text-gray-900 mt-0.5">🔔 Khách hàng mới!</p>
+              <p class="text-xs text-gray-600 mt-0.5 truncate">Nguyễn Văn A (0912xxx) vừa được tạo.</p>
+            </div>
+            <button onclick="document.getElementById('pushDemo').style.display='none'"
+              class="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600">
+              <i class="fa-solid fa-times text-xs"></i>
+            </button>
+          </div>
+          <div class="flex border-t border-gray-100">
+            <button class="flex-1 py-2 text-xs font-medium text-brand-blue hover:bg-blue-50 border-r border-gray-100">
+              Xem ngay
+            </button>
+            <button onclick="document.getElementById('pushDemo').style.display='none'"
+              class="flex-1 py-2 text-xs font-medium text-gray-500 hover:bg-gray-50">
+              Bỏ qua
+            </button>
+          </div>
+        </div>
+        <div class="text-center mt-2">
+          <span class="bg-gray-800 text-white text-[10px] px-2 py-1 rounded">Demo: Push Notification</span>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 relative">
+        <nav class="flex items-center text-sm">
+          <span class="text-gray-500">Cài đặt</span><i class="fa-solid fa-chevron-right text-gray-300 text-xs mx-2"></i><span class="text-gray-800 font-medium">Thông báo</span>
+        </nav>
+        <div class="flex items-center space-x-4">
+          <!-- Bell with Dropdown -->
+          <div class="relative">
+            <button onclick="document.getElementById('bellDropdown').classList.toggle('hidden')"
+              class="relative focus:outline-none">
+              <i class="fa-solid fa-bell text-gray-500 text-xl hover:text-gray-700"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">5</span>
+            </button>
+            <!-- Dropdown -->
+            <div id="bellDropdown"
+              class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+              <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
+                <span class="font-bold text-gray-700">Thông báo</span>
+                <span class="text-xs text-brand-blue cursor-pointer hover:underline">Đánh dấu đã đọc</span>
+              </div>
+              <div class="max-h-64 overflow-y-auto">
+                <!-- Item Unread -->
+                <div
+                  class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="fa-solid fa-user-plus text-brand-blue"></i>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Khách hàng mới được gán</p>
+                    <p class="text-xs text-gray-500">Hệ thống đã gán <span class="font-bold">KH2026-099</span> cho bạn.
+                    </p>
+                    <p class="text-[10px] text-gray-400 mt-1">5 phút trước</p>
+                  </div>
+                  <div class="ml-auto mt-2">
+                    <div class="w-2 h-2 bg-brand-red rounded-full"></div>
+                  </div>
+                </div>
+                <!-- Item Unread 2 -->
+                <div
+                  class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="fa-solid fa-check-circle text-green-500"></i>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Deal chốt thành công!</p>
+                    <p class="text-xs text-gray-500">HD-2026-001 vừa được chốt - 15,000,000 ₫</p>
+                    <p class="text-[10px] text-gray-400 mt-1">30 phút trước</p>
+                  </div>
+                  <div class="ml-auto mt-2">
+                    <div class="w-2 h-2 bg-brand-red rounded-full"></div>
+                  </div>
+                </div>
+                <!-- Item Read -->
+                <div
+                  class="px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer flex items-start opacity-70">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="fa-solid fa-triangle-exclamation text-brand-orange"></i>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Cần chú ý Deal</p>
+                    <p class="text-xs text-gray-500">Deal #992 chưa được cập nhật trong 3 ngày.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">2 giờ trước</p>
+                  </div>
+                </div>
+                <!-- Item Read 2 -->
+                <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-start opacity-70">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="fa-solid fa-comment text-teal-500"></i>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Phản hồi từ Zalo</p>
+                    <p class="text-xs text-gray-500">KH Minh Anh đã trả lời tin nhắn.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">1 ngày trước</p>
+                  </div>
+                </div>
+              </div>
+              <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
+                <a href="#" class="text-xs font-medium text-brand-blue hover:underline">Xem tất cả thông báo</a>
+              </div>
+            </div>
+          </div>
+          <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name=Admin&background=0B387A&color=fff"
+            alt="User Avatar">
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="flex-1 overflow-auto p-6">
+        <div class="max-w-4xl mx-auto space-y-6">
+
+          <!-- Notification Demo (Dropdown View Mockup) -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Xem trước: Dropdown Thông báo</h3>
+            <div class="border border-gray-200 rounded-lg max-w-sm mx-auto shadow-lg">
+              <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+                <span class="font-bold text-gray-700">Thông báo</span>
+                <span class="text-xs text-brand-blue cursor-pointer">Đánh dấu đã đọc</span>
+              </div>
+              <div class="max-h-60 overflow-y-auto">
+                <!-- Item Unread -->
+                <div
+                  class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="fa-solid fa-user-plus text-brand-blue"></i>
+                  </div>
+                  <div class="ml-3">
+                    <p class="text-sm font-medium text-gray-900">Khách hàng mới được gán</p>
+                    <p class="text-xs text-gray-500">Hệ thống đã gán <span class="font-bold">KH2026-099</span> cho bạn.
+                    </p>
+                    <p class="text-[10px] text-gray-400 mt-1">5 phút trước</p>
+                  </div>
+                  <div class="ml-auto mt-2">
+                    <div class="w-2 h-2 bg-brand-red rounded-full"></div>
+                  </div>
+                </div>
+                <!-- Item Read -->
+                <div
+                  class="px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer flex items-start opacity-75">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="fa-solid fa-triangle-exclamation text-brand-orange"></i>
+                  </div>
+                  <div class="ml-3">
+                    <p class="text-sm font-medium text-gray-900">Cần chú ý Deal</p>
+                    <p class="text-xs text-gray-500">Deal #992 chưa được cập nhật trong 3 ngày.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">2 giờ trước</p>
+                  </div>
+                </div>
+              </div>
+              <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200">
+                <a href="#" class="text-xs font-medium text-brand-blue hover:underline">Xem tất cả</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Browser Push Notification Mock -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Xem trước: Push Notification (Trình duyệt)</h3>
+            <p class="text-sm text-gray-500 mb-4">Thông báo hiển thị trên màn hình desktop khi có sự kiện mới</p>
+
+            <!-- Push Notification Mockup (Desktop Style) -->
+            <div class="relative bg-gray-800 rounded-lg p-4 max-w-md mx-auto">
+              <!-- Notification Toast -->
+              <div class="bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200">
+                <div class="flex items-start p-3">
+                  <!-- App Icon -->
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-brand-blue rounded-lg flex items-center justify-center">
+                      <i class="fa-solid fa-scale-balanced text-white text-lg"></i>
+                    </div>
+                  </div>
+                  <!-- Content -->
+                  <div class="ml-3 flex-1 min-w-0">
+                    <div class="flex items-center justify-between">
+                      <p class="text-xs font-medium text-gray-500">AnKhangCRM</p>
+                      <span class="text-[10px] text-gray-400">vừa xong</span>
+                    </div>
+                    <p class="text-sm font-bold text-gray-900 mt-0.5">🔔 Khách hàng mới!</p>
+                    <p class="text-xs text-gray-600 mt-0.5 truncate">Nguyễn Văn A (0912xxx) vừa được tạo. Bấm để xem chi
+                      tiết.</p>
+                  </div>
+                  <!-- Close Button -->
+                  <button class="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-times text-xs"></i>
+                  </button>
+                </div>
+                <!-- Action Buttons -->
+                <div class="flex border-t border-gray-100">
+                  <button
+                    class="flex-1 py-2 text-xs font-medium text-brand-blue hover:bg-blue-50 border-r border-gray-100">
+                    Xem ngay
+                  </button>
+                  <button class="flex-1 py-2 text-xs font-medium text-gray-500 hover:bg-gray-50">
+                    Bỏ qua
+                  </button>
+                </div>
+              </div>
+
+              <!-- Position indicator -->
+              <div class="absolute -top-2 right-4 bg-gray-600 text-white text-[10px] px-2 py-0.5 rounded">
+                Góc phải màn hình ↗
+              </div>
+            </div>
+
+            <!-- Sample Notifications -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                <p class="text-xs font-bold text-gray-700 mb-2">📢 Loại: Khách hàng mới</p>
+                <div class="bg-white rounded border p-2">
+                  <p class="text-xs font-medium text-gray-900">🔔 Khách hàng mới!</p>
+                  <p class="text-[10px] text-gray-500">[Tên KH] vừa được tạo từ [Nguồn]</p>
+                </div>
+              </div>
+              <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                <p class="text-xs font-bold text-gray-700 mb-2">💰 Loại: Deal thắng</p>
+                <div class="bg-white rounded border p-2">
+                  <p class="text-xs font-medium text-gray-900">🎉 Chốt deal thành công!</p>
+                  <p class="text-[10px] text-gray-500">[Tên Deal] - [Giá trị] đã được chốt</p>
+                </div>
+              </div>
+              <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                <p class="text-xs font-bold text-gray-700 mb-2">⚠️ Loại: Phản hồi Zalo</p>
+                <div class="bg-white rounded border p-2">
+                  <p class="text-xs font-medium text-gray-900">📱 Phản hồi từ Zalo!</p>
+                  <p class="text-[10px] text-gray-500">[Tên KH] đã trả lời tin nhắn</p>
+                </div>
+              </div>
+              <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                <p class="text-xs font-bold text-gray-700 mb-2">🔴 Loại: Sentiment tiêu cực</p>
+                <div class="bg-white rounded border p-2">
+                  <p class="text-xs font-medium text-gray-900">⚠️ Phản hồi tiêu cực!</p>
+                  <p class="text-[10px] text-gray-500">[Tên KH] cần chú ý - AI đánh giá negative</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Form -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h3 class="text-lg font-bold text-gray-900">Luật tự động (Automation Rules)</h3>
+                <p class="text-sm text-gray-500">Cấu hình thời điểm và cách thức gửi thông báo.</p>
+              </div>
+              <button class="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900">
+                <i class="fa-solid fa-plus mr-2"></i> Thêm luật mới
+              </button>
+            </div>
+
+            <!-- Rule List Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sự kiện kích hoạt</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kênh (Channels)</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Người nhận</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <!-- Rule 1 -->
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">Khách hàng mới (Contact Created)</div>
+                      <div class="text-xs text-gray-500">Khi có lead mới vào hệ thống</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex space-x-2">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">System</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Zalo</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Sale Team</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Bật</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <button class="text-brand-blue hover:text-blue-900 font-medium">Sửa</button>
+                    </td>
+                  </tr>
+                  <!-- Rule 2 -->
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">Chốt Deal thành công (Won)</div>
+                      <div class="text-xs text-gray-500">Khi trạng thái deal chuyển sang Won</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex space-x-2">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">System</span>
+                        <span class="px-2 py-1 bg-teal-100 text-teal-800 text-xs rounded">Slack</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Toàn công ty</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Bật</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <button class="text-brand-blue hover:text-blue-900 font-medium">Sửa</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

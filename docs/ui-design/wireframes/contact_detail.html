@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết Khách hàng - AnKhangCRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#0B387A',
+              red: '#D81620',
+              orange: '#F37021',
+              dark: '#333333'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans text-brand-dark">
+
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-brand-blue text-white flex flex-col flex-shrink-0 transition-all duration-300 shadow-xl z-50">
+      <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
+        <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
+        <a href="dashboard.html" class="font-bold text-xl tracking-wide text-white hover:text-gray-200">AnKhangCRM</a>
+      </div>
+      <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <a href="dashboard.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-line w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Tổng quan</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
+        <a href="contacts_list.html"
+          class="flex items-center px-4 py-3 bg-white text-brand-blue rounded-lg shadow-md font-bold transition-all transform scale-105">
+          <i class="fa-solid fa-users w-6 text-brand-orange"></i>
+          <span>Khách hàng</span>
+        </a>
+        <a href="deals.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-hand-holding-dollar w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Cơ hội bán hàng</span>
+        </a>
+        <a href="products.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-box-open w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Sản phẩm</span>
+        </a>
+        <a href="coupons.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-ticket w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Khuyến mãi</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
+        <a href="teams.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-group w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Đội nhóm</span>
+        </a>
+        <a href="roles.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-shield w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Phân quyền</span>
+        </a>
+        <a href="employees.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-id-card w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhân viên</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Hệ thống</div>
+        <a href="reports.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-pie w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Báo cáo</span>
+        </a>
+        <a href="logs.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-list-check w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhật ký hoạt động</span>
+        </a>
+      </nav>
+      <div class="p-4 border-t border-blue-800 bg-blue-900/50">
+        <a href="notifications.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors">
+          <i class="fa-solid fa-gear w-6 text-blue-300"></i>
+          <span class="font-medium">Cài đặt</span>
+        </a>
+        <div class="mt-4 flex items-center px-2 pt-4 border-t border-blue-800/50">
+          <img class="h-8 w-8 rounded-full border-2 border-blue-300" alt="Admin Avatar"
+            src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin Avatar">
+          <div class="ml-3">
+            <p class="text-sm font-medium text-white">Admin User</p>
+            <p class="text-xs text-blue-300">View Profile</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <!-- Header -->
+      <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+        <nav class="flex items-center text-sm">
+          <a href="contacts_list.html" class="text-gray-500 hover:text-brand-blue">Khách hàng</a>
+          <i class="fa-solid fa-chevron-right text-gray-300 text-xs mx-2"></i>
+          <span class="text-gray-800 font-medium">Nguyen Van A</span>
+        </nav>
+        <div class="flex items-center space-x-3">
+          <!-- Bell with Dropdown -->
+          <div class="relative">
+            <button onclick="document.getElementById('bellDropdown').classList.toggle('hidden')"
+              class="relative p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
+              <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-brand-red ring-2 ring-white"></span>
+              <i class="fa-regular fa-bell text-xl"></i>
+            </button>
+            <div id="bellDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+              <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
+                <span class="font-bold text-gray-700">Thông báo</span>
+                <span class="text-xs text-brand-blue cursor-pointer hover:underline">Đánh dấu đã đọc</span>
+              </div>
+              <div class="max-h-64 overflow-y-auto">
+                <div
+                  class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+                  <div class="flex-shrink-0 mt-1"><i class="fa-solid fa-user-plus text-brand-blue"></i></div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Khách hàng mới được gán</p>
+                    <p class="text-xs text-gray-500">KH2026-099 đã được gán cho bạn.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">5 phút trước</p>
+                  </div>
+                  <div class="ml-auto mt-2">
+                    <div class="w-2 h-2 bg-brand-red rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
+                <a href="notifications.html" class="text-xs font-medium text-brand-blue hover:underline">Xem tất cả</a>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <img class="h-8 w-8 rounded-full object-cover border border-gray-200"
+              src="https://ui-avatars.com/api/?name=Admin+User&background=0B387A&color=fff" alt="User Avatar">
+            <span class="ml-3 text-sm font-medium text-gray-700 hidden sm:block">Admin User</span>
+            <i class="fa-solid fa-chevron-down ml-2 text-xs text-gray-400"></i>
+          </div>
+          <button class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200">
+            <i class="fa-solid fa-xmark mr-2"></i> Đánh dấu Thất bại
+          </button>
+          <a href="deals_form.html"
+            class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 shadow-md flex items-center">
+            <i class="fa-solid fa-check mr-2"></i> Tạo Deal
+          </a>
+        </div>
+      </header>
+
+      <!-- Status Progress -->
+      <div class="bg-white px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between w-full max-w-4xl mx-auto">
+          <!-- Step 1 Done -->
+          <div class="flex items-center">
+            <div class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full text-brand-blue font-bold">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="ml-2 text-sm font-medium text-brand-blue">Mới</div>
+          </div>
+          <div class="flex-1 h-1 mx-4 bg-brand-blue rounded"></div>
+          <!-- Step 2 Active -->
+          <div class="flex items-center">
+            <div
+              class="flex items-center justify-center w-8 h-8 bg-brand-blue text-white rounded-full font-bold shadow-lg ring-4 ring-blue-50">
+              2
+            </div>
+            <div class="ml-2 text-sm font-bold text-brand-blue">Đã tiếp nhận</div>
+          </div>
+          <div class="flex-1 h-1 mx-4 bg-gray-200 rounded"></div>
+          <!-- Step 3 Pending -->
+          <div class="flex items-center">
+            <div class="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-400 rounded-full font-bold">
+              3
+            </div>
+            <div class="ml-2 text-sm font-medium text-gray-400">Tiềm năng</div>
+          </div>
+          <div class="flex-1 h-1 mx-4 bg-gray-200 rounded"></div>
+          <!-- Step 4 Pending -->
+          <div class="flex items-center">
+            <div class="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-400 rounded-full font-bold">
+              4
+            </div>
+            <div class="ml-2 text-sm font-medium text-gray-400">Đã chốt (Closed)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Split -->
+      <div class="flex-1 overflow-auto bg-gray-50 p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          <!-- Left: Info Card -->
+          <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Thông tin Khách hàng</h3>
+
+              <div class="flex items-center mb-6">
+                <div
+                  class="h-16 w-16 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 text-2xl font-bold">
+                  NV</div>
+                <div class="ml-4">
+                  <div class="text-xl font-bold text-gray-900">Nguyen Van A</div>
+                  <div class="text-sm text-gray-500">Tech ABC Co., Ltd</div>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs text-gray-400">Số điện thoại</label>
+                  <div class="flex items-center justify-between mt-1">
+                    <div class="text-sm font-medium text-gray-900">0981.234.567</div>
+                    <div class="flex space-x-2">
+                      <button class="bg-blue-50 text-brand-blue p-1.5 rounded hover:bg-blue-100"><i
+                          class="fa-solid fa-phone"></i></button>
+                      <button class="bg-blue-50 text-brand-blue p-1.5 rounded hover:bg-blue-100"><i
+                          class="fa-solid fa-message"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-400">Email</label>
+                  <div class="text-sm font-medium text-gray-900 mt-1">nguyenvana@gmail.com</div>
+                </div>
+                <hr class="border-gray-100">
+                <div>
+                  <label class="block text-xs text-gray-400">Nhu cầu</label>
+                  <div class="inline-flex mt-1 px-2 py-1 bg-teal-100 text-teal-700 text-xs font-semibold rounded">
+                    Thành lập DN VIP</div>
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-400">Nguồn</label>
+                  <div class="text-sm font-medium text-gray-900 mt-1"><i
+                      class="fa-brands fa-facebook text-blue-600"></i> Facebook Ads</div>
+                </div>
+                <hr class="border-gray-100">
+                <div>
+                  <label class="block text-xs text-gray-400">Phụ trách (Sale)</label>
+                  <div class="flex items-center mt-1">
+                    <img class="h-6 w-6 rounded-full mr-2" alt="Sales Avatar"
+                      src="https://ui-avatars.com/api/?name=Sale+A&background=random">
+                    <span class="text-sm font-medium text-gray-900">Sale A</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Tabs & Activity -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Tabs -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div class="border-b border-gray-200">
+                <nav class="flex -mb-px">
+                  <button class="text-brand-blue border-brand-blue border-b-2 py-4 px-6 text-sm font-medium">Tương
+                    tác</button>
+                  <button
+                    class="text-gray-500 hover:text-gray-700 border-transparent hover:border-gray-300 border-b-2 py-4 px-6 text-sm font-medium">Deals
+                    <span class="bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs ml-2">0</span></button>
+                  <button
+                    class="text-gray-500 hover:text-gray-700 border-transparent hover:border-gray-300 border-b-2 py-4 px-6 text-sm font-medium">Tài
+                    liệu</button>
+                </nav>
+              </div>
+
+              <div class="p-6">
+                <!-- Add Interaction -->
+                <div class="mb-8">
+                  <textarea
+                    class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-blue focus:border-transparent outline-none resize-none"
+                    rows="3" placeholder="Ghi chú cuộc gọi, lịch hẹn, hoặc ghi chú..."></textarea>
+                  <div class="flex justify-between items-center mt-3">
+                    <div class="flex space-x-2">
+                      <button class="p-2 rounded hover:bg-gray-100 text-gray-500"><i
+                          class="fa-solid fa-phone"></i></button>
+                      <button class="p-2 rounded hover:bg-gray-100 text-gray-500"><i
+                          class="fa-solid fa-envelope"></i></button>
+                      <button class="p-2 rounded hover:bg-gray-100 text-gray-500"><i
+                          class="fa-solid fa-calendar"></i></button>
+                    </div>
+                    <button
+                      class="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900">Lưu
+                      Hoạt động</button>
+                  </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="flow-root">
+                  <ul class="-mb-8">
+                    <li>
+                      <div class="relative pb-8">
+                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                        <div class="relative flex space-x-3">
+                          <div>
+                            <span
+                              class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center ring-8 ring-white">
+                              <i class="fa-solid fa-phone text-blue-600 text-sm"></i>
+                            </span>
+                          </div>
+                          <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                            <div>
+                              <p class="text-sm text-gray-500">Cuộc gọi được lưu bởi <span
+                                  class="font-medium text-gray-900">Sale A</span></p>
+                              <p class="text-sm text-gray-900 mt-1">Khách hàng hỏi giá gói VIP. Đã gửi báo giá qua Zalo.
+                              </p>
+                            </div>
+                            <div class="text-right text-xs whitespace-nowrap text-gray-500">
+                              1 giờ trước
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="relative pb-8">
+                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                        <div class="relative flex space-x-3">
+                          <div>
+                            <span
+                              class="h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center ring-8 ring-white">
+                              <i class="fa-solid fa-arrows-spin text-yellow-600 text-sm"></i>
+                            </span>
+                          </div>
+                          <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                            <div>
+                              <p class="text-sm text-gray-500">Trạng thái thay đổi từ <span
+                                  class="font-medium">Mới</span> sang <span class="font-medium">Đã tiếp nhận</span></p>
+                            </div>
+                            <div class="text-right text-xs whitespace-nowrap text-gray-500">
+                              2 giờ trước
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="relative pb-8">
+                        <div class="relative flex space-x-3">
+                          <div>
+                            <span
+                              class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center ring-8 ring-white">
+                              <i class="fa-solid fa-user-plus text-gray-500 text-sm"></i>
+                            </span>
+                          </div>
+                          <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                            <div>
+                              <p class="text-sm text-gray-500">Khách hàng được tạo bởi <span
+                                  class="font-medium text-gray-900">System (Call Center)</span></p>
+                            </div>
+                            <div class="text-right text-xs whitespace-nowrap text-gray-500">
+                              Hôm qua
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

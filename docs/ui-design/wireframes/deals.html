@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quy trình cơ hội - AnKhangCRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#0B387A',
+              red: '#D81620',
+              orange: '#F37021',
+              dark: '#333333'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans text-brand-dark">
+
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-brand-blue text-white flex flex-col flex-shrink-0 transition-all duration-300 shadow-xl z-50">
+      <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
+        <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
+        <a href="dashboard.html" class="font-bold text-xl tracking-wide text-white hover:text-gray-200">AnKhangCRM</a>
+      </div>
+      <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <a href="dashboard.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-line w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Tổng quan</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
+        <a href="contacts_list.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-users w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Khách hàng</span>
+        </a>
+        <a href="deals.html"
+          class="flex items-center px-4 py-3 bg-white text-brand-blue rounded-lg shadow-md font-bold transition-all transform scale-105">
+          <i class="fa-solid fa-hand-holding-dollar w-6 text-brand-orange"></i>
+          <span>Cơ hội bán hàng</span>
+        </a>
+        <a href="products.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-box-open w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Sản phẩm</span>
+        </a>
+        <a href="coupons.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-ticket w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Khuyến mãi</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
+        <a href="teams.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-group w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Đội nhóm</span>
+        </a>
+        <a href="roles.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-shield w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Phân quyền</span>
+        </a>
+        <a href="employees.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-id-card w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhân viên</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Hệ thống</div>
+        <a href="reports.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-pie w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Báo cáo</span>
+        </a>
+        <a href="logs.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-list-check w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhật ký hoạt động</span>
+        </a>
+      </nav>
+      <div class="p-4 border-t border-blue-800 bg-blue-900/50">
+        <a href="notifications.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors">
+          <i class="fa-solid fa-gear w-6 text-blue-300"></i>
+          <span class="font-medium">Cài đặt</span>
+        </a>
+        <div class="mt-4 flex items-center px-2 pt-4 border-t border-blue-800/50">
+          <img class="h-8 w-8 rounded-full border-2 border-blue-300" alt="Admin Avatar"
+            src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin Avatar">
+          <div class="ml-3">
+            <p class="text-sm font-medium text-white">Admin User</p>
+            <p class="text-xs text-blue-300">View Profile</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <!-- Header -->
+      <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+        <nav class="flex items-center text-sm">
+          <span class="text-gray-500">Kinh doanh</span><i class="fa-solid fa-chevron-right text-gray-300 text-xs mx-2"></i><span class="text-gray-800 font-medium">Cơ hội</span>
+        </nav>
+        <div class="flex items-center space-x-4">
+          <!-- Bell with Dropdown -->
+          <div class="relative">
+            <button onclick="document.getElementById('bellDropdown').classList.toggle('hidden')"
+              class="relative focus:outline-none">
+              <i class="fa-solid fa-bell text-gray-500 text-xl hover:text-gray-700"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-brand-red text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">3</span>
+            </button>
+            <!-- Dropdown -->
+            <div id="bellDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+              <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
+                <span class="font-bold text-gray-700">Thông báo</span>
+                <span class="text-xs text-brand-blue cursor-pointer hover:underline">Đánh dấu đã đọc</span>
+              </div>
+              <div class="max-h-64 overflow-y-auto">
+                <div
+                  class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="fa-solid fa-user-plus text-brand-blue"></i>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Khách hàng mới được gán</p>
+                    <p class="text-xs text-gray-500">KH2026-099 đã được gán cho bạn.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">5 phút trước</p>
+                  </div>
+                  <div class="ml-auto mt-2">
+                    <div class="w-2 h-2 bg-brand-red rounded-full"></div>
+                  </div>
+                </div>
+                <div
+                  class="px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer flex items-start opacity-70">
+                  <div class="flex-shrink-0 mt-1">
+                    <i class="fa-solid fa-check-circle text-green-500"></i>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Deal chốt thành công</p>
+                    <p class="text-xs text-gray-500">HD-2026-001 - 15,000,000 ₫</p>
+                    <p class="text-[10px] text-gray-400 mt-1">1 giờ trước</p>
+                  </div>
+                </div>
+              </div>
+              <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
+                <a href="notifications.html" class="text-xs font-medium text-brand-blue hover:underline">Xem tất cả</a>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <img class="h-8 w-8 rounded-full object-cover border border-gray-200"
+              src="https://ui-avatars.com/api/?name=Admin+User&background=0B387A&color=fff" alt="User Avatar">
+            <span class="ml-3 text-sm font-medium text-gray-700 hidden sm:block">Admin User</span>
+            <i class="fa-solid fa-chevron-down ml-2 text-xs text-gray-400"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Kanban Board -->
+      <div class="flex-1 overflow-x-auto p-6">
+        <!-- Page Title & Action -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Cơ hội bán hàng</h1>
+            <p class="text-sm text-gray-500 mt-1">Theo dõi pipeline bán hàng của bạn</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <!-- View Toggle -->
+            <div class="inline-flex rounded-lg border border-gray-200 p-1 bg-gray-100">
+              <button class="px-3 py-1.5 text-sm font-medium bg-white text-brand-blue rounded shadow-sm">
+                <i class="fa-solid fa-grip mr-1"></i> Kanban
+              </button>
+              <a href="deals_list.html"
+                class="px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-white rounded transition">
+                <i class="fa-solid fa-list mr-1"></i> Danh sách
+              </a>
+            </div>
+            <a href="deals_form.html"
+              class="bg-brand-blue text-white px-4 py-2 rounded-lg shadow hover:bg-blue-900 transition flex items-center">
+              <i class="fa-solid fa-plus mr-2"></i> Thêm cơ hội
+            </a>
+          </div>
+        </div>
+
+        <div class="flex space-x-6 h-full min-w-max">
+
+          <!-- Column: Qualification -->
+          <div class="w-80 flex-shrink-0 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Sơ loại / Tiếp cận (3)</h3>
+              <span class="text-xs font-semibold text-gray-400">15.5M ₫</span>
+            </div>
+            <div class="bg-gray-100 rounded-xl p-2 flex-1 space-y-3 overflow-y-auto">
+              <!-- Card -->
+              <a href="deal_detail.html"
+                class="block bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md cursor-pointer group">
+                <div class="flex justify-between items-start mb-2">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-800">
+                    Thành lập DN
+                  </span>
+                  <button class="text-gray-300 hover:text-gray-500 opacity-0 group-hover:opacity-100"><i
+                      class="fa-solid fa-ellipsis"></i></button>
+                </div>
+                <h4 class="text-sm font-bold text-gray-900 mb-1 hover:text-brand-blue">HD-2026-005</h4>
+                <p class="text-sm text-gray-600 mb-3">Tech ABC Co., Ltd</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                  <span>5,000,000 ₫</span>
+                  <div class="flex items-center">
+                    <img class="h-5 w-5 rounded-full mr-1"
+                      src="https://ui-avatars.com/api/?name=Sale+A&background=random" alt="Sale A">
+                    <span>Sale A</span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Card -->
+              <a href="deal_detail.html"
+                class="block bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md cursor-pointer group">
+                <div class="flex justify-between items-start mb-2">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                    Giấy phép
+                  </span>
+                </div>
+                <h4 class="text-sm font-bold text-gray-900 mb-1 hover:text-brand-blue">HD-2026-008</h4>
+                <p class="text-sm text-gray-600 mb-3">Minh Long Logistics</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                  <span>3,500,000 ₫</span>
+                  <div class="flex items-center">
+                    <img class="h-5 w-5 rounded-full mr-1"
+                      src="https://ui-avatars.com/api/?name=Sale+B&background=random" alt="Sale B">
+                    <span>Sale B</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Column: Quotation Sent -->
+          <div class="w-80 flex-shrink-0 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Gửi báo giá (2)</h3>
+              <span class="text-xs font-semibold text-gray-400">12.0M ₫</span>
+            </div>
+            <div class="bg-gray-100 rounded-xl p-2 flex-1 space-y-3 overflow-y-auto">
+              <!-- Card -->
+              <a href="deal_detail.html"
+                class="block bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md cursor-pointer border-l-4 border-l-yellow-400">
+                <div class="flex justify-between items-start mb-2">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
+                    Kế toán
+                  </span>
+                </div>
+                <h4 class="text-sm font-bold text-gray-900 mb-1 hover:text-brand-blue">HD-2026-002</h4>
+                <p class="text-sm text-gray-600 mb-3">Gia Bao Construct</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                  <span>7,000,000 ₫</span>
+                  <div class="flex items-center">
+                    <img class="h-5 w-5 rounded-full mr-1"
+                      src="https://ui-avatars.com/api/?name=Sale+C&background=random" alt="Sale C">
+                    <span>Sale C</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Column: Contract Sent -->
+          <div class="w-80 flex-shrink-0 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Chờ thanh toán (1)</h3>
+              <span class="text-xs font-semibold text-gray-400">2.0M ₫</span>
+            </div>
+            <div class="bg-gray-100 rounded-xl p-2 flex-1 space-y-3 overflow-y-auto">
+              <!-- Card -->
+              <a href="deal_detail.html"
+                class="block bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md cursor-pointer border-l-4 border-l-brand-red">
+                <div class="flex justify-between items-start mb-2">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                    Thay đổi ĐKKD
+                  </span>
+                  <span class="text-xs font-bold text-red-500 animate-pulse">HOT</span>
+                </div>
+                <h4 class="text-sm font-bold text-gray-900 mb-1 hover:text-brand-blue">HD-2026-009</h4>
+                <p class="text-sm text-gray-600 mb-3">Hoang Ha Trading</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                  <span>2,000,000 ₫</span>
+                  <div class="flex items-center">
+                    <img class="h-5 w-5 rounded-full mr-1"
+                      src="https://ui-avatars.com/api/?name=Sale+A&background=random" alt="Sale A">
+                    <span>Sale A</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Column: Won -->
+          <div class="w-80 flex-shrink-0 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xs font-bold text-brand-blue uppercase tracking-wider">Chốt đơn / Đã thanh toán (5)</h3>
+              <span class="text-xs font-semibold text-brand-blue">45.0M ₫</span>
+            </div>
+            <div class="bg-blue-50/50 rounded-xl p-2 flex-1 space-y-3 overflow-y-auto border border-blue-100">
+              <!-- Card with multiple products -->
+              <a href="deal_detail.html"
+                class="block bg-white p-4 rounded-lg shadow-sm border border-brand-blue/20 hover:shadow-md cursor-pointer">
+                <div class="flex justify-between items-start mb-2">
+                  <div class="flex space-x-1">
+                    <span
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-800">Setup</span>
+                    <span
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">+2</span>
+                  </div>
+                  <i class="fa-solid fa-check-circle text-green-500"></i>
+                </div>
+                <h4 class="text-sm font-bold text-gray-900 mb-1 hover:text-brand-blue">HD-2026-001</h4>
+                <p class="text-sm text-gray-600 mb-3">Alpha Corp</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                  <span class="font-bold text-brand-blue">15,000,000 ₫</span>
+                  <div class="flex items-center">
+                    <img class="h-5 w-5 rounded-full mr-1"
+                      src="https://ui-avatars.com/api/?name=Sale+A&background=random" alt="Sale A">
+                    <span>Sale A</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <script>
+      // Simple filter/action scripts if any
+    </script>
+</body>
+
+</html>

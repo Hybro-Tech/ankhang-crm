@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng điều khiển - AnKhangCRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#0B387A',
+                            red: '#D81620',
+                            orange: '#F37021',
+                            dark: '#333333'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-50 font-sans text-brand-dark">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside
+            class="w-64 bg-brand-blue text-white flex flex-col flex-shrink-0 transition-all duration-300 shadow-xl z-50">
+            <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
+                <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
+                <a href="dashboard.html"
+                    class="font-bold text-xl tracking-wide text-white hover:text-gray-200">AnKhangCRM</a>
+            </div>
+            <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+                <a href="dashboard.html"
+                    class="flex items-center px-4 py-3 bg-white text-brand-blue rounded-lg shadow-md font-bold transition-all transform scale-105">
+                    <i class="fa-solid fa-chart-line w-6 text-brand-orange"></i>
+                    <span>Tổng quan</span>
+                </a>
+                <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
+                <a href="contacts_list.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i class="fa-solid fa-users w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Khách hàng</span>
+                </a>
+                <a href="deals.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i
+                        class="fa-solid fa-hand-holding-dollar w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Cơ hội bán hàng</span>
+                </a>
+                <a href="products.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i class="fa-solid fa-box-open w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Sản phẩm</span>
+                </a>
+                <a href="coupons.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i class="fa-solid fa-ticket w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Khuyến mãi</span>
+                </a>
+                <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
+                <a href="teams.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i class="fa-solid fa-user-group w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Đội nhóm</span>
+                </a>
+                <a href="roles.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i class="fa-solid fa-user-shield w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Phân quyền</span>
+                </a>
+                <a href="employees.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i class="fa-solid fa-id-card w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Nhân viên</span>
+                </a>
+                <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Hệ thống</div>
+                <a href="reports.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i class="fa-solid fa-chart-pie w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Báo cáo</span>
+                </a>
+                <a href="logs.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+                    <i class="fa-solid fa-list-check w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+                    <span>Nhật ký hoạt động</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-blue-800 bg-blue-900/50">
+                <a href="notifications.html"
+                    class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors">
+                    <i class="fa-solid fa-gear w-6 text-blue-300"></i>
+                    <span class="font-medium">Cài đặt</span>
+                </a>
+                <div class="mt-4 flex items-center px-2 pt-4 border-t border-blue-800/50">
+                    <img class="h-8 w-8 rounded-full border-2 border-blue-300" alt="Admin Avatar"
+                        src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin Avatar">
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-white">Admin User</p>
+                        <p class="text-xs text-blue-300">View Profile</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <!-- Header -->
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 lg:px-8">
+                <nav class="flex items-center text-sm">
+                    <span class="text-gray-800 font-medium">Tổng quan</span>
+                </nav>
+
+                <div class="flex items-center space-x-6">
+                    <!-- Bell with Dropdown -->
+                    <div class="relative">
+                        <button onclick="document.getElementById('bellDropdown').classList.toggle('hidden')"
+                            class="relative p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
+                            <span
+                                class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-brand-red ring-2 ring-white"></span>
+                            <i class="fa-regular fa-bell text-xl"></i>
+                        </button>
+                        <!-- Dropdown -->
+                        <div id="bellDropdown"
+                            class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+                            <div
+                                class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
+                                <span class="font-bold text-gray-700">Thông báo</span>
+                                <span class="text-xs text-brand-blue cursor-pointer hover:underline">Đánh dấu đã
+                                    đọc</span>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto">
+                                <div
+                                    class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <i class="fa-solid fa-user-plus text-brand-blue"></i>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Khách hàng mới được gán</p>
+                                        <p class="text-xs text-gray-500">KH2026-099 đã được gán cho bạn.</p>
+                                        <p class="text-[10px] text-gray-400 mt-1">5 phút trước</p>
+                                    </div>
+                                    <div class="ml-auto mt-2">
+                                        <div class="w-2 h-2 bg-brand-red rounded-full"></div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer flex items-start opacity-70">
+                                    <div class="flex-shrink-0 mt-1">
+                                        <i class="fa-solid fa-check-circle text-green-500"></i>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Deal chốt thành công</p>
+                                        <p class="text-xs text-gray-500">HD-2026-001 - 15,000,000 ₫</p>
+                                        <p class="text-[10px] text-gray-400 mt-1">1 giờ trước</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
+                                <a href="notifications.html"
+                                    class="text-xs font-medium text-brand-blue hover:underline">Xem tất cả</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <img class="h-8 w-8 rounded-full object-cover border border-gray-200"
+                            src="https://ui-avatars.com/api/?name=Admin+User&background=0B387A&color=fff"
+                            alt="User Avatar">
+                        <span class="ml-3 text-sm font-medium text-gray-700 hidden sm:block">Admin User</span>
+                        <i class="fa-solid fa-chevron-down ml-2 text-xs text-gray-400"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-auto bg-gray-50 p-6 lg:p-8">
+
+                <!-- Page Title & Actions -->
+                <div class="sm:flex sm:items-center sm:justify-between mb-8">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Tổng quan</h1>
+                        <p class="mt-1 text-sm text-gray-500">Tổng quan về hiệu quả kinh doanh của bạn.</p>
+                    </div>
+                    <div class="mt-4 sm:mt-0 flex space-x-3">
+                        <span class="inline-flex rounded-md shadow-sm">
+                            <button type="button"
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+                                <i class="fa-solid fa-calendar mr-2 text-gray-400"></i> Tháng này
+                            </button>
+                        </span>
+                        <span class="inline-flex rounded-md shadow-sm">
+                            <button type="button"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-blue-900 focus:outline-none shadow-md">
+                                <i class="fa-solid fa-download mr-2"></i> Xuất báo cáo
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+                    <!-- Card 1 -->
+                    <div
+                        class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-50 rounded-md p-3">
+                                    <i class="fa-solid fa-users text-brand-blue text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Tổng khách hàng</dt>
+                                        <dd>
+                                            <div class="text-2xl font-bold text-gray-900">1,250</div>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3">
+                            <div class="text-sm">
+                                <span class="text-green-600 font-semibold"><i
+                                        class="fa-solid fa-arrow-up text-xs mr-1"></i> 12%</span>
+                                <span class="text-gray-500 ml-1">so với tháng trước</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div
+                        class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-orange-50 rounded-md p-3">
+                                    <i class="fa-solid fa-user-plus text-brand-orange text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Khách tiềm năng mới</dt>
+                                        <dd>
+                                            <div class="text-2xl font-bold text-gray-900">45</div>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3">
+                            <div class="text-sm">
+                                <span class="text-red-600 font-semibold"><i
+                                        class="fa-solid fa-arrow-down text-xs mr-1"></i> 5%</span>
+                                <span class="text-gray-500 ml-1">so với tháng trước</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div
+                        class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-green-50 rounded-md p-3">
+                                    <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Đơn chốt thành công</dt>
+                                        <dd>
+                                            <div class="text-2xl font-bold text-gray-900">12</div>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3">
+                            <div class="text-sm">
+                                <span class="text-green-600 font-semibold"><i
+                                        class="fa-solid fa-arrow-up text-xs mr-1"></i> 20%</span>
+                                <span class="text-gray-500 ml-1">so với tháng trước</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div
+                        class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-red-50 rounded-md p-3">
+                                    <i class="fa-solid fa-sack-dollar text-brand-red text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Doanh thu</dt>
+                                        <dd>
+                                            <div class="text-2xl font-bold text-gray-900">150.5M</div>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3">
+                            <div class="text-sm">
+                                <span class="text-green-600 font-semibold"><i
+                                        class="fa-solid fa-arrow-up text-xs mr-1"></i> 8%</span>
+                                <span class="text-gray-500 ml-1">so với tháng trước</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Tỷ lệ chốt (SRS 4.11.1) -->
+                    <div
+                        class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-purple-50 rounded-md p-3">
+                                    <i class="fa-solid fa-percent text-purple-600 text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Tỷ lệ chốt</dt>
+                                        <dd>
+                                            <div class="text-2xl font-bold text-gray-900">26.7%</div>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3">
+                            <div class="text-sm">
+                                <span class="text-green-600 font-semibold"><i
+                                        class="fa-solid fa-arrow-up text-xs mr-1"></i> 4%</span>
+                                <span class="text-gray-500 ml-1">so với tháng trước</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <!-- Main Chart -->
+                    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 lg:col-span-2">
+                        <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">Biểu đồ hiệu quả kinh doanh</h3>
+                        <div class="relative h-72 w-full">
+                            <canvas id="mainChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Chart -->
+                    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6">
+                        <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">Trạng thái khách hàng</h3>
+                        <div class="relative h-64 w-full flex justify-center">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                        <div class="mt-6">
+                            <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                                <div class="flex items-center"><span
+                                        class="w-3 h-3 rounded-full bg-brand-blue mr-2"></span> Mới</div>
+                                <span class="font-bold">30%</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                                <div class="flex items-center"><span
+                                        class="w-3 h-3 rounded-full bg-brand-orange mr-2"></span> Đã nhận</div>
+                                <span class="font-bold">50%</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm text-gray-600">
+                                <div class="flex items-center"><span
+                                        class="w-3 h-3 rounded-full bg-green-500 mr-2"></span> Chốt đơn</div>
+                                <span class="font-bold">20%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Charts: Sales Comparison & Revenue by Team (SRS 4.11.2) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Bar Chart: Sales Comparison -->
+                    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6">
+                        <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">📊 So sánh Sales (Contacts Picked)</h3>
+                        <div class="relative h-64 w-full">
+                            <canvas id="salesCompareChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart: Revenue by Team -->
+                    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6">
+                        <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">💰 Doanh thu theo Team</h3>
+                        <div class="relative h-64 w-full">
+                            <canvas id="teamRevenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Tables -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Top Performers -->
+                    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+                        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+                            <h3 class="text-lg leading-6 font-semibold text-gray-900">🏆 Top Nhân viên xuất sắc</h3>
+                            <a href="#" class="text-sm text-brand-blue hover:text-blue-800 font-medium">Xem tất cả</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Họ tên</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Đơn hàng</th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Doanh thu</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-8 w-8">
+                                                    <img class="h-8 w-8 rounded-full"
+                                                        src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=random"
+                                                        alt="User Avatar">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Nguyen Van A</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">5</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">50,000,000 ₫</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-8 w-8">
+                                                    <img class="h-8 w-8 rounded-full"
+                                                        src="https://ui-avatars.com/api/?name=Tran+Thi+B&background=random"
+                                                        alt="User Avatar">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Tran Thi B</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">4</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">35,000,000 ₫</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-8 w-8">
+                                                    <img class="h-8 w-8 rounded-full"
+                                                        src="https://ui-avatars.com/api/?name=Le+C&background=random"
+                                                        alt="User Avatar">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Le Van C</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">2</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15,000,000 ₫</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="bg-white shadow-sm rounded-xl border border-gray-100">
+                        <div class="px-6 py-5 border-b border-gray-100">
+                            <h3 class="text-lg leading-6 font-semibold text-gray-900">🔔 Hoạt động gần đây</h3>
+                        </div>
+                        <ul class="divide-y divide-gray-200">
+                            <li class="p-4 hover:bg-gray-50 transition-colors">
+                                <div class="flex space-x-3">
+                                    <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name=System"
+                                        alt="User Avatar">
+                                    <div class="flex-1 space-y-1">
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-sm font-medium">Hệ thống phân công</h3>
+                                            <p class="text-xs text-gray-500">5 phút trước</p>
+                                        </div>
+                                        <p class="text-sm text-gray-500">Hệ thống đã giao KH025 cho Nguyen Van A.</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="p-4 hover:bg-gray-50 transition-colors">
+                                <div class="flex space-x-3">
+                                    <div
+                                        class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-brand-blue">
+                                        <i class="fa-solid fa-phone text-xs"></i>
+                                    </div>
+                                    <div class="flex-1 space-y-1">
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-sm font-medium">Ghi nhận tương tác</h3>
+                                            <p class="text-xs text-gray-500">15 phút trước</p>
+                                        </div>
+                                        <p class="text-sm text-gray-500">Tran Thi B đã gọi cho KH009.</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="p-4 hover:bg-gray-50 transition-colors">
+                                <div class="flex space-x-3">
+                                    <div
+                                        class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                        <i class="fa-solid fa-check text-xs"></i>
+                                    </div>
+                                    <div class="flex-1 space-y-1">
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-sm font-medium">Chốt đơn thành công</h3>
+                                            <p class="text-xs text-gray-500">1 giờ trước</p>
+                                        </div>
+                                        <p class="text-sm text-gray-500">Le Van C chốt đơn #1002 (5,000,000 ₫).</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Chart Configuration -->
+    <script>
+        // Main Chart (Line)
+        const ctxMain = document.getElementById('mainChart').getContext('2d');
+        new Chart(ctxMain, {
+            type: 'line',
+            data: {
+                labels: ['Th 2', 'Th 3', 'Th 4', 'Th 5', 'Th 6', 'Th 7', 'CN'],
+                datasets: [{
+                    label: 'Khách hàng',
+                    data: [12, 19, 3, 5, 2, 3, 15],
+                    borderColor: '#0B387A',
+                    tension: 0.4,
+                    fill: false
+                }, {
+                    label: 'Đơn hàng',
+                    data: [2, 3, 1, 4, 1, 2, 5],
+                    borderColor: '#D81620',
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [2, 4] } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Pie Chart
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: ['Mới', 'Đã nhận', 'Chốt đơn', 'Thất bại'],
+                datasets: [{
+                    data: [30, 50, 15, 5],
+                    backgroundColor: ['#0B387A', '#FBBF24', '#10B981', '#EF4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // Sales Comparison Bar Chart (SRS 4.11.2)
+        const ctxSales = document.getElementById('salesCompareChart').getContext('2d');
+        new Chart(ctxSales, {
+            type: 'bar',
+            data: {
+                labels: ['Nguyen Van A', 'Tran Thi B', 'Le Van C', 'Pham D', 'Hoang E'],
+                datasets: [{
+                    label: 'Contacts Picked',
+                    data: [25, 20, 18, 15, 12],
+                    backgroundColor: ['#0B387A', '#F37021', '#10B981', '#FBBF24', '#8B5CF6']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // Revenue by Team Bar Chart (SRS 4.11.2)
+        const ctxTeam = document.getElementById('teamRevenueChart').getContext('2d');
+        new Chart(ctxTeam, {
+            type: 'bar',
+            data: {
+                labels: ['Team Hà Nội', 'Team HCM', 'Team Đà Nẵng', 'CSKH'],
+                datasets: [{
+                    label: 'Doanh thu (Triệu VND)',
+                    data: [85, 120, 45, 28],
+                    backgroundColor: ['#0B387A', '#D81620', '#10B981', '#F37021']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    </script>
+</body>
+
+</html>

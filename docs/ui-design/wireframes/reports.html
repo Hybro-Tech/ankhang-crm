@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo cáo Nâng cao - AnKhangCRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#0B387A',
+              red: '#D81620',
+              orange: '#F37021',
+              dark: '#333333'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans text-brand-dark">
+
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-brand-blue text-white flex flex-col flex-shrink-0 transition-all duration-300 shadow-xl z-50">
+      <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
+        <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
+        <a href="dashboard.html" class="font-bold text-xl tracking-wide text-white hover:text-gray-200">AnKhangCRM</a>
+      </div>
+      <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <a href="dashboard.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-chart-line w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Tổng quan</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
+        <a href="contacts_list.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-users w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Khách hàng</span>
+        </a>
+        <a href="deals.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-hand-holding-dollar w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Cơ hội bán hàng</span>
+        </a>
+        <a href="products.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-box-open w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Sản phẩm</span>
+        </a>
+        <a href="coupons.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-ticket w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Khuyến mãi</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
+        <a href="teams.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-group w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Đội nhóm</span>
+        </a>
+        <a href="roles.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-user-shield w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Phân quyền</span>
+        </a>
+        <a href="employees.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-id-card w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhân viên</span>
+        </a>
+        <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Hệ thống</div>
+        <a href="reports.html"
+          class="flex items-center px-4 py-3 bg-white text-brand-blue rounded-lg shadow-md font-bold transition-all transform scale-105">
+          <i class="fa-solid fa-chart-pie w-6 text-brand-orange"></i>
+          <span>Báo cáo</span>
+        </a>
+        <a href="logs.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors group font-medium">
+          <i class="fa-solid fa-list-check w-6 text-blue-300 group-hover:text-white transition-colors"></i>
+          <span>Nhật ký hoạt động</span>
+        </a>
+      </nav>
+      <div class="p-4 border-t border-blue-800 bg-blue-900/50">
+        <a href="notifications.html"
+          class="flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors">
+          <i class="fa-solid fa-gear w-6 text-blue-300"></i>
+          <span class="font-medium">Cài đặt</span>
+        </a>
+        <div class="mt-4 flex items-center px-2 pt-4 border-t border-blue-800/50">
+          <img class="h-8 w-8 rounded-full border-2 border-blue-300" alt="Admin Avatar"
+            src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin Avatar">
+          <div class="ml-3">
+            <p class="text-sm font-medium text-white">Admin User</p>
+            <p class="text-xs text-blue-300">View Profile</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <!-- Header -->
+      <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+        <nav class="flex items-center text-sm">
+          <span class="text-gray-500">Hệ thống</span><i
+            class="fa-solid fa-chevron-right text-gray-300 text-xs mx-2"></i><span class="text-gray-800 font-medium">Báo
+            cáo</span>
+        </nav>
+        <div class="flex items-center space-x-4">
+          <!-- Bell with Dropdown -->
+          <div class="relative">
+            <button onclick="document.getElementById('bellDropdown').classList.toggle('hidden')"
+              class="relative p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
+              <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-brand-red ring-2 ring-white"></span>
+              <i class="fa-regular fa-bell text-xl"></i>
+            </button>
+            <div id="bellDropdown"
+              class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+              <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
+                <span class="font-bold text-gray-700">Thông báo</span>
+                <span class="text-xs text-brand-blue cursor-pointer hover:underline">Đánh dấu đã đọc</span>
+              </div>
+              <div class="max-h-64 overflow-y-auto">
+                <div
+                  class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+                  <div class="flex-shrink-0 mt-1"><i class="fa-solid fa-user-plus text-brand-blue"></i></div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-gray-900">Khách hàng mới được gán</p>
+                    <p class="text-xs text-gray-500">KH2026-099 đã được gán cho bạn.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">5 phút trước</p>
+                  </div>
+                  <div class="ml-auto mt-2">
+                    <div class="w-2 h-2 bg-brand-red rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
+                <a href="notifications.html" class="text-xs font-medium text-brand-blue hover:underline">Xem tất cả</a>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <img class="h-8 w-8 rounded-full object-cover border border-gray-200"
+              src="https://ui-avatars.com/api/?name=Admin+User&background=0B387A&color=fff" alt="User Avatar">
+            <span class="ml-3 text-sm font-medium text-gray-700 hidden sm:block">Admin User</span>
+            <i class="fa-solid fa-chevron-down ml-2 text-xs text-gray-400"></i>
+          </div>
+        </div>
+
+      </header>
+
+      <!-- Content Area -->
+      <div class="flex-1 overflow-auto p-6">
+
+        <!-- Page Title & Actions -->
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Báo cáo doanh thu</h1>
+            <p class="text-sm text-gray-500 mt-1">Phân tích hiệu suất kinh doanh theo thời gian thực</p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center bg-gray-100 rounded-lg p-1">
+              <button class="bg-white shadow text-xs font-medium px-3 py-1.5 rounded-md text-gray-800">Tháng
+                này</button>
+              <button
+                class="text-xs font-medium px-3 py-1.5 rounded-md text-gray-500 hover:text-gray-800 hover:bg-white/50 transition">Quý
+                trước</button>
+              <button
+                class="text-xs font-medium px-3 py-1.5 rounded-md text-gray-500 hover:text-gray-800 hover:bg-white/50 transition">Tùy
+                chỉnh</button>
+            </div>
+            <button
+              class="bg-brand-blue text-white px-4 py-2 rounded-lg shadow hover:bg-blue-900 transition flex items-center">
+              <i class="fa-solid fa-download mr-2"></i> Xuất dữ liệu
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Tổng doanh thu</p>
+            <h3 class="text-2xl font-bold text-gray-900 mt-1">1.2 Tỷ ₫</h3>
+            <p class="text-xs text-green-600 mt-2 flex items-center">
+              <i class="fa-solid fa-arrow-trend-up mr-1"></i> +12.5% vs tháng trước
+            </p>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Giá trị TB/Đơn</p>
+            <h3 class="text-2xl font-bold text-gray-900 mt-1">5.8 Tr ₫</h3>
+            <p class="text-xs text-red-500 mt-2 flex items-center">
+              <i class="fa-solid fa-arrow-trend-down mr-1"></i> -2.1%
+            </p>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Tỷ lệ chuyển đổi</p>
+            <h3 class="text-2xl font-bold text-gray-900 mt-1">24.8%</h3>
+            <p class="text-xs text-green-600 mt-2 flex items-center">
+              <i class="fa-solid fa-arrow-trend-up mr-1"></i> +4.3%
+            </p>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Deal đang chờ</p>
+            <h3 class="text-2xl font-bold text-gray-900 mt-1">45</h3>
+            <p class="text-xs text-gray-500 mt-2">Giá trị: ~200 Tr ₫</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <!-- Chart: Lead Sources (Mockup) -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-1">
+            <h4 class="text-lg font-bold text-gray-800 mb-6">Nguồn khách hàng (Lead Sources)</h4>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-xs font-medium mb-1">
+                  <span>Facebook Ads</span>
+                  <span>45%</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div class="bg-blue-600 h-2 rounded-full" style="width: 45%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-medium mb-1">
+                  <span>Google Search</span>
+                  <span>30%</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div class="bg-red-500 h-2 rounded-full" style="width: 30%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-medium mb-1">
+                  <span>Giới thiệu (Referral)</span>
+                  <span>15%</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div class="bg-green-500 h-2 rounded-full" style="width: 15%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-medium mb-1">
+                  <span>Zalo OA</span>
+                  <span>10%</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                  <div class="bg-orange-400 h-2 rounded-full" style="width: 10%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chart: Revenue Trend (Mockup Visual) -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+            <h4 class="text-lg font-bold text-gray-800 mb-6">Xu hướng doanh thu (6 tháng gần đây)</h4>
+            <div class="h-48 flex items-end justify-between space-x-2 px-2">
+              <!-- Bar 1 -->
+              <div class="flex flex-col items-center w-full">
+                <div
+                  class="w-full bg-blue-100 rounded-t-lg hover:bg-brand-blue transition-colors duration-300 relative group"
+                  style="height: 40%">
+                  <span
+                    class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">400Tr</span>
+                </div>
+                <span class="text-xs text-gray-500 mt-2">T8</span>
+              </div>
+              <!-- Bar 2 -->
+              <div class="flex flex-col items-center w-full">
+                <div
+                  class="w-full bg-blue-100 rounded-t-lg hover:bg-brand-blue transition-colors duration-300 relative group"
+                  style="height: 55%">
+                  <span
+                    class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">550Tr</span>
+                </div>
+                <span class="text-xs text-gray-500 mt-2">T9</span>
+              </div>
+              <!-- Bar 3 -->
+              <div class="flex flex-col items-center w-full">
+                <div
+                  class="w-full bg-blue-100 rounded-t-lg hover:bg-brand-blue transition-colors duration-300 relative group"
+                  style="height: 45%"></div>
+                <span class="text-xs text-gray-500 mt-2">T10</span>
+              </div>
+              <!-- Bar 4 -->
+              <div class="flex flex-col items-center w-full">
+                <div
+                  class="w-full bg-blue-100 rounded-t-lg hover:bg-brand-blue transition-colors duration-300 relative group"
+                  style="height: 70%"></div>
+                <span class="text-xs text-gray-500 mt-2">T11</span>
+              </div>
+              <!-- Bar 5 -->
+              <div class="flex flex-col items-center w-full">
+                <div
+                  class="w-full bg-blue-100 rounded-t-lg hover:bg-brand-blue transition-colors duration-300 relative group"
+                  style="height: 90%">
+                  <span
+                    class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition">900Tr</span>
+                </div>
+                <span class="text-xs text-gray-500 mt-2">T12</span>
+              </div>
+              <!-- Bar 6 -->
+              <div class="flex flex-col items-center w-full">
+                <div class="w-full bg-brand-blue rounded-t-lg relative group" style="height: 85%">
+                  <span
+                    class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded opacity-100">850Tr</span>
+                </div>
+                <span class="text-xs font-bold text-gray-800 mt-2">T1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales Performance Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="font-bold text-gray-800">Hiệu suất nhân viên Sale</h3>
+          </div>
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nhân viên
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Deals Thắng
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Doanh thu
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Đánh giá
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap flex items-center">
+                  <div class="h-8 w-8 rounded-full bg-gray-200 mr-3 overflow-hidden">
+                    <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A" alt="User Avatar">
+                  </div>
+                  <span class="text-sm font-medium text-gray-900">Nguyen Van A</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Team HN</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-gray-900">12</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-green-600">450 Tr ₫</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                  <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Cao</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap flex items-center">
+                  <div class="h-8 w-8 rounded-full bg-gray-200 mr-3 overflow-hidden">
+                    <img src="https://ui-avatars.com/api/?name=Tran+Thi+B" alt="User Avatar">
+                  </div>
+                  <span class="text-sm font-medium text-gray-900">Tran Thi B</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Team HCM</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-gray-900">9</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-green-600">320 Tr ₫</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500">
+                  <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Tốt</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>
