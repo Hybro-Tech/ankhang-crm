@@ -1,0 +1,18 @@
+# ANTIGRAVITY SAFETY RULES - CRITICAL
+# Mức độ ưu tiên: CAO NHẤT
+
+1. [CẤM TUYỆT ĐỐI] Các hành động liên quan đến XÓA hoặc FORMAT:
+   - KHÔNG ĐƯỢC thực thi các lệnh: rm, rm -rf, del, erase, format, mkfs, shred, wipe, dd.
+   - KHÔNG ĐƯỢC xóa thư mục bằng rmdir, rd.
+
+2. [YÊU CẦU XÁC NHẬN]:
+   - Mọi lệnh thay đổi file hệ thống, chỉnh sửa file cấu hình, hoặc tác động ra ngoài thư mục dự án hiện tại phải xin phép người dùng và chờ người dùng gõ "CONFIRM".
+   - KHÔNG tự ý commit code lên Git.
+   - KHÔNG tự ý publish package.
+
+3. [PHẠM VI HOẠT ĐỘNG]:
+   - Chỉ được phép thao tác trong thư mục hiện tại (Current Directory).
+   - Tuyệt đối KHÔNG truy cập hoặc sửa đổi các thư mục hệ thống (C:\Windows, /etc, /var, /usr) hoặc thư mục cá nhân khác (Documents, Desktop) nếu không được yêu cầu cụ thể.
+
+4. [BẢO VỆ DỮ LIỆU]:
+   - Trước khi sửa đè một file quan trọng, hãy tạo bản sao lưu (backup) của file đó.

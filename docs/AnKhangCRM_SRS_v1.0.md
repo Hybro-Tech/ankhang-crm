@@ -6,10 +6,10 @@
 | Thông tin | Chi tiết |
 |-----------|----------|
 | **Tên dự án** | AnKhangCRM - Hệ thống Quản lý Khách hàng |
-| **Khách hàng** | [Tên công ty khách hàng] |
+| **Khách hàng** | Luật An Khang |
 | **Phiên bản** | 1.0 |
 | **Ngày lập** | 20/01/2026 |
-| **Người lập** | [Tên công ty phát triển] |
+| **Người lập** | Hybro Technology |
 | **Trạng thái** | Chờ xác nhận khách hàng |
 
 ---
@@ -91,7 +91,19 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 
 ### 2.2 Luồng nghiệp vụ chính
 
-![Luồng quy trình xử lý khách hàng](images/customer_workflow_flow.png)
+```mermaid
+graph TD
+    A[Khách hàng tiềm năng] -->|Liên hệ qua Zalo/FB/Hotline| B(Tổng đài tiếp nhận)
+    B -->|Tạo Contact trên CRM| C{Phân loại nhu cầu}
+    C -->|Thành lập DN| D[Sale Team HN/HCM]
+    C -->|Kế toán| E[Sale Team Kế toán]
+    D -->|Pick Contact| F(Sale xử lý)
+    E -->|Pick Contact| F
+    F -->|Tư vấn & Chốt deal| G{Kết quả}
+    G -->|Thành công| H[Chốt Deal & Ký HĐ]
+    G -->|Thất bại| I[Chuyển CSKH chăm sóc lại]
+    H -->|Thanh toán| J[Hoàn tất & CSKH sau bán]
+```
 
 ---
 
@@ -155,7 +167,30 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 
 **Mô hình:**
 
-![Mô hình phân quyền RBAC](images/permission_model_diagram.png)
+```mermaid
+classDiagram
+    class User {
+        +username
+        +email
+        +has_role(role_name)
+    }
+    class Role {
+        +name
+        +is_system
+    }
+    class Permission {
+        +subject
+        +action
+    }
+    class UserPermission {
+        +granted: boolean
+    }
+
+    User "1" --> "*" Role : has_many
+    Role "1" --> "*" Permission : has_many
+    User "1" --> "*" UserPermission : overrides
+    UserPermission --> "1" Permission : links_to
+```
 
 | ID | Yêu cầu | Ưu tiên | Mô tả |
 |----|---------|---------|-------|
@@ -221,7 +256,20 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 
 #### 4.3.4 Luồng trạng thái
 
-![Luồng trạng thái Contact](images/contact_status_flow.png)
+```mermaid
+stateDiagram-v2
+    [*] --> Mới: Tổng đài tạo
+    Mới --> Đã_Nhận: Sale Pick
+    Đã_Nhận --> Tiềm_Năng: Sale tư vấn
+    Tiềm_Năng --> Chốt: Khách đồng ý
+    Tiềm_Năng --> Thất_Bại: Khách từ chối
+    Thất_Bại --> CSKH_L1: Chuyển CSKH xử lý
+    CSKH_L1 --> Tiềm_Năng: Khách quan tâm lại
+    CSKH_L1 --> CSKH_L2: Vẫn từ chối
+    CSKH_L2 --> Đóng: Close Contact
+    Chốt --> [*]
+    Đóng --> [*]
+```
 
 | Trạng thái | Mô tả | Người thay đổi |
 |------------|-------|----------------|
@@ -340,7 +388,25 @@ Khi khách hàng chuyển sang "Chốt", tạo Deal:
 
 **Luồng sử dụng:**
 
-![Luồng sử dụng Coupon](images/coupon_usage_flow.png)
+```mermaid
+sequenceDiagram
+    participant Admin
+    participant System
+    participant Sale
+    participant Customer
+
+    Admin->>System: Tạo Coupon (Code: SALE2026, -20%)
+    Admin->>System: Gán Coupon cho Sale A
+    
+    Sale->>System: Tạo Deal cho Khách
+    Sale->>System: Chọn Coupon "SALE2026"
+    System->>System: Kiểm tra quyền sở hữu Coupon
+    System->>System: Tính toán tổng tiền sau giảm
+    
+    Sale->>Customer: Báo giá đã giảm
+    Customer->>Sale: Đồng ý chốt
+    Sale->>System: Lưu Deal
+```
 
 ---
 
@@ -685,6 +751,9 @@ Hệ thống cần đảm bảo tính kiên cố (Robustness) khi gặp sự c�
 | 21 | Gửi tin Zalo | zalo_composer.html |
 | 22 | Báo cáo | reports.html |
 | 23 | Nhật ký hoạt động | logs.html |
+| 24 | Đặt lại mật khẩu | reset_password.html |
+| 25 | Quản lý Profile | profile.html |
+| 26 | Quản lý mẫu Zalo | zalo_templates.html |
 
 ### 8.2 Quy ước ID
 
