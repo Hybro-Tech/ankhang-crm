@@ -1,0 +1,173 @@
+# ============================================
+# AnKhangCRM Docker Compose (Best Practices)
+# ============================================
+# Improvements Applied:
+# - Custom networks (frontend/backend isolation)
+# - Health checks on all services
+# - Resource limits
+# - Restart policies
+# - Environment file support
+# - Non-root security
+# ============================================
+
+version: '3.8'
+
+services:
+  # ==========================================
+  # Rails Application
+  # ==========================================
+  app:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    environment:
+      - RAILS_ENV=development
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    command: sh -c "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+
+  # ==========================================
+  # MySQL Database
+  # ==========================================
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-password}
+      MYSQL_DATABASE: ankhang_crm_development
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    command: --default-authentication-plugin=mysql_native_password
+
+  # ==========================================
+  # Redis Cache
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
+    command: redis-server --appendonly yes
+
+  # ==========================================
+  # Sidekiq Background Jobs
+  # ==========================================
+  sidekiq:
+    build:
+      context: .
+      target: development
+    command: bundle exec sidekiq
+    environment:
+      - RAILS_ENV=development
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep '[s]idekiq' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+# ==========================================
+# Networks (Isolation)
+# ==========================================
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true  # No external access
+
+# ==========================================
+# Volumes (Persistence)
+# ==========================================
+volumes:
+  mysql_data:
+  redis_data:
+  bundle_cache:

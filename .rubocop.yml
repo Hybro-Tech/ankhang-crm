@@ -1,0 +1,76 @@
+# ============================================
+# AnKhangCRM RuboCop Configuration
+# ============================================
+
+require:
+  - rubocop-rails
+
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+
+# ==========================================
+# Layout
+# ==========================================
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'config/**/*'
+
+Layout/EndOfLine:
+  Enabled: false  # Allow CRLF on Windows
+
+# ==========================================
+# Metrics
+# ==========================================
+Metrics/BlockLength:
+  Exclude:
+    - 'config/**/*'
+    - 'spec/**/*'
+    - 'Gemfile'
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/AbcSize:
+  Max: 25
+
+# ==========================================
+# Style
+# ==========================================
+Style/Documentation:
+  Enabled: false  # Skip class documentation
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'test/**/*'
+    - 'Gemfile'
+    - 'Rakefile'
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes  # Allow "strings" (Rails default)
+
+Style/SymbolArray:
+  Exclude:
+    - 'config/**/*'
+
+# ==========================================
+# Rails
+# ==========================================
+Rails:
+  Enabled: true
+
+Rails/Exit:
+  Exclude:
+    - "spec/**/*"  # RSpec generator uses abort

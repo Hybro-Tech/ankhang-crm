@@ -1,0 +1,107 @@
+# ============================================
+# AnKhangCRM CI Pipeline
+# ============================================
+# Triggers: Push to main/develop, Pull Requests
+# Jobs: Lint (RuboCop), Test (RSpec + MySQL)
+# ============================================
+
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+env:
+  RAILS_ENV: test
+  DB_HOST: 127.0.0.1
+  DB_USER: root
+  DB_PASSWORD: password
+
+jobs:
+  # ==========================================
+  # Linting Job
+  # ==========================================
+  lint:
+    name: RuboCop
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Run RuboCop
+        run: bundle exec rubocop --parallel
+
+  # ==========================================
+  # Test Job
+  # ==========================================
+  test:
+    name: RSpec Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: ankhang_crm_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libvips
+
+      - name: Setup database
+        run: |
+          bundle exec rails db:create db:migrate
+
+      - name: Run RSpec tests
+        run: bundle exec rspec --format progress
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7

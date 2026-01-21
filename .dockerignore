@@ -1,0 +1,45 @@
+# Docker Build Context Exclusions
+# Optimizes build context size and layer caching
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+docs/
+.agent/
+
+# Logs and temp files
+log/*
+tmp/*
+storage/*
+
+# Dependencies (handled by Docker)
+vendor/bundle
+node_modules
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Test and coverage
+coverage/
+spec/
+test/
+
+# Docker files (avoid recursion)
+Dockerfile*
+docker-compose*
+.dockerignore
