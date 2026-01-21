@@ -60,6 +60,13 @@ When user's prompt is NOT in English:
 2. **Respond in user's language** - match their communication
 3. **Code comments/variables** remain in English
 
+### 🛡️ SAFETY PROTOCOLS (CRITICAL)
+
+**BEFORE deleting any folder or file:**
+1. **MANDATORY:** You MUST ask for explicit user permission via `notify_user` or by setting `SafeToAutoRun: false` and highlighting the destructive command.
+2. **Strict Mode:** NEVER use `rm -rf` without prior confirmation.
+3. **Double Check:** Verify the path is correct and not a system or root directory.
+
 ### 🧹 Clean Code (Global Mandatory)
 
 **ALL code MUST follow `@[skills/clean-code]` rules. No exceptions.**
