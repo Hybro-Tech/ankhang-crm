@@ -1,0 +1,85 @@
+<%# Header with breadcrumb, notifications, user menu %>
+<header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 lg:px-8 flex-shrink-0">
+  <%# Left side - Mobile menu + Breadcrumb %>
+  <div class="flex items-center">
+    <%# Mobile menu button %>
+    <button type="button" class="lg:hidden mr-4 p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100" data-action="click->sidebar#toggle">
+      <i class="fa-solid fa-bars text-xl"></i>
+    </button>
+
+    <%# Breadcrumb %>
+    <nav class="flex items-center text-sm">
+      <% if content_for?(:breadcrumb) %>
+        <%= yield :breadcrumb %>
+      <% else %>
+        <span class="text-gray-800 font-medium"><%= content_for?(:page_title) ? yield(:page_title) : "Tổng quan" %></span>
+      <% end %>
+    </nav>
+  </div>
+
+  <%# Right side - Notifications + User menu %>
+  <div class="flex items-center space-x-6">
+    <%# Notification bell %>
+    <div class="relative" data-controller="dropdown">
+      <button type="button" data-action="click->dropdown#toggle" class="relative p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
+        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-brand-red ring-2 ring-white"></span>
+        <i class="fa-regular fa-bell text-xl"></i>
+      </button>
+
+      <%# Notification dropdown %>
+      <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+        <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
+          <span class="font-bold text-gray-700">Thông báo</span>
+          <span class="text-xs text-brand-blue cursor-pointer hover:underline">Đánh dấu đã đọc</span>
+        </div>
+        <div class="max-h-64 overflow-y-auto">
+          <div class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
+            <div class="flex-shrink-0 mt-1">
+              <i class="fa-solid fa-user-plus text-brand-blue"></i>
+            </div>
+            <div class="ml-3 flex-1">
+              <p class="text-sm font-medium text-gray-900">Chưa có thông báo mới</p>
+              <p class="text-xs text-gray-500">Thông báo sẽ hiển thị ở đây.</p>
+            </div>
+          </div>
+        </div>
+        <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
+          <%= link_to "Xem tất cả", "#", class: "text-xs font-medium text-brand-blue hover:underline" %>
+        </div>
+      </div>
+    </div>
+
+    <%# User menu %>
+    <div class="relative" data-controller="dropdown">
+      <button type="button" data-action="click->dropdown#toggle" class="flex items-center">
+        <% if user_signed_in? %>
+          <%= image_tag "https://ui-avatars.com/api/?name=#{current_user.email.first}&background=0B387A&color=fff", class: "h-8 w-8 rounded-full object-cover border border-gray-200", alt: "Avatar" %>
+          <span class="ml-3 text-sm font-medium text-gray-700 hidden sm:block"><%= current_user.email.split('@').first %></span>
+        <% else %>
+          <i class="fa-solid fa-user-circle text-2xl text-gray-400"></i>
+        <% end %>
+        <i class="fa-solid fa-chevron-down ml-2 text-xs text-gray-400"></i>
+      </button>
+
+      <%# User dropdown %>
+      <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+        <% if user_signed_in? %>
+          <%= link_to "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
+            <i class="fa-solid fa-user mr-2 text-gray-400"></i> Hồ sơ cá nhân
+          <% end %>
+          <%= link_to "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
+            <i class="fa-solid fa-gear mr-2 text-gray-400"></i> Cài đặt
+          <% end %>
+          <div class="border-t border-gray-100"></div>
+          <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-4 py-2 text-sm text-red-600 hover:bg-red-50" do %>
+            <i class="fa-solid fa-right-from-bracket mr-2"></i> Đăng xuất
+          <% end %>
+        <% else %>
+          <%= link_to new_user_session_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
+            <i class="fa-solid fa-right-to-bracket mr-2 text-gray-400"></i> Đăng nhập
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</header>

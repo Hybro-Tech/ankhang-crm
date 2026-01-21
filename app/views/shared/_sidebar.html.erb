@@ -1,0 +1,64 @@
+<%# Sidebar Navigation %>
+<aside id="sidebar" class="w-64 bg-brand-blue text-white flex flex-col flex-shrink-0 shadow-xl z-50 fixed lg:relative h-full sidebar-transition -translate-x-full lg:translate-x-0" data-controller="sidebar">
+  <%# Logo %>
+  <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
+    <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
+    <%= link_to root_path, class: "font-bold text-xl tracking-wide text-white hover:text-gray-200" do %>
+      AnKhangCRM
+    <% end %>
+  </div>
+
+  <%# Navigation Menu %>
+  <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto sidebar-scroll">
+    <%# Dashboard %>
+    <%= link_to root_path, class: "flex items-center px-4 py-3 #{current_page?(root_path) ? 'bg-white text-brand-blue rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
+      <i class="fa-solid fa-chart-line w-6 <%= current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
+      <span>Tổng quan</span>
+    <% end %>
+
+    <%# Kinh doanh section %>
+    <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
+
+    <%= sidebar_link "Khách hàng", "#", "fa-users" %>
+    <%= sidebar_link "Cơ hội bán hàng", "#", "fa-hand-holding-dollar" %>
+    <%= sidebar_link "Sản phẩm", "#", "fa-box-open" %>
+    <%= sidebar_link "Khuyến mãi", "#", "fa-ticket" %>
+
+    <%# Tổ chức section %>
+    <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
+
+    <%= sidebar_link "Đội nhóm", "#", "fa-user-group" %>
+    <%= sidebar_link "Phân quyền", "#", "fa-user-shield" %>
+    <%= sidebar_link "Nhân viên", "#", "fa-id-card" %>
+
+    <%# Hệ thống section %>
+    <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Hệ thống</div>
+
+    <%= sidebar_link "Báo cáo", "#", "fa-chart-pie" %>
+    <%= sidebar_link "Nhật ký hoạt động", "#", "fa-list-check" %>
+  </nav>
+
+  <%# Footer %>
+  <div class="p-4 border-t border-blue-800 bg-blue-900/50">
+    <%= link_to "#", class: "flex items-center px-4 py-2.5 text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors" do %>
+      <i class="fa-solid fa-gear w-6 text-blue-300"></i>
+      <span class="font-medium">Cài đặt</span>
+    <% end %>
+
+    <div class="mt-4 flex items-center px-2 pt-4 border-t border-blue-800/50">
+      <% if user_signed_in? %>
+        <%= image_tag "https://ui-avatars.com/api/?name=#{current_user.email.first}&background=random", class: "h-8 w-8 rounded-full border-2 border-blue-300", alt: "Avatar" %>
+        <div class="ml-3">
+          <p class="text-sm font-medium text-white"><%= current_user.email.split('@').first %></p>
+          <%= link_to "Đăng xuất", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-xs text-blue-300 hover:text-white hover:underline" %>
+        </div>
+      <% else %>
+        <i class="fa-solid fa-user w-6 text-blue-300"></i>
+        <%= link_to "Đăng nhập", new_user_session_path, class: "ml-2 text-sm text-blue-100 hover:text-white" %>
+      <% end %>
+    </div>
+  </div>
+</aside>
+
+<%# Mobile overlay %>
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" data-action="click->sidebar#close"></div>

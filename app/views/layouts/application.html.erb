@@ -1,15 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
   <head>
-    <title>App</title>
+    <title><%= content_for?(:title) ? yield(:title) : "AnKhangCRM" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%# Tailwind CSS - Using CDN for development (TODO: fix asset pipeline) %>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                blue: '#0B387A',
+                red: '#D81620',
+                orange: '#F37021',
+                dark: '#333333',
+                'blue-dark': '#082856',
+                'blue-light': '#1a4a8f'
+              }
+            }
+          }
+        }
+      }
+    </script>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
+    <%# Font Awesome %>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <%# Hotwire %>
+    <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-gray-50 font-sans text-gray-900">
+    <% if user_signed_in? %>
+      <%# Authenticated layout with sidebar %>
+      <div class="flex h-screen overflow-hidden">
+        <%# Sidebar %>
+        <%= render "shared/sidebar" %>
+
+        <%# Main Content %>
+        <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <%# Header %>
+          <%= render "shared/header" %>
+
+          <%# Flash Messages %>
+          <%= render "shared/flash_messages" %>
+
+          <%# Scrollable Content %>
+          <div class="flex-1 overflow-auto bg-gray-50 p-6 lg:p-8">
+            <%= yield %>
+          </div>
+        </main>
+      </div>
+    <% else %>
+      <%# Guest layout - no sidebar %>
+      <%= render "shared/flash_messages" %>
+      <%= yield %>
+    <% end %>
   </body>
 </html>

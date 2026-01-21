@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/* AnKhang Brand Colors */
+@theme {
+  --color-brand-blue: #0B387A;
+  --color-brand-red: #D81620;
+  --color-brand-orange: #F37021;
+  --color-brand-dark: #333333;
+  --color-brand-blue-dark: #082856;
+  --color-brand-blue-light: #1a4a8f;
+}
+
+/* Custom scrollbar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Sidebar transition */
+.sidebar-transition {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Flash message animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.flash-animate {
+  animation: slideIn 0.3s ease-out;
+}
