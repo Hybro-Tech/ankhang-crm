@@ -1,9 +1,9 @@
 source "https://rubygems.org"
 
-ruby "3.3.10"
+ruby "3.4.8"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.1.0"
+gem "rails", "~> 8.0.0"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -44,8 +44,7 @@ gem "cancancan"    # Authorization / RBAC
 gem "devise"       # User authentication
 
 # Background Jobs
-gem "redis", ">= 4.0.1"
-gem "sidekiq", "~> 7.0"
+# Replaced by Solid Queue in Rails 8
 
 # Utilities
 gem "kaminari" # Pagination
@@ -71,3 +70,6 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "solid_queue", "~> 1.3"
+gem "solid_cache", "~> 1.0"

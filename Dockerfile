@@ -8,12 +8,12 @@
 # ============================================
 
 # Stage 1: Node.js (copy binaries to avoid apt network issues)
-FROM node:20-slim AS node
+FROM node:22-slim AS node
 
 # ============================================
 # Stage 2: Development
 # ============================================
-FROM ruby:3.3-slim AS development
+FROM ruby:3.4-slim AS development
 
 # Copy Node.js and npm from node stage
 COPY --from=node /usr/local/bin/node /usr/local/bin/
@@ -22,24 +22,25 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 # Install system dependencies
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    default-libmysqlclient-dev \
-    git \
-    libvips \
-    libyaml-dev \
-    pkg-config \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+  apt-get install -y --no-install-recommends \
+  build-essential \
+  default-libmysqlclient-dev \
+  git \
+  libvips \
+  libyaml-dev \
+  pkg-config \
+  curl \
+  && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for security
 RUN groupadd --gid 1000 rails && \
-    useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash rails
+  useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash rails
 
 WORKDIR /app
 
 ENV RAILS_ENV=development
 ENV BUNDLE_PATH=/usr/local/bundle
+ENV PATH=/app/bin:$PATH
 
 # Install gems (as root for bundle install to shared volume)
 COPY Gemfile Gemfile.lock ./
@@ -57,4 +58,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:3000/up || exit 1
 
+ENTRYPOINT ["/app/bin/docker-entrypoint"]
 CMD ["rails", "server", "-b", "0.0.0.0"]

@@ -305,7 +305,7 @@ stateDiagram-v2
     1.  Sale nhận thông báo hoặc thấy Contact mới trên Dashboard.
     2.  Sale bấm nút "Nhận khách" (Pick).
     3.  Hệ thống kiểm tra Pre-conditions.
-    4.  Hệ thống sử dụng Database Transaction / Redis Lock để lock Contact.
+    4.  Hệ thống sử dụng Database Transaction (Row Lock) để lock Contact.
     5.  Cập nhật Contact: `Status` = `ĐÃ NHẬN`, `Assignee` = `Sale ID`, `Picked At` = `Time.now`.
     6.  Hệ thống trả về Success Message cho Sale.
     7.  Hệ thống broadcast sự kiện `contact.picked` để ẩn nút Pick đối với các Sale khác (Real-time update UI).
@@ -565,7 +565,7 @@ Quy định về các điểm giao tiếp giữa AnKhangCRM và thế giới bê
 
 #### 4.12.3 Giao diện phần mềm (Software Interfaces)
 *   **Database:** MySQL Server 8.0 (qua dây kết nối TCP/IP, cổng mặc định 3306).
-*   **Cache:** Redis Server 6.x (kết nối nội bộ hoặc qua VPN).
+*   **Cache:** Solid Cache (Lưu trữ trong MySQL).
 *   **OS:** Ubuntu LTS 20.04/22.04 hoặc CentOS 8.
 
 #### 4.12.4 Các giao diện truyền thông (Communication Interfaces)
@@ -640,10 +640,10 @@ Quy định về cách dữ liệu được tạo ra, lưu trữ, và tiêu hủ
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Ruby on Rails 7+ |
+| Backend | Ruby on Rails 8.0 (Solid Stack) |
 | Frontend | HTML, CSS, JS + Hotwire |
 | Database | MySQL 8+ |
-| Cache/Queue | Redis + Sidekiq |
+| Cache/Queue | Solid Cache + Solid Queue (MySQL) |
 ### 5.5 Xử lý lỗi và Ngoại lệ (Error Handling)
 
 Hệ thống cần đảm bảo tính kiên cố (Robustness) khi gặp sự cố:

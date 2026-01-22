@@ -5,7 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   # Enums (TASK-007)
-  enum status: { active: 0, inactive: 1, locked: 2 }
+  enum :status, { active: 0, inactive: 1, locked: 2 }
 
   # Validations
   validates :name, presence: true

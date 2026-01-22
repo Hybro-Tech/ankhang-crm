@@ -10,8 +10,6 @@
 # - Non-root security
 # ============================================
 
-version: '3.8'
-
 services:
   # ==========================================
   # Rails Application
@@ -29,11 +27,8 @@ services:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=${DB_PASSWORD:-password}
-      - REDIS_URL=redis://redis:6379/0
     depends_on:
       db:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     networks:
       - frontend
@@ -42,7 +37,7 @@ services:
     tty: true
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/up"]
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/up" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -55,7 +50,7 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
-    command: sh -c "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+    command: [ "./bin/rails", "server", "-b", "0.0.0.0" ]
 
   # ==========================================
   # MySQL Database
@@ -73,7 +68,7 @@ services:
       - backend
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -89,50 +84,22 @@ services:
     command: --default-authentication-plugin=mysql_native_password
 
   # ==========================================
-  # Redis Cache
+  # Solid Queue Worker (Replaces Sidekiq)
   # ==========================================
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - backend
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 128M
-        reservations:
-          cpus: '0.05'
-          memory: 32M
-    command: redis-server --appendonly yes
-
-  # ==========================================
-  # Sidekiq Background Jobs
-  # ==========================================
-  sidekiq:
+  worker:
     build:
       context: .
       target: development
-    command: bundle exec sidekiq
+    command: bundle exec rake solid_queue:start
     environment:
       - RAILS_ENV=development
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=${DB_PASSWORD:-password}
-      - REDIS_URL=redis://redis:6379/0
     depends_on:
       db:
         condition: service_healthy
-      redis:
+      app:
         condition: service_healthy
     networks:
       - backend
@@ -140,11 +107,6 @@ services:
       - .:/app
       - bundle_cache:/usr/local/bundle
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "ps aux | grep '[s]idekiq' || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     deploy:
       resources:
         limits:
@@ -162,12 +124,11 @@ networks:
     driver: bridge
   backend:
     driver: bridge
-    internal: true  # No external access
+    internal: true # No external access
 
 # ==========================================
 # Volumes (Persistence)
 # ==========================================
 volumes:
   mysql_data:
-  redis_data:
   bundle_cache:

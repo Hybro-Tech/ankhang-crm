@@ -8,10 +8,10 @@
 
 | Component | Technology |
 |-----------|------------|
-| **Backend** | Ruby on Rails 7.1 |
+| **Backend** | Ruby on Rails 8.0 |
 | **Database** | MySQL 8.0 |
-| **Cache** | Redis 7 |
-| **Background Jobs** | Sidekiq |
+| **Cache** | Solid Cache (MySQL) |
+| **Background Jobs** | Solid Queue (MySQL) |
 | **Frontend** | Hotwire (Turbo + Stimulus) |
 | **CSS** | Tailwind CSS |
 | **Auth** | Devise |
