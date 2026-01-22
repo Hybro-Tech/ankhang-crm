@@ -4,11 +4,11 @@
 ---
 
 | Thông tin | Chi tiết |
-|-----------|----------|
+| :--- | :--- |
 | **Tên dự án** | AnKhangCRM - Hệ thống Quản lý Khách hàng |
 | **Khách hàng** | Luật An Khang |
-| **Phiên bản** | 1.0 |
-| **Ngày lập** | 20/01/2026 |
+| **Phiên bản** | 1.1 |
+| **Ngày lập** | 23/01/2026 |
 | **Người lập** | Hybro Technology |
 | **Trạng thái** | Chờ xác nhận khách hàng |
 
@@ -40,7 +40,7 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 ### 1.3 Vấn đề cần giải quyết
 
 | # | Vấn đề hiện tại | Giải pháp đề xuất |
-|---|-----------------|-------------------|
+| :--- | :--- | :--- |
 | 1 | Dữ liệu phân tán trên nhiều Google Sheets | Tập trung trên 1 hệ thống duy nhất |
 | 2 | Khó theo dõi và tìm kiếm thông tin liên hệ | Tìm kiếm nâng cao, filter đa tiêu chí |
 | 3 | Không có thông báo tự động khi có lead mới | Hệ thống thông báo đa kênh |
@@ -51,7 +51,7 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 ### 1.4 Thuật ngữ và Viết tắt
 
 | Thuật ngữ | Định nghĩa |
-|-----------|------------|
+| :--- | :--- |
 | **CRM** | Customer Relationship Management - Quản lý quan hệ khách hàng |
 | **Lead** | Khách hàng tiềm năng, chưa phát sinh giao dịch |
 | **Contact** | Thông tin liên hệ của khách hàng trong hệ thống |
@@ -82,7 +82,7 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 ### 2.1 Mục tiêu dự án
 
 | # | Mục tiêu | Tiêu chí đo lường |
-|---|----------|-------------------|
+| :--- | :--- | :--- |
 | 1 | Chuyển đổi số hoàn toàn | 100% dữ liệu được quản lý trên hệ thống mới |
 | 2 | Thông báo real-time | Thời gian thông báo < 5 giây cho 100-200 users |
 | 3 | Dễ sử dụng | Thời gian đào tạo < 1 ngày |
@@ -91,7 +91,18 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 
 ### 2.2 Luồng nghiệp vụ chính
 
-![Luồng nghiệp vụ chính](images/business_workflow.png)
+```mermaid
+graph TD
+    A[Marketing/Ads] -->|Leads| B(Tổng đài/Hotline)
+    B -->|Tạo Contact| C{Phân loại Nhu cầu}
+    C -->|Loại A| D[Sale Team A]
+    C -->|Loại B| E[Sale Team B]
+    D -->|Pick| F[Tư vấn]
+    E -->|Pick| F
+    F -->|Thành công| G(Chốt Deal)
+    F -->|Thất bại| H(Chuyển CSKH)
+    H -->|Re-marketing| F
+```
 
 ---
 
@@ -100,7 +111,7 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 ### 3.1 Vai trò và số lượng dự kiến
 
 | Vai trò | Mô tả công việc | Số lượng |
-|---------|-----------------|----------|
+| :--- | :--- | :--- |
 | **Super Admin** | Quản trị toàn bộ hệ thống, phân quyền, cấu hình | 2-3 người |
 | **Tổng Đài** | Nhận cuộc gọi, tạo thông tin khách hàng mới | 5-10 người |
 | **Sale** | Nhận phân bổ, tư vấn, chốt hợp đồng | 50-80 người |
@@ -110,23 +121,23 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 ### 3.2 Bảng quyền hạn chi tiết
 
 | Quyền | Super Admin | Tổng Đài | Sale | CSKH |
-|-------|:-----------:|:--------:|:----:|:----:|
-| Quản lý người dùng | ✅ | ❌ | ❌ | ❌ |
-| Quản lý đội nhóm | ✅ | ❌ | ❌ | ❌ |
-| Phân quyền động | ✅ | ❌ | ❌ | ❌ |
-| Quản lý sản phẩm | ✅ | ❌ | ❌ | ❌ |
-| Quản lý khuyến mãi | ✅ | ❌ | ❌ | ❌ |
-| Xem Dashboard/Báo cáo | ✅ | ❌ | ❌ | ❌ |
-| Xem tất cả logs | ✅ | ❌ | ❌ | ❌ |
-| Tạo khách hàng mới | ✅ | ✅ | ❌ | ❌ |
-| Phân loại nguồn liên hệ | ✅ | ✅ | ❌ | ❌ |
-| Xem danh sách khách hàng | ✅ | ✅ | ✅ | ✅ |
-| Pick khách hàng | ❌ | ❌ | ✅ | ❌ |
-| Cập nhật trạng thái KH | ✅ | ❌ | ✅ | ✅ |
-| Chọn SP/Coupon khi chốt | ✅ | ❌ | ✅ | ❌ |
-| Xem KH thất bại | ✅ | ❌ | ❌ | ✅ |
-| Gửi tin Zalo OA | ❌ | ❌ | ❌ | ✅ |
-| Nhận thông báo | ✅ | ✅ | ✅ | ✅ |
+| :--- | :---: | :---: | :---: | :---: |
+| Quản lý người dùng | &#9989; | &#10060; | &#10060; | &#10060; |
+| Quản lý đội nhóm | &#9989; | &#10060; | &#10060; | &#10060; |
+| Phân quyền động | &#9989; | &#10060; | &#10060; | &#10060; |
+| Quản lý sản phẩm | &#9989; | &#10060; | &#10060; | &#10060; |
+| Quản lý khuyến mãi | &#9989; | &#10060; | &#10060; | &#10060; |
+| Xem Dashboard/Báo cáo | &#9989; | &#10060; | &#10060; | &#10060; |
+| Xem tất cả logs | &#9989; | &#10060; | &#10060; | &#10060; |
+| Tạo khách hàng mới | &#9989; | &#9989; | &#10060; | &#10060; |
+| Phân loại nguồn liên hệ | &#9989; | &#9989; | &#10060; | &#10060; |
+| Xem danh sách khách hàng | &#9989; | &#9989; | &#9989; | &#9989; |
+| Pick khách hàng | &#10060; | &#10060; | &#9989; | &#10060; |
+| Cập nhật trạng thái KH | &#9989; | &#10060; | &#9989; | &#9989; |
+| Chọn SP/Coupon khi chốt | &#9989; | &#10060; | &#9989; | &#10060; |
+| Xem KH thất bại | &#9989; | &#10060; | &#10060; | &#9989; |
+| Gửi tin Zalo OA | &#10060; | &#10060; | &#10060; | &#9989; |
+| Nhận thông báo | &#9989; | &#9989; | &#9989; | &#9989; |
 
 ---
 
@@ -135,7 +146,7 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 ### 4.1 Module: Xác thực (Authentication)
 
 | ID | Yêu cầu | Ưu tiên | Mô tả |
-|----|---------|---------|-------|
+| :--- | :--- | :--- | :--- |
 | AUTH-001 | Đăng nhập | Cao | Bằng username/password |
 | AUTH-002 | Remember me | Cao | Session kéo dài 30 ngày |
 | AUTH-003 | Quên mật khẩu | Cao | Gửi link reset qua email (hết hạn sau 1 giờ) |
@@ -155,10 +166,31 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 
 **Mô hình:**
 
-![Mô hình phân quyền](images/permission_class.png)
+```mermaid
+classDiagram
+    direction TB
+    class User {
+        +Integer id
+        +String username
+        +String password
+        +List roles
+    }
+    class Role {
+        +Integer id
+        +String name
+        +List permissions
+    }
+    class Permission {
+        +Integer id
+        +String resource
+        +String action
+    }
+    User "1" --> "*" Role : assigned_to
+    Role "1" --> "*" Permission : has
+```
 
 | ID | Yêu cầu | Ưu tiên | Mô tả |
-|----|---------|---------|-------|
+| :--- | :--- | :--- | :--- |
 | PERM-001 | Tạo/sửa/xóa Roles | Cao | Admin tùy chỉnh roles |
 | PERM-002 | Mỗi Role có tập Permissions | Cao | Checkbox chọn permissions |
 | PERM-003 | Gán nhiều Roles cho User | Cao | 1 user có thể có nhiều roles |
@@ -168,8 +200,9 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 | PERM-007 | Clone role | Trung | Tạo role mới từ role có sẵn |
 
 **4 Roles mặc định:**
+
 | Role | Permissions |
-|------|-------------|
+| :--- | :--- |
 | Super Admin | Tất cả |
 | Tổng Đài | contacts.create, contacts.view, notifications.receive |
 | Sale | contacts.view/pick/edit/update_status, deals.*, notifications.receive |
@@ -182,35 +215,35 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 #### 4.3.1 Thông tin khách hàng
 
 | Trường | Bắt buộc | Mô tả |
-|--------|----------|-------|
+| :--- | :--- | :--- |
 | Mã liên hệ | Tự động | Hệ thống tự sinh (VD: KH2026-001) |
-| Tên khách hàng | ✅ | Thường là tên Zalo |
-| Số điện thoại | ✅ | Số Zalo/điện thoại |
+| Tên khách hàng | &#9989; | Thường là tên Zalo |
+| Số điện thoại | &#9989; | Số Zalo/điện thoại |
 | Email | | Email liên hệ |
-| Loại nhu cầu | ✅ | Xem bảng bên dưới |
-| Nguồn liên hệ | ✅ | Xem bảng bên dưới |
+| Loại nhu cầu | &#9989; | Xem bảng bên dưới |
+| Nguồn liên hệ | &#9989; | Xem bảng bên dưới |
 | Team tư vấn | | Team được gán |
 | Ghi chú | | Thông tin bổ sung |
 | Trạng thái | Tự động | Mới khi tạo |
 | Người tư vấn | | Sale đã pick |
 | Người tạo | Tự động | Tổng đài tạo |
 
-#### 4.3.2 Loại nhu cầu
+#### 4.3.2 Loại nhu cầu (Quản lý động)
 
-| Mã | Hiển thị |
-|----|----------|
-| tldn_new | Thành lập doanh nghiệp mới |
-| info_change | Thay đổi thông tin DN |
-| sub_license | Giấy phép con |
-| accounting | Kế toán |
-| fdi | Đầu tư nước ngoài (FDI) |
-| ip | Sở hữu trí tuệ (SHTT) |
-| other | Khác |
+**Yêu cầu:** Admin có thể cấu hình danh sách "Loại nhu cầu" (Service Types) thay vì cố định trong code.
+
+| Trường | Mô tả |
+| :--- | :--- |
+| Mã (Code) | Mã định danh (VD: TLDN, KTDN...) |
+| Tên hiển thị | Tên loại nhu cầu (VD: Thành lập doanh nghiệp) |
+| Mô tả | Ghi chú chi tiết |
+| Trạng thái | Kích hoạt / Ẩn |
+| Thứ tự | Thứ tự hiển thị trên dropdown |
 
 #### 4.3.3 Nguồn liên hệ
 
 | Mã | Hiển thị |
-|----|----------|
+| :--- | :--- |
 | ladi_zalo | Ladi Zalo |
 | ladi_hotline | Ladi Hotline |
 | fb_mess | Facebook Messenger |
@@ -221,18 +254,30 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 
 #### 4.3.4 Luồng trạng thái
 
-![Luồng trạng thái](images/contact_status.png)
+```mermaid
+stateDiagram-v2
+    [*] --> NEW: Tổng đài tạo
+    NEW --> PROCESSING: Sale pick (5p/lần)
+    PROCESSING --> CHOT: Chốt thành công
+    PROCESSING --> FAIL: Thất bại
+    FAIL --> CARING_L1: CSKH Layer 1
+    CARING_L1 --> CHOT: Chăm sóc thành công
+    CARING_L1 --> CARING_L2: Chuyển Layer 2
+    CARING_L2 --> CHOT: Thành công
+    CARING_L2 --> CLOSED: Không thể chốt
+```
+
+> **Cập nhật v1.1:** Gộp trạng thái "Đã nhận" và "Tiềm năng" thành **"Đang tư vấn"** để tối ưu thao tác Sales. Người dùng chỉ cần Pick -> hệ thống tự chuyển sang "Đang tư vấn".
 
 | Trạng thái | Mô tả | Người thay đổi |
-|------------|-------|----------------|
+| :--- | :--- | :--- |
 | Mới | Vừa tạo, chờ pick | Tự động |
-| Đã nhận | Sale đã pick | Sale |
-| Tiềm năng | Đang tư vấn | Sale |
-| Chốt | Ký hợp đồng thành công | Sale |
-| Thất bại | Không chốt được | Sale |
-| CSKH L1 | Chăm sóc lần 1 | Hệ thống/CSKH |
+| Đang tư vấn | Sale đã pick và đang chăm sóc | Hệ thống (sau khi Pick) |
+| Chốt | Ký hợp đồng thành công (Tạo Deal) | Sale |
+| Thất bại | Không chốt được, chuyển qua CSKH | Sale |
+| CSKH L1 | Chăm sóc lần 1 (Sau khi Fail) | Hệ thống/CSKH |
 | CSKH L2 | Chăm sóc lần 2 | CSKH |
-| Đóng | Kết thúc | CSKH |
+| Đóng | Kết thúc, không còn tiềm năng | CSKH |
 
 #### 4.3.5 Cơ chế Pick (Chi tiết Use Case)
 
@@ -244,6 +289,7 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 2.  **Locking:** Khi 1 Sale bấm Pick, hệ thống phải lock record đó ngay lập tức để Sale khác không pick được.
 3.  **Cooldown:** Sau khi pick thành công, Sale phải đợi **5 phút** mới được pick tiếp (trừ khi được Admin override).
 4.  **Auto Assign:** Contact sau khi pick sẽ tự động gán `Team` theo Team của Sale đó.
+5.  **Dynamic Limits:** Kiểm tra giới hạn số lượng contact được pick trong ngày dựa trên "Loại nhu cầu" (VD: Kế toán max 2, Thành lập max 5).
 
 **Kịch bản chi tiết:**
 
@@ -251,14 +297,14 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
     *   Contact có trạng thái `MỚI`.
     *   Sale đang có trạng thái `Active`.
     *   Sale không trong thời gian Cooldown.
-    *   Sale chưa vượt quá hạn mức handling (nếu có config).
+    *   Sale chưa vượt quá hạn mức handling (Check: Tổng số contact loại X đã pick hôm nay < Max limit của loại X).
 
 *   **Flow (Luồng xử lý):**
     1.  Sale nhận thông báo hoặc thấy Contact mới trên Dashboard.
     2.  Sale bấm nút "Nhận khách" (Pick).
     3.  Hệ thống kiểm tra Pre-conditions.
     4.  Hệ thống sử dụng Database Transaction (Row Lock) để lock Contact.
-    5.  Cập nhật Contact: `Status` = `ĐÃ NHẬN`, `Assignee` = `Sale ID`, `Picked At` = `Time.now`.
+    5.  Cập nhật Contact: `Status` = `ĐANG TƯ VẤN`, `Assignee` = `Sale ID`, `Picked At` = `Time.now`.
     6.  Hệ thống trả về Success Message cho Sale.
     7.  Hệ thống broadcast sự kiện `contact.picked` để ẩn nút Pick đối với các Sale khác (Real-time update UI).
 
@@ -266,6 +312,13 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
     *   *E1: Đã bị người khác pick:* Hiển thị thông báo "Khách hàng này đã được nhận bởi [Tên Sale khác]". Cập nhật lại danh sách.
     *   *E2: Đang cooldown:* Hiển thị thông báo đếm ngược thời gian còn lại.
     *   *E3: Lỗi mạng/Server:* Giữ nguyên trạng thái nút, thông báo lỗi kết nối.
+
+*   **Admin Override Flow (Re-assign):**
+    1.  Admin vào chi tiết Contact đang được Sale A giữ.
+    2.  Bấm nút "Chuyển khách" (Re-assign).
+    3.  Chọn Sale B (hoặc trả về Pool chung).
+    4.  Hệ thống cập nhật `Assignee` và ghi log: "Admin transferred contact from Sale A to Sale B".
+    5.  Thông báo cho cả Sale A và Sale B.
 
 #### 4.3.6 Lịch sử trao đổi (Interaction History)
 
@@ -282,12 +335,12 @@ Mỗi lần Sale/CSKH trao đổi với khách cần ghi log:
 Khi khách hàng chuyển sang "Chốt", tạo Deal:
 
 | Trường | Bắt buộc | Mô tả |
-|--------|----------|-------|
-| Khách hàng | ✅ | Liên kết Contact |
+| :--- | :--- | :--- |
+| Khách hàng | &#9989; | Liên kết Contact |
 | Tổng giá trị | Tự động | Tổng từ các SP |
-| Trạng thái thanh toán | ✅ | Xem bảng bên dưới |
+| Trạng thái thanh toán | &#9989; | Xem bảng bên dưới |
 | Người chốt | Tự động | Sale đang xử lý |
-| Ngày chốt | ✅ | Ngày ký HĐ |
+| Ngày chốt | &#9989; | Ngày ký HĐ |
 | Ghi chú | | Thông tin bổ sung |
 
 **Sản phẩm trong Deal:**
@@ -295,8 +348,9 @@ Khi khách hàng chuyển sang "Chốt", tạo Deal:
 - Mỗi SP có: Số lượng, Đơn giá, Thời điểm chốt
 
 **Trạng thái thanh toán:**
+
 | Mã | Hiển thị |
-|----|----------|
+| :--- | :--- |
 | pending | Chưa thanh toán |
 | partial | Thanh toán một phần |
 | paid | Đã thanh toán đủ |
@@ -307,7 +361,7 @@ Khi khách hàng chuyển sang "Chốt", tạo Deal:
 ### 4.5 Module: Sản phẩm/Dịch vụ (Products)
 
 | Trường | Mô tả |
-|--------|-------|
+| :--- | :--- |
 | Mã sản phẩm | VD: TLDN-7, DVK-25 |
 | Tên sản phẩm | Tên dịch vụ |
 | Mô tả | Chi tiết dịch vụ |
@@ -316,8 +370,9 @@ Khi khách hàng chuyển sang "Chốt", tạo Deal:
 | Trạng thái | Đang kinh doanh / Ngừng |
 
 **Ví dụ sản phẩm:**
+
 | Mã | Tên | Loại |
-|----|-----|------|
+| :--- | :--- | :--- |
 | TLDN-7 | TLDN Gói Nâng Cao | Thành lập DN |
 | TLDN-5 | Gói VIP 2026 | Thành lập DN |
 | DVK-25 | Dịch vụ khác | Khác |
@@ -328,26 +383,47 @@ Khi khách hàng chuyển sang "Chốt", tạo Deal:
 ### 4.6 Module: Khuyến mãi (Coupons)
 
 | Trường | Mô tả |
-|--------|-------|
+| :--- | :--- |
 | Mã coupon | VD: SALE2026 |
 | Mô tả | Nội dung khuyến mãi |
 | Loại giảm giá | Phần trăm (%) / Số tiền cố định |
 | Giá trị | Mức giảm |
 | Hạn sử dụng | Ngày hết hạn |
-| Gán cho nhân viên | ✅ Bắt buộc |
+| Gán cho nhân viên | &#9989; Bắt buộc |
 
 > **Lưu ý quan trọng**: Coupon được Admin tạo và **gán cho nhân viên cụ thể**, không phải pool chung.
 
+
 **Luồng sử dụng:**
 
-![Luồng sử dụng Coupon](images/coupon_sequence.png)
+
+```mermaid
+sequenceDiagram
+    participant Admin
+    participant System
+    participant Employee
+    participant Customer
+
+    Admin->>System: Tạo Coupon (Mã, Hạn, NV được gán)
+    Admin->>System: Assign Coupon cho Employee
+    System->>Employee: Thông báo Coupon mới
+    Employee->>Customer: Gửi Mã Coupon cho Khách
+    Customer->>System: Mua hàng + Nhập mã Coupon
+    System->>System: Validate (Hạn, NV sở hữu)
+    alt Valid
+        System->>Customer: Áp dụng giảm giá
+        System->>Employee: Ghi nhận doanh số
+    else Invalid
+        System->>Customer: Báo lỗi
+    end
+```
 
 ---
 
 ### 4.7 Module: Đội nhóm (Teams)
 
 | Trường | Mô tả |
-|--------|-------|
+| :--- | :--- |
 | Tên team | VD: Team Hà Nội, Team HCM |
 | Mô tả | Mô tả / Địa điểm |
 | Trưởng team | Manager (tùy chọn) |
@@ -363,15 +439,15 @@ Khi khách hàng chuyển sang "Chốt", tạo Deal:
 ### 4.8 Module: Nhân viên (Employees)
 
 | Trường | Bắt buộc | Mô tả |
-|--------|----------|-------|
-| Username | ✅ | Dùng để đăng nhập |
-| Họ và tên | ✅ | Tên hiển thị |
-| Email | ✅ | Email công việc |
+| :--- | :--- | :--- |
+| Username | &#9989; | Dùng để đăng nhập |
+| Họ và tên | &#9989; | Tên hiển thị |
+| Email | &#9989; | Email công việc |
 | Số điện thoại | | SĐT liên hệ |
 | Team | | Đội nhóm thuộc về |
 | Chức vụ | | Vị trí công việc |
-| Roles | ✅ | Vai trò phân quyền |
-| Trạng thái | ✅ | Hoạt động / Khóa |
+| Roles | &#9989; | Vai trò phân quyền |
+| Trạng thái | &#9989; | Hoạt động / Khóa |
 
 **Quy tắc nghiệp vụ:**
 - Không tự vô hiệu hóa chính mình
@@ -386,10 +462,10 @@ Khi khách hàng chuyển sang "Chốt", tạo Deal:
 #### 4.9.1 Kênh thông báo
 
 | Kênh | Phase | Bắt buộc | Ghi chú |
-|------|-------|----------|---------|
-| Web Push | 1 | ✅ | Browser notification |
-| Email | 1 | ✅ | Qua SMTP/SendGrid |
-| Zalo OA | 1 | ✅ | Cho CSKH, cần ZNS template |
+| :--- | :--- | :--- | :--- |
+| Web Push | 1 | &#9989; | Browser notification |
+| Email | 1 | &#9989; | Qua SMTP/SendGrid |
+| Zalo OA | 1 | &#9989; | Cho CSKH, cần ZNS template |
 | Slack | 1 | Tùy chọn | Webhook |
 | Facebook | 1 | Tùy chọn | Page subscription |
 | In-app (WebSocket) | 2 | | Real-time |
@@ -403,8 +479,9 @@ Admin tạo rules với cấu trúc:
 - **Template**: Nội dung tin nhắn
 
 **Sự kiện trigger:**
+
 | Event | Mô tả |
-|-------|-------|
+| :--- | :--- |
 | contact.created | Tổng đài tạo contact mới |
 | contact.picked | Sale pick contact |
 | contact.status_changed | Đổi trạng thái |
@@ -424,7 +501,7 @@ Admin tạo rules với cấu trúc:
 Ghi log **tất cả** hành động trong hệ thống:
 
 | Nhóm | Hành động |
-|------|-----------|
+| :--- | :--- |
 | **Authentication** | Đăng nhập, đăng nhập thất bại, đăng xuất, đổi password |
 | **Contacts** | Tạo, pick, cập nhật, đổi trạng thái, thêm lịch sử trao đổi |
 | **Deals** | Tạo, cập nhật, đổi trạng thái thanh toán |
@@ -450,7 +527,7 @@ Ghi log **tất cả** hành động trong hệ thống:
 #### 4.11.1 KPI Cards
 
 | Chỉ số | Mô tả |
-|--------|-------|
+| :--- | :--- |
 | Tổng Contacts | Tổng số khách hàng |
 | Contacts mới (Tuần) | Khách tạo trong 7 ngày gần |
 | Chốt thành công | Số deal đã chốt |
@@ -460,7 +537,7 @@ Ghi log **tất cả** hành động trong hệ thống:
 #### 4.11.2 Biểu đồ
 
 | Biểu đồ | Loại | Dữ liệu |
-|---------|------|---------|
+| :--- | :--- | :--- |
 | Phân bổ trạng thái | Pie/Donut | Contacts theo status |
 | Trend khách mới | Line | Theo ngày/tuần/tháng |
 | So sánh Sales | Bar | Contacts picked theo Sale |
@@ -469,7 +546,7 @@ Ghi log **tất cả** hành động trong hệ thống:
 #### 4.11.3 Bảng dữ liệu
 
 | Bảng | Nội dung |
-|------|----------|
+| :--- | :--- |
 | Top Performers | Tên, số KH, số deal, doanh thu |
 | Recent Activities | Feed hoạt động gần đây |
 | Contacts Fail | KH đang được CSKH chăm sóc |
@@ -522,7 +599,7 @@ Quy định về các điểm giao tiếp giữa AnKhangCRM và thế giới bê
 Quy định về cách dữ liệu được tạo ra, lưu trữ, và tiêu hủy nhằm đảm bảo tuân thủ quy định pháp lý.
 
 | Loại dữ liệu | Thời gian lưu trữ (Retention Period) | Hành động khi hết hạn |
-|--------------|--------------------------------------|-----------------------|
+| :--- | :--- | :--- |
 | System Logs (Access/Error) | 12 tháng | Archive sang Cold Storage (S3 Glacier) |
 | Audit Trail (Activity Logs) | 05 năm | Archive |
 | Inactive Contacts (Failed/Closed) | 02 năm | Anonymize (Xóa định danh) để report |
@@ -536,7 +613,7 @@ Quy định về cách dữ liệu được tạo ra, lưu trữ, và tiêu hủ
 ### 5.1 Hiệu năng
 
 | Yêu cầu | Tiêu chí |
-|---------|----------|
+| :--- | :--- |
 | Thời gian phản hồi | < 2 giây cho thao tác thông thường |
 | Thời gian thông báo | < 5 giây từ khi sự kiện xảy ra |
 | Số người dùng đồng thời | 100-200 users |
@@ -545,15 +622,17 @@ Quy định về cách dữ liệu được tạo ra, lưu trữ, và tiêu hủ
 ### 5.2 Bảo mật & Riêng tư (Security & Privacy)
 
 #### 5.2.1 Bảo mật dữ liệu (Data Security)
+
 | Yêu cầu | Mô tả kỹ thuật |
-|---------|----------------|
+| :--- | :--- |
 | **Encryption at Rest** | Dữ liệu nhạy cảm (PII, Password, Phone) trong DB phải được mã hóa chuẩn **AES-256**. |
 | **Encryption in Transit** | 100% kết nối qua **TLS 1.3** (HTTPS). Không chấp nhận HTTP thường. |
 | **Database Security** | Không public port DB ra internet. Chỉ truy cập qua VPN hoặc Bastion Host. |
 
 #### 5.2.2 Quyền riêng tư (Privacy & GDPR compliance)
+
 | Yêu cầu | Mô tả |
-|---------|-----|
+| :--- | :--- |
 | **Right to be Forgotten** | Khách hàng có quyền yêu cầu xóa/ẩn thông tin. Hệ thống có chức năng "Anonymize Contact" (Thay tên bằng ID, xóa SĐT). |
 | **Data Access Control** | Nhân viên chỉ xem được Contact do mình phụ trách (Row-level Security). |
 
@@ -564,8 +643,9 @@ Quy định về cách dữ liệu được tạo ra, lưu trữ, và tiêu hủ
 - **Graceful Degradation:** Nếu module Zalo lỗi, hệ thống vẫn cho phép tạo Contact và gửi Email bình thường.
 
 #### 5.3.2 Chính sách Backup & Recovery
+
 | Chỉ số | Giá trị | Giải thích |
-|--------|---------|------------|
+| :--- | :--- | :--- |
 | **RPO (Recovery Point Objective)** | **< 15 phút** | Chấp nhận mất tối đa 15 phút dữ liệu khi có sự cố nghiêm trọng. |
 | **RTO (Recovery Time Objective)** | **< 4 giờ** | Thời gian tối đa để hệ thống hoạt động trở lại. |
 | **Backup Strategy** | Daily Incremental + Weekly Full | Lưu trữ Off-site (Khác location với Server chính). |
@@ -573,11 +653,12 @@ Quy định về cách dữ liệu được tạo ra, lưu trữ, và tiêu hủ
 ### 5.4 Công nghệ
 
 | Layer | Technology |
-|-------|------------|
+| :--- | :--- |
 | Backend | Ruby on Rails 8.0 (Solid Stack) |
 | Frontend | HTML, CSS, JS + Hotwire |
 | Database | MySQL 8+ |
 | Cache/Queue | Solid Cache + Solid Queue (MySQL) |
+
 ### 5.5 Xử lý lỗi và Ngoại lệ (Error Handling)
 
 Hệ thống cần đảm bảo tính kiên cố (Robustness) khi gặp sự cố:
@@ -608,7 +689,7 @@ Hệ thống cần đảm bảo tính kiên cố (Robustness) khi gặp sự c�
 ### 6.1 ✅ Phase 1 (MVP+)
 
 | Module | Tính năng |
-|--------|-----------|
+| :--- | :--- |
 | Xác thực | Đăng nhập, đăng xuất, quên mật khẩu, đổi mật khẩu |
 | Phân quyền | 4 roles mặc định + phân quyền động + override |
 | Đội nhóm | CRUD teams, gán thành viên |
@@ -624,7 +705,7 @@ Hệ thống cần đảm bảo tính kiên cố (Robustness) khi gặp sự c�
 ### 6.2 ⏳ Phase 2 (Tương lai)
 
 | Tính năng | Mô tả |
-|-----------|-------|
+| :--- | :--- |
 | Import Google Sheets | Chuyển dữ liệu cũ |
 | 2FA | Xác thực 2 lớp |
 | WebSocket real-time | Notifications real-time |
@@ -645,12 +726,14 @@ Hệ thống cần đảm bảo tính kiên cố (Robustness) khi gặp sự c�
 > **Vui lòng xác nhận hoặc bổ sung thông tin cho các mục sau:**
 
 | # | Vấn đề | Trạng thái | Ghi chú |
-|---|--------|------------|---------|
+| :--- | :--- | :--- | :--- |
 | 1 | Danh sách dịch vụ chi tiết đầy đủ | ⏳ Chờ xác nhận | Cần danh sách tất cả dịch vụ |
 | 2 | Số layer CSKH cần thiết | ⏳ Chờ xác nhận | Hiện thiết kế 2 layer (L1, L2) |
 | 3 | Tần suất gửi tin Zalo OA | ⏳ Chờ xác nhận | Bao lâu gửi 1 lần? |
 | 4 | Số lượng mẫu tin Zalo (ZNS templates) | ⏳ Chờ xác nhận | Có bao nhiêu template? |
 | 5 | Nội dung cụ thể các mẫu tin Zalo | ⏳ Chờ xác nhận | Text cụ thể |
+| 6 | Danh sách "Loại nhu cầu" ban đầu | ⏳ Chờ xác nhận | Để seed vào DB khi cài đặt |
+| 7 | Xác nhận gộp trạng thái | ⏳ Chờ xác nhận | Xác nhận từ anh Tâm về việc gộp "Đã nhận" + "Tiềm năng" |
 
 ---
 
@@ -661,7 +744,7 @@ Hệ thống cần đảm bảo tính kiên cố (Robustness) khi gặp sự c�
 Đã thiết kế đầy đủ các màn hình sau:
 
 | # | Màn hình | File |
-|---|----------|------|
+| :--- | :--- | :--- |
 | 1 | Đăng nhập | index.html |
 | 2 | Quên mật khẩu | forgot_password.html |
 | 3 | Dashboard | dashboard.html |
@@ -692,7 +775,7 @@ Hệ thống cần đảm bảo tính kiên cố (Robustness) khi gặp sự c�
 ### 8.2 Quy ước ID
 
 | Prefix | Module |
-|--------|--------|
+| :--- | :--- |
 | AUTH | Xác thực |
 | PERM | Phân quyền |
 | CONT | Khách hàng |
@@ -715,12 +798,12 @@ Quy định phương pháp nghiệm thu cho các yêu cầu trong Section 4 và 
 *   **T (Test):** Chạy test case tự động hoặc thủ công.
 
 | Requirement ID | Module | Phương pháp | Ghi chú |
-|----------------|--------|:-----------:|---------|
+| :--- | :--- | :--- | :--- |
 | AUTH-001...006 | Xác thực | **T** | Chạy Auto Test login/logout |
 | PERM-001...007 | Phân quyền | **D** | Demo phân quyền Admin/Sale |
-| CONT (Pick Flow)| Khách hàng | **D & T** | Demo realtime + Test lock concurrency |
+| CONT (Pick Flow) | Khách hàng | **D & T** | Demo realtime + Test lock concurrency |
 | NOTI (Zalo) | Thông báo | **T** | Test gửi tin thực tế |
-| Security (Encrypt)| Bảo mật | **I** | Review Database Schema & Code |
+| Security (Encrypt) | Bảo mật | **I** | Review Database Schema & Code |
 | Performance | Hiệu năng | **A & T** | Load Test 200 users |
 | RPO/RTO | Backup | **D** | Diễn tập khôi phục backup |
 
@@ -731,7 +814,7 @@ Quy định phương pháp nghiệm thu cho các yêu cầu trong Section 4 và 
 Bằng việc ký xác nhận dưới đây, khách hàng đồng ý với các yêu cầu được mô tả trong tài liệu này.
 
 | Thông tin | Chi tiết |
-|-----------|----------|
+| :--- | :--- |
 | Họ và tên | ___________________________ |
 | Chức vụ | ___________________________ |
 | Ngày ký | ___________________________ |

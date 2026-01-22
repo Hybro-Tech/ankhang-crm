@@ -7,7 +7,7 @@
 
 ---
 
-## 📅 Timeline Tổng Quan
+## Timeline Tổng Quan
 
 ```mermaid
 gantt
@@ -37,7 +37,7 @@ gantt
 
 ---
 
-## 📝 Chi Tiết Các Sprint (Updated)
+## Chi Tiết Các Sprint
 
 ### Sprint 1: Foundation (Khởi động)
 **Thời gian:** 19/01/2026 - 23/01/2026 (1 tuần)
@@ -53,11 +53,10 @@ Tuần đầu tiên tập trung setup hạ tầng để team có thể bắt đ�
 
 Hoàn thiện các tính năng quản trị tổ chức để demo trước khi nghỉ Tết.
 - **Authorization:** Phân quyền động (CanCanCan).
-- **Organization:** Quản lý Teams, Employees.
-- **Basic Contacts:** CRUD Khách hàng cơ bản (nếu kịp).
-- **Output:** Hệ thống quản trị vận hành được (Admin/Manager/Sale).
+- **Organization:** Quản lý Teams, Employees (RBAC).
+- **Output:** Hệ thống quản trị vận hành được (Admin/Manager/Sale accounts ready).
 
-### 🧧 Giai đoạn Nghỉ Tết (10/02 - 23/02)
+### Giai đoạn Nghỉ Tết (10/02 - 23/02)
 - Server Development vẫn duy trì (demo mode).
 - Team nghỉ ngơi.
 
@@ -67,6 +66,7 @@ Hoàn thiện các tính năng quản trị tổ chức để demo trước khi 
 Tập trung vào nghiệp vụ lõi Sales.
 - **Contacts:** Quản lý khách hàng chuyên sâu.
 - **Pick Mechanism:** Sales nhận khách (Critical).
+- **Pick Rules Engine:** Cấu hình giới hạn Pick theo loại nhu cầu (Max/Day).
 - **Deals:** Quản lý cơ hội bán hàng.
 - **Output:** Flow Guest → Lead → Deal hoàn thiện.
 
@@ -89,11 +89,24 @@ Dành riêng cho việc kiểm thử, sửa lỗi theo feedback khách hàng và
 
 ---
 
-## ⚠️ Rủi ro & Giải pháp (Risk Management)
+## Giải thích thuật ngữ (Glossary)
+
+| Thuật ngữ | Viết đầy đủ | Giải thích |
+|-----------|-------------|------------|
+| **MVP** | Minimum Viable Product | Sản phẩm khả dụng tối thiểu (Phiên bản đầu tiên chạy được các tính năng cốt lõi). |
+| **RBAC** | Role-Based Access Control | Cơ chế phân quyền dựa trên vai trò (Ví dụ: Admin, Sale, CSKH...). |
+| **CRUD** | Create, Read, Update, Delete | 4 thao tác cơ bản với dữ liệu: Tạo mới, Xem, Cập nhật, Xóa. |
+| **ERD** | Entity Relationship Diagram | Sơ đồ cấu trúc dữ liệu và mối quan hệ giữa các bảng. |
+| **UAT** | User Acceptance Testing | Giai đoạn khách hàng kiểm thử và nghiệm thu sản phẩm. |
+| **ZNS** | Zalo Notification Service | Dịch vụ gửi tin nhắn chăm sóc khách hàng tự động qua Zalo OA. |
+
+---
+
+## Rủi ro & Giải pháp (Risk Management)
 
 | Rủi ro | Mức độ | Giải pháp |
 |--------|--------|-----------|
-| **Nghỉ Tết làm gián đoạn mạch code** | Trung bình | Hoàn thành dứt điểm Phase 1 trước Tết. Viết document kỹ để bắt nhịp lại nhanh sau Tết. |
+| **Nghỉ Tết làm gián đoạn mạch code** | Trung bình | Hoàn thành dứt điểm Module Admin/RBAC trước Tết. Document kỹ để bắt nhịp lại nhanh sau Tết. |
 | **Zalo OA duyệt template lâu** | Cao | Đăng ký template ngay từ tuần đầu tiên của dự án. |
 | **Phát sinh requirement mới** | Cao | Chốt cứng scope vào ngày 31/01. Mọi thay đổi sau đó sẽ đẩy sang Phase 2 (Maintenance). |
 

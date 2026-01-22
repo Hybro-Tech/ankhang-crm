@@ -1,8 +1,8 @@
 # 📋 LawCRM - Requirements (Confirmed)
 
-> **Phiên bản**: 2.0 (Cập nhật theo yêu cầu mới)  
-> **Ngày cập nhật**: 2026-01-19  
-> **Trạng thái**: ✅ Partially Confirmed
+> **Phiên bản**: 2.1 (Sync với SRS v1.1.1)  
+> **Ngày cập nhật**: 2026-01-23  
+> **Trạng thái**: ✅ Fully Synced
 
 ---
 
@@ -54,6 +54,7 @@ flowchart TB
 | Phân quyền (dynamic roles) | `roles.*`, `permissions.*` |
 | Quản lý Sản phẩm/Hợp đồng | `products.*` |
 | Quản lý Coupons | `coupons.*` |
+| Re-assign Contact | `contacts.reassign` | ✅ (New) Chuyển khách giữa các Sales |
 | Xem Dashboard/Reports | `reports.*` |
 | Xem tất cả Logs | `logs.view_all` |
 
@@ -157,15 +158,14 @@ flowchart TD
 | created_at | datetime | Auto | Ngày giờ tạo |
 
 #### 4.1.1 Loại Nhu Cầu (`need_type`)
-| Value | Display |
-|-------|---------|
-| `tldn_new` | TLDN Mới (Thành lập doanh nghiệp) |
-| `info_change` | Thay đổi thông tin |
-| `sub_license` | Giấy phép con |
-| `accounting` | Kế toán |
-| `fdi` | FDI (Đầu tư nước ngoài) |
-| `ip` | SHTT (Sở hữu trí tuệ) |
-| `other` | Khác |
+> **Dynamic**: Admin có thể thêm/sửa/xóa và cấu hình **Max Pick/Day**.
+
+| Value | Display | Max Pick/Day (Default) |
+|-------|---------|------------------------|
+| `tldn_new` | TLDN Mới (Thành lập doanh nghiệp) | 5 |
+| `info_change` | Thay đổi thông tin | 10 |
+| `accounting` | Kế toán | 2 |
+| ... | ... | ... |
 
 #### 4.1.2 Nguồn Liên Hệ (`source`)
 | Value | Display |
@@ -189,10 +189,9 @@ flowchart TD
 ```mermaid
 stateDiagram-v2
     [*] --> NEW: Tổng đài tạo
-    NEW --> PICKED: Sale pick (5p/lần)
-    PICKED --> TIEM_NANG: Đang trao đổi
-    TIEM_NANG --> CHOT: Chốt thành công
-    TIEM_NANG --> FAIL: Thất bại
+    NEW --> PROCESSING: Sale pick (5p/lần)
+    PROCESSING --> CHOT: Chốt thành công
+    PROCESSING --> FAIL: Thất bại
     FAIL --> CARING_L1: CSKH Layer 1
     CARING_L1 --> CHOT: Chăm sóc thành công
     CARING_L1 --> CARING_L2: Chuyển Layer 2
@@ -203,13 +202,12 @@ stateDiagram-v2
 | Status | Display | Mô tả |
 |--------|---------|-------|
 | `new` | Mới | Vừa tạo, chờ Sales pick |
-| `picked` | Đã nhận | Sales đã pick |
-| `tiem_nang` | Tiềm năng | Đang trao đổi, chưa chốt |
-| `chot` | Chốt | ✅ Chốt sale thành công |
-| `fail` | Thất bại | Sales không chốt được → chuyển CSKH |
+| `processing` | ⏳ Đang tư vấn | Sales đã pick và đang chăm sóc (Gộp Picked + Tiềm năng) |
+| `chot` | ✅ Chốt | Chốt sale thành công |
+| `fail` | ❌ Thất bại | Sales không chốt được → chuyển CSKH |
 | `caring_l1` | CSKH Layer 1 | CSKH chăm sóc lần 1 |
 | `caring_l2` | CSKH Layer 2 | CSKH chăm sóc lần 2 |
-| `closed` | Đóng | Không thể chốt, kết thúc |
+| `closed` | 🔒 Đóng | Không thể chốt, kết thúc |
 
 > [!TIP]
 > **Mở rộng**: Có thể thêm nhiều layer CSKH (L3, L4...) để quay vòng liên hệ, hạn chế lãng phí contacts.
@@ -219,9 +217,10 @@ stateDiagram-v2
 | Rule | Giá trị | Ghi chú |
 |------|---------|---------|
 | Cooldown | **5 phút** | 1 Sale chỉ pick được 1 contact trong 5 phút |
-| Giới hạn đang xử lý | **Không giới hạn** | Sale có thể xử lý nhiều contacts cùng lúc |
-| Khi pick | **Chuyển status** | Contact từ `new` → `picked`, gán `assigned_to` = Sale |
-| Sau pick | **Không ẩn** | Contact vẫn hiển thị nhưng status đã đổi |
+| Dynamic Lock | **Theo loại nhu cầu** | Check Max Limit/ngày (VD: Kế toán < 2). Cấu hình bởi Admin. |
+| Admin Override | **Re-assign** | Admin có quyền chuyển contact đang xử lý cho Sale khác. |
+| Khi pick | **Chuyển status** | Contact từ `new` → `processing`, gán `assigned_to` = Sale |
+| Sau pick | **Lock row** | Sale khác thấy contact nhưng nút Pick bị disable/ẩn |
 
 ### 4.4 Lịch Sử Trao Đổi (Interaction History) ✅ New
 
