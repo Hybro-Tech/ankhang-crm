@@ -16,3 +16,22 @@
 
 4. [BẢO VỆ DỮ LIỆU]:
    - Trước khi sửa đè một file quan trọng, hãy tạo bản sao lưu (backup) của file đó.
+
+# 🚀 PROJECT-SPECIFIC RULES (Rails 7.1 + Hotwire)
+
+## Backend (Rails)
+- **N+1 Prevention**: Always use `.includes()`, `.preload()`, or `.eager_load()` when accessing associations in a loop.
+- **Service Objects**: Move complex business logic (>10 lines) from Controllers to `app/services/`.
+- **Fail Safe**: Use `save!` and `create!` in background jobs or atomic transactions to ensure explicit failures.
+- **Security**: Never interpolate strings into SQL. Use parameterized queries (`where("name = ?", name)`).
+
+## Frontend (Hotwire + Tailwind)
+- **CSS Strategy**: Use Tailwind utility classes directly in HTML/ERB. Avoid `@apply` in CSS files unless creating a highly reusable primitive.
+- **Turbo First**: Prefer `Turbo Frames` and `Turbo Stream` updates over custom `fetch()` calls.
+- **Stimulus naming**: Use strict kebab-case for controller names (`data-controller="search-bar"`) and targets (`data-search-bar-target="input"`).
+- **Icons**: Use SVG icons (Heroicons/Lucide) inline or via helper/component. Do not add `font-awesome` or image-based icons.
+
+## Testing (RSpec)
+- **FactoryBot**: Use factories instead of fixtures.
+- **Lazy Loading**: Prefer `let` and `subject` over instance variables (`@user`) in specs.
+- **Integration**: Feature specs must use `js: true` (Capybara) only when testing dynamic JS behavior.

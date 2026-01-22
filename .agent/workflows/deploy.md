@@ -1,8 +1,8 @@
 ---
-description: Deployment command for production releases. Pre-flight checks and deployment execution.
+description: Deployment command for production releases. Pre-flight checks and deployment execution for Rails apps.
 ---
 
-# /deploy - Production Deployment
+# /deploy - Production Deployment (Rails)
 
 $ARGUMENTS
 
@@ -10,7 +10,7 @@ $ARGUMENTS
 
 ## Purpose
 
-This command handles production deployment with pre-flight checks, deployment execution, and verification.
+This command handles production deployment with pre-flight checks, deployment execution, and verification for the Ruby on Rails application.
 
 ---
 
@@ -19,7 +19,7 @@ This command handles production deployment with pre-flight checks, deployment ex
 ```
 /deploy            - Interactive deployment wizard
 /deploy check      - Run pre-deployment checks only
-/deploy preview    - Deploy to preview/staging
+/deploy preview    - Deploy to staging/preview
 /deploy production - Deploy to production
 /deploy rollback   - Rollback to previous version
 ```
@@ -34,19 +34,19 @@ Before any deployment:
 ## 🚀 Pre-Deploy Checklist
 
 ### Code Quality
-- [ ] No TypeScript errors (`npx tsc --noEmit`)
-- [ ] ESLint passing (`npx eslint .`)
-- [ ] All tests passing (`npm test`)
+- [ ] No Rubocop offenses (`bundle exec rubocop`)
+- [ ] All RSpec tests passing (`bundle exec rspec`)
+- [ ] No Pending Migrations (`bundle exec rails db:migrate:status`)
 
 ### Security
-- [ ] No hardcoded secrets
-- [ ] Environment variables documented
-- [ ] Dependencies audited (`npm audit`)
+- [ ] Dependencies audited (`bundle audit`)
+- [ ] Master Key present (if using credentials)
+- [ ] Environment variables documented (.env.example)
 
 ### Performance
-- [ ] Bundle size acceptable
-- [ ] No console.log statements
-- [ ] Images optimized
+- [ ] Assets precompiled locally (optional verification)
+- [ ] Database indexes reviewed
+- [ ] N+1 queries checked (Bullet)
 
 ### Documentation
 - [ ] README updated
@@ -78,13 +78,13 @@ Before any deployment:
          ▼
 ┌─────────────────┐
 │  Build          │
-│  application    │
+│  Docker Image   │
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Deploy to      │
-│  platform       │
+│  Push &         │
+│  Migrate DB     │
 └────────┬────────┘
          │
          ▼
@@ -109,24 +109,25 @@ Before any deployment:
 ## 🚀 Deployment Complete
 
 ### Summary
-- **Version:** v1.2.3
+- **Version:** v1.2.3 (Git SHA)
 - **Environment:** production
-- **Duration:** 47 seconds
-- **Platform:** Vercel
+- **Duration:** 2 mins 15s
+- **Platform:** Docker / Kamal / Cloud
 
-### URLs
-- 🌐 Production: https://app.example.com
-- 📊 Dashboard: https://vercel.com/project
+### Status
+- 🌐 Application: Online (200 OK)
+- 🗄️ Database: Migrated
+- 🔄 Background Jobs: Sidekiq Running
 
 ### What Changed
-- Added user profile feature
-- Fixed login bug
-- Updated dependencies
+- Added User Authentication
+- Fixed Invoice Generation bug
+- Updated Gems
 
 ### Health Check
-✅ API responding (200 OK)
-✅ Database connected
-✅ All services healthy
+✅ Homepage accessible
+✅ Asset host reachable
+✅ Redis connected
 ```
 
 ### Failed Deploy
@@ -135,21 +136,22 @@ Before any deployment:
 ## ❌ Deployment Failed
 
 ### Error
-Build failed at step: TypeScript compilation
+Migration failed at step: 20240120120000_create_users.rb
 
 ### Details
 ```
-error TS2345: Argument of type 'string' is not assignable...
+StandardError: An error has occurred, this and all later migrations canceled:
+Mysql2::Error: Table 'users' already exists
 ```
 
 ### Resolution
-1. Fix TypeScript error in `src/services/user.ts:45`
-2. Run `npm run build` locally to verify
-3. Try `/deploy` again
+1. Check database state
+2. Fix migration file
+3. Run `/deploy` again
 
 ### Rollback Available
-Previous version (v1.2.2) is still active.
-Run `/deploy rollback` if needed.
+Previous image is tagged `lawcrm:previous`.
+Run `/deploy rollback` to revert.
 ```
 
 ---
@@ -158,10 +160,10 @@ Run `/deploy rollback` if needed.
 
 | Platform | Command | Notes |
 |----------|---------|-------|
-| Vercel | `vercel --prod` | Auto-detected for Next.js |
-| Railway | `railway up` | Needs Railway CLI |
-| Fly.io | `fly deploy` | Needs flyctl |
-| Docker | `docker compose up -d` | For self-hosted |
+| Docker (Generic) | `docker compose up -d --build` | For single server VPS |
+| Kamal | `kamal deploy` | Recommended for multi-server |
+| Heroku | `git push heroku main` | Using Ruby buildpack |
+| Render | `git push render main` | Auto-deploy |
 
 ---
 
@@ -170,7 +172,6 @@ Run `/deploy rollback` if needed.
 ```
 /deploy
 /deploy check
-/deploy preview
 /deploy production --skip-tests
 /deploy rollback
 ```

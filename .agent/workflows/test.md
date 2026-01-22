@@ -1,8 +1,8 @@
 ---
-description: Test generation and test running command. Creates and executes tests for code.
+description: Test generation and test running command using RSpec.
 ---
 
-# /test - Test Generation and Execution
+# /test - RSpec Test Generation and Execution
 
 $ARGUMENTS
 
@@ -10,17 +10,17 @@ $ARGUMENTS
 
 ## Purpose
 
-This command generates tests, runs existing tests, or checks test coverage.
+This command generates RSpec tests, runs existing specs, or checks test coverage for the Rails application.
 
 ---
 
 ## Sub-commands
 
 ```
-/test                - Run all tests
-/test [file/feature] - Generate tests for specific target
-/test coverage       - Show test coverage report
-/test watch          - Run tests in watch mode
+/test                - Run all specs (bundle exec rspec)
+/test [file]         - Generate/Run specs for specific file or model
+/test coverage       - Show coverage report (SimpleCov)
+/test failures       - Run only failing tests (--only-failures)
 ```
 
 ---
@@ -32,20 +32,20 @@ This command generates tests, runs existing tests, or checks test coverage.
 When asked to test a file or feature:
 
 1. **Analyze the code**
-   - Identify functions and methods
-   - Find edge cases
-   - Detect dependencies to mock
+   - Identify Model/Controller/Service responsibilities
+   - Find edge cases and validations
+   - Detect ActiveRecord associations
 
-2. **Generate test cases**
-   - Happy path tests
-   - Error cases
-   - Edge cases
-   - Integration tests (if needed)
+2. **Generate RSpec cases**
+   - **Models**: Validations, associations, scopes, methods
+   - **Controllers**: Requests, status codes, params, templating
+   - **Services**: Business logic, happy path, error handling
+   - **System**: User flows (Capybara)
 
 3. **Write tests**
-   - Use project's test framework (Jest, Vitest, etc.)
-   - Follow existing test patterns
-   - Mock external dependencies
+   - Use `FactoryBot` for data setup
+   - Use `webmock` or `VCR` for external APIs
+   - Follow strict RSpec describe/context/it hierarchy
 
 ---
 
@@ -54,41 +54,41 @@ When asked to test a file or feature:
 ### For Test Generation
 
 ```markdown
-## 🧪 Tests: [Target]
+## 🧪 RSpec: [Target]
 
 ### Test Plan
-| Test Case | Type | Coverage |
-|-----------|------|----------|
-| Should create user | Unit | Happy path |
-| Should reject invalid email | Unit | Validation |
-| Should handle db error | Unit | Error case |
+| Context | Example | Type |
+|---------|---------|------|
+| validation | requires email presence | Model |
+| #calculate | returns total with tax | Service |
+| GET /index | shows list of items | Request |
 
-### Generated Tests
+### Generated Spec
+`spec/models/[file]_spec.rb`
 
-`tests/[file].test.ts`
-
-[Code block with tests]
+[Code block with Ruby code]
 
 ---
 
-Run with: `npm test`
+Run with: `bundle exec rspec spec/models/[file]_spec.rb`
 ```
 
 ### For Test Execution
 
 ```
-🧪 Running tests...
+🧪 Running specs...
 
-✅ auth.test.ts (5 passed)
-✅ user.test.ts (8 passed)
-❌ order.test.ts (2 passed, 1 failed)
+Randomized with seed 12345
 
-Failed:
-  ✗ should calculate total with discount
-    Expected: 90
-    Received: 100
+Consumer
+  validations
+    ✓ requires a name (0.02s)
+    ✓ requires a valid email (0.01s)
+  #total_orders
+    ✓ returns sum of order amounts (0.05s)
 
-Total: 15 tests (14 passed, 1 failed)
+Finished in 0.12345 seconds (files took 1.5 seconds to load)
+3 examples, 0 failures
 ```
 
 ---
@@ -96,49 +96,75 @@ Total: 15 tests (14 passed, 1 failed)
 ## Examples
 
 ```
-/test src/services/auth.service.ts
+/test app/models/user.rb
 /test user registration flow
 /test coverage
-/test fix failed tests
+/test fix failed specs
 ```
 
 ---
 
 ## Test Patterns
 
-### Unit Test Structure
+### Model Spec Structure
 
-```typescript
-describe('AuthService', () => {
-  describe('login', () => {
-    it('should return token for valid credentials', async () => {
-      // Arrange
-      const credentials = { email: 'test@test.com', password: 'pass123' };
-      
-      // Act
-      const result = await authService.login(credentials);
-      
-      // Assert
-      expect(result.token).toBeDefined();
-    });
+```ruby
+require 'rails_helper'
 
-    it('should throw for invalid password', async () => {
-      // Arrange
-      const credentials = { email: 'test@test.com', password: 'wrong' };
-      
-      // Act & Assert
-      await expect(authService.login(credentials)).rejects.toThrow('Invalid credentials');
-    });
-  });
-});
+RSpec.describe User, type: :model do
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:email) }
+    it { is_expected.to validate_uniqueness_of(:email) }
+  end
+
+  describe 'associations' do
+    it { is_expected.to have_many(:orders) }
+  end
+
+  describe '#full_name' do
+    let(:user) { build(:user, first_name: 'John', last_name: 'Doe') }
+
+    it 'returns the concatenated name' do
+      expect(user.full_name).to eq 'John Doe'
+    end
+  end
+end
+```
+
+### Service Spec Structure
+
+```ruby
+require 'rails_helper'
+
+RSpec.describe CalculateTaxService do
+  subject(:service) { described_class.new(amount) }
+
+  describe '#call' do
+    context 'when amount is positive' do
+      let(:amount) { 100 }
+
+      it 'returns tax amount' do
+        expect(service.call).to eq 10
+      end
+    end
+
+    context 'when amount is negative' do
+      let(:amount) { -50 }
+
+      it 'raises error' do
+        expect { service.call }.to raise_error(ArgumentError)
+      end
+    end
+  end
+end
 ```
 
 ---
 
 ## Key Principles
 
-- **Test behavior not implementation**
-- **One assertion per test** (when practical)
-- **Descriptive test names**
-- **Arrange-Act-Assert pattern**
-- **Mock external dependencies**
+- **Use FactoryBot** instead of fixtures
+- **One expectation per example**
+- **Use `let` and `subject`** for lazy evaluation
+- **Mock external services** (never hit real APIs in tests)
+- **Test behavior, not implementation**
