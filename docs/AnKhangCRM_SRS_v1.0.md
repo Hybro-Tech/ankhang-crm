@@ -91,19 +91,7 @@ Tài liệu này mô tả chi tiết các yêu cầu chức năng và phi chức
 
 ### 2.2 Luồng nghiệp vụ chính
 
-```mermaid
-graph TD
-    A[Khách hàng tiềm năng] -->|Liên hệ qua Zalo/FB/Hotline| B(Tổng đài tiếp nhận)
-    B -->|Tạo Contact trên CRM| C{Phân loại nhu cầu}
-    C -->|Thành lập DN| D[Sale Team HN/HCM]
-    C -->|Kế toán| E[Sale Team Kế toán]
-    D -->|Pick Contact| F(Sale xử lý)
-    E -->|Pick Contact| F
-    F -->|Tư vấn & Chốt deal| G{Kết quả}
-    G -->|Thành công| H[Chốt Deal & Ký HĐ]
-    G -->|Thất bại| I[Chuyển CSKH chăm sóc lại]
-    H -->|Thanh toán| J[Hoàn tất & CSKH sau bán]
-```
+![Luồng nghiệp vụ chính](images/business_workflow.png)
 
 ---
 
@@ -167,30 +155,7 @@ graph TD
 
 **Mô hình:**
 
-```mermaid
-classDiagram
-    class User {
-        +username
-        +email
-        +has_role(role_name)
-    }
-    class Role {
-        +name
-        +is_system
-    }
-    class Permission {
-        +subject
-        +action
-    }
-    class UserPermission {
-        +granted: boolean
-    }
-
-    User "1" --> "*" Role : has_many
-    Role "1" --> "*" Permission : has_many
-    User "1" --> "*" UserPermission : overrides
-    UserPermission --> "1" Permission : links_to
-```
+![Mô hình phân quyền](images/permission_class.png)
 
 | ID | Yêu cầu | Ưu tiên | Mô tả |
 |----|---------|---------|-------|
@@ -256,20 +221,7 @@ classDiagram
 
 #### 4.3.4 Luồng trạng thái
 
-```mermaid
-stateDiagram-v2
-    [*] --> Mới: Tổng đài tạo
-    Mới --> Đã_Nhận: Sale Pick
-    Đã_Nhận --> Tiềm_Năng: Sale tư vấn
-    Tiềm_Năng --> Chốt: Khách đồng ý
-    Tiềm_Năng --> Thất_Bại: Khách từ chối
-    Thất_Bại --> CSKH_L1: Chuyển CSKH xử lý
-    CSKH_L1 --> Tiềm_Năng: Khách quan tâm lại
-    CSKH_L1 --> CSKH_L2: Vẫn từ chối
-    CSKH_L2 --> Đóng: Close Contact
-    Chốt --> [*]
-    Đóng --> [*]
-```
+![Luồng trạng thái](images/contact_status.png)
 
 | Trạng thái | Mô tả | Người thay đổi |
 |------------|-------|----------------|
@@ -388,25 +340,7 @@ Khi khách hàng chuyển sang "Chốt", tạo Deal:
 
 **Luồng sử dụng:**
 
-```mermaid
-sequenceDiagram
-    participant Admin
-    participant System
-    participant Sale
-    participant Customer
-
-    Admin->>System: Tạo Coupon (Code: SALE2026, -20%)
-    Admin->>System: Gán Coupon cho Sale A
-    
-    Sale->>System: Tạo Deal cho Khách
-    Sale->>System: Chọn Coupon "SALE2026"
-    System->>System: Kiểm tra quyền sở hữu Coupon
-    System->>System: Tính toán tổng tiền sau giảm
-    
-    Sale->>Customer: Báo giá đã giảm
-    Customer->>Sale: Đồng ý chốt
-    Sale->>System: Lưu Deal
-```
+![Luồng sử dụng Coupon](images/coupon_sequence.png)
 
 ---
 
