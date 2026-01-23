@@ -1,0 +1,56 @@
+# ============================================
+# AnKhangCRM Pre-commit Hooks (Lefthook)
+# ============================================
+# Installation: gem install lefthook && lefthook install
+# ============================================
+
+pre-commit:
+  parallel: true
+  commands:
+    # ==========================================
+    # RuboCop Lint (only staged files)
+    # ==========================================
+    rubocop:
+      glob: "*.{rb,rake,ru}"
+      exclude: "db/schema.rb|db/migrate/*"
+      run: bundle exec rubocop --force-exclusion {staged_files}
+      stage_fixed: true  # Auto-stage autocorrected files
+
+    # ==========================================
+    # ERB Lint (view templates)
+    # ==========================================
+    erb-lint:
+      glob: "*.erb"
+      run: bundle exec erblint {staged_files}
+      skip: true  # Enable khi cài erb_lint gem
+
+    # ==========================================
+    # Security: Check for secrets
+    # ==========================================
+    secrets:
+      run: git diff --cached --diff-filter=ACM | grep -iE "(password|secret|api_key|token)\s*[:=]" && echo "⚠️  Possible secrets detected!" && exit 1 || exit 0
+
+    # ==========================================
+    # Prevent debug code
+    # ==========================================
+    no-debug:
+      glob: "*.rb"
+      run: |
+        git diff --cached --diff-filter=ACM -- {staged_files} | grep -E "(binding\.pry|byebug|debugger|puts\s+['\"])" && echo "⚠️  Debug code found!" && exit 1 || exit 0
+
+pre-push:
+  parallel: true
+  commands:
+    # ==========================================
+    # Run RSpec before push
+    # ==========================================
+    rspec:
+      run: bundle exec rspec --fail-fast
+      skip: true  # Enable khi muốn chạy tests trước push
+
+    # ==========================================
+    # Security scan
+    # ==========================================
+    brakeman:
+      run: bundle exec brakeman -q --no-pager
+      skip: true  # Enable khi cài brakeman gem

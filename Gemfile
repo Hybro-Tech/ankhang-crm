@@ -62,6 +62,7 @@ end
 
 group :development do
   gem "bullet"                         # N+1 detection
+  gem "lefthook", require: false       # Git hooks manager
   gem "rubocop-rails", require: false  # Linting
   gem "web-console"
 end
