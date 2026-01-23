@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   devise_for :users
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo
-  
+
   # Root path - temporarily set to demo for testing
   root "demo#index"
 

@@ -1,0 +1,5 @@
+vi:
+  demo:
+    success: "Đây là thông báo thành công mẫu!"
+    error: "Đây là thông báo lỗi mẫu!"
+    warning: "Đây là thông báo cảnh báo mẫu!"

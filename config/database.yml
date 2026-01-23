@@ -6,11 +6,11 @@ default: &default
   username: <%= ENV.fetch("DB_USER", "root") %>
   password: <%= ENV.fetch("DB_PASSWORD", "password") %>
   host: <%= ENV.fetch("DB_HOST", "db") %>
-  ssl_mode: disabled
 
 development:
   <<: *default
   database: ankhang_crm_development
+  ssl_mode: disabled
 
 test:
   <<: *default

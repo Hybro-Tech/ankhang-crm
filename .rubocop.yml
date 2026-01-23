@@ -2,7 +2,7 @@
 # AnKhangCRM RuboCop Configuration
 # ============================================
 
-require:
+plugins:
   - rubocop-rails
 
 AllCops:
@@ -37,6 +37,7 @@ Metrics/BlockLength:
     - 'config/**/*'
     - 'spec/**/*'
     - 'Gemfile'
+    - 'db/queue_schema.rb'
 
 Metrics/MethodLength:
   Max: 20
