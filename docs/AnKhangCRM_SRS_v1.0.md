@@ -7,10 +7,10 @@
 | :--- | :--- |
 | **Tên dự án** | AnKhangCRM - Hệ thống Quản lý Khách hàng |
 | **Khách hàng** | Luật An Khang |
-| **Phiên bản** | 1.1 |
-| **Ngày lập** | 23/01/2026 |
+| **Phiên bản** | 1.2 |
+| **Ngày lập** | 24/01/2026 |
 | **Người lập** | Hybro Technology |
-| **Trạng thái** | Chờ xác nhận khách hàng |
+| **Trạng thái** | Đã xác nhận (Design V3) |
 
 ---
 
@@ -205,8 +205,8 @@ classDiagram
 | :--- | :--- |
 | Super Admin | Tất cả |
 | Tổng Đài | contacts.create, contacts.view, notifications.receive |
-| Sale | contacts.view/pick/edit/update_status, deals.*, notifications.receive |
-| CSKH | contacts.view_failed/edit/update_status, zalo.send, notifications.receive |
+| Sale | contacts.view/pick/edit/update_status, deals.*, notifications.receive, dashboard.view_sales |
+| CSKH | contacts.view_failed/edit/update_status, zalo.send, notifications.receive, contacts.request_reassign (Phase 2) |
 
 ---
 
@@ -218,7 +218,9 @@ classDiagram
 | :--- | :--- | :--- |
 | Mã liên hệ | Tự động | Hệ thống tự sinh (VD: KH2026-001) |
 | Tên khách hàng | &#9989; | Thường là tên Zalo |
-| Số điện thoại | &#9989; | Số Zalo/điện thoại |
+| Số điện thoại | &#9989; | Số Zalo/điện thoại (Check trùng lặp ngay khi nhập) |
+| Zalo Link | | Link profile Zalo (nếu có) |
+| Zalo QR | | Ảnh QR Code (Upload/Paste) |
 | Email | | Email liên hệ |
 | Loại nhu cầu | &#9989; | Xem bảng bên dưới |
 | Nguồn liên hệ | &#9989; | Xem bảng bên dưới |
@@ -271,60 +273,46 @@ stateDiagram-v2
 
 | Trạng thái | Mô tả | Người thay đổi |
 | :--- | :--- | :--- |
-| Mới | Vừa tạo, chờ pick | Tự động |
-| Đang tư vấn | Sale đã pick và đang chăm sóc | Hệ thống (sau khi Pick) |
-| Chốt | Ký hợp đồng thành công (Tạo Deal) | Sale |
+| Mới | Vừa tạo, chưa ai nhận | Tự động |
+| Tiềm năng | Khách hàng quan tâm nhưng chưa chốt ngay (Pending) | Sale |
+| Đang tư vấn | Sale đã pick và đang chăm sóc (Active) | Hệ thống (sau khi Pick) |
+| Chốt Mới | Ký hợp đồng thành công trong tháng hiện tại | Sale |
+| Chốt Cũ | Ký hợp đồng thành công (từ khách tồn tháng trước) | Sale |
 | Thất bại | Không chốt được, chuyển qua CSKH | Sale |
 | CSKH L1 | Chăm sóc lần 1 (Sau khi Fail) | Hệ thống/CSKH |
 | CSKH L2 | Chăm sóc lần 2 | CSKH |
+| Tiềm năng cũ | Khách tiềm năng chuyển sang từ tháng trước | Hệ thống (Cronjob) |
 | Đóng | Kết thúc, không còn tiềm năng | CSKH |
 
-#### 4.3.5 Cơ chế Pick (Chi tiết Use Case)
+#### 4.3.5 Cơ chế Smart Routing (Phân bổ thông minh) - NEW v1.2
 
-Đây là tính năng quan trọng nhất, yêu cầu xử lý đồng thời (concurrency) cao để đảm bảo công bằng.
+Cơ chế "Pick" truyền thống được thay thế bằng **Smart Routing Engine** để đảm bảo công bằng và tốc độ xử lý.
 
-**Quy tắc nghiệp vụ:**
+**Luồng phân bổ (Routing Logic):**
 
-1.  **Quyền ưu tiên:** Ai bấm trước được trước (First-Come, First-Served).
-2.  **Locking:** Khi 1 Sale bấm Pick, hệ thống phải lock record đó ngay lập tức để Sale khác không pick được.
-3.  **Cooldown:** Sau khi pick thành công, Sale phải đợi **5 phút** mới được pick tiếp (trừ khi được Admin override).
-4.  **Auto Assign:** Contact sau khi pick sẽ tự động gán `Team` theo Team của Sale đó.
-5.  **Dynamic Limits:** Kiểm tra giới hạn số lượng contact được pick trong ngày dựa trên "Loại nhu cầu" (VD: Kế toán max 2, Thành lập max 5).
+1.  **Trong giờ hành chính (T2-T6: 8h00-17h30, T7: 8h00-11h30):**
+    *   **Bước 1:** Hệ thống tìm các Sale đang online thuộc Team phù hợp (dựa trên Loại nhu cầu).
+    *   **Bước 2:** Chọn ngẫu nhiên (Random/Round-Robin) 1 Sale để "mời" (Offer).
+    *   **Bước 3:** Hiển thị thông báo (Popup/Sound) cho Sale đó.
+    *   **Bước 4:** Sale có **2 phút** để bấm "Nhận".
+        *   *Nếu Nhận:* Contact chuyển trạng thái "Đang tư vấn", gán cho Sale.
+        *   *Nếu Từ chối hoặc Hết giờ:* Hệ thống đánh dấu "Missed", chọn tiếp Sale ngẫu nhiên khác trong danh sách.
+    *   **Lưu ý:** Ngày thứ 7 chỉ phân bổ cho danh sách nhân viên đăng ký đi làm ("Saturday Roster").
 
-**Kịch bản chi tiết:**
+2.  **Ngoài giờ hành chính:**
+    *   Hoạt động theo cơ chế **Pool Pick** (Ai bấm trước được trước) cho tất cả nhân viên trong Team.
 
-*   **Pre-conditions (Điều kiện tiên quyết):**
-    *   Contact có trạng thái `MỚI`.
-    *   Sale đang có trạng thái `Active`.
-    *   Sale không trong thời gian Cooldown.
-    *   Sale chưa vượt quá hạn mức handling (Check: Tổng số contact loại X đã pick hôm nay < Max limit của loại X).
-
-*   **Flow (Luồng xử lý):**
-    1.  Sale nhận thông báo hoặc thấy Contact mới trên Dashboard.
-    2.  Sale bấm nút "Nhận khách" (Pick).
-    3.  Hệ thống kiểm tra Pre-conditions.
-    4.  Hệ thống sử dụng Database Transaction (Row Lock) để lock Contact.
-    5.  Cập nhật Contact: `Status` = `ĐANG TƯ VẤN`, `Assignee` = `Sale ID`, `Picked At` = `Time.now`.
-    6.  Hệ thống trả về Success Message cho Sale.
-    7.  Hệ thống broadcast sự kiện `contact.picked` để ẩn nút Pick đối với các Sale khác (Real-time update UI).
-
-*   **Exception Handling (Xử lý ngoại lệ):**
-    *   *E1: Đã bị người khác pick:* Hiển thị thông báo "Khách hàng này đã được nhận bởi [Tên Sale khác]". Cập nhật lại danh sách.
-    *   *E2: Đang cooldown:* Hiển thị thông báo đếm ngược thời gian còn lại.
-    *   *E3: Lỗi mạng/Server:* Giữ nguyên trạng thái nút, thông báo lỗi kết nối.
-
-*   **Admin Override Flow (Re-assign):**
-    1.  Admin vào chi tiết Contact đang được Sale A giữ.
-    2.  Bấm nút "Chuyển khách" (Re-assign).
-    3.  Chọn Sale B (hoặc trả về Pool chung).
-    4.  Hệ thống cập nhật `Assignee` và ghi log: "Admin transferred contact from Sale A to Sale B".
-    5.  Thông báo cho cả Sale A và Sale B.
+**Quy tắc bổ sung:**
+*   **Websocket Priority:** Thông báo Web Push xuất hiện ngay lập tức (Real-time).
+*   **Re-assign:** Admin có quyền chuyển contact đang giữ bởi Sale A sang Sale B (hoặc trả về Pool).
+*   **CSKH Request:** (Phase 2) CSKH có quyền yêu cầu lấy lại khách nếu Sale chăm sóc kém (Cần Leader duyệt).
 
 #### 4.3.6 Lịch sử trao đổi (Interaction History)
 
 Mỗi lần Sale/CSKH trao đổi với khách cần ghi log:
 - Nội dung trao đổi
 - Loại: Gọi điện / Zalo / Email / Gặp mặt / Khác
+- **Lịch hẹn tiếp theo:** (Datetime, optional) -> Hiển thị trên Dashboard Dashboard.
 - Thời điểm
 - Người trao đổi
 
@@ -429,10 +417,10 @@ sequenceDiagram
 | Trưởng team | Manager (tùy chọn) |
 | Khu vực | Vùng hoạt động |
 
-**Mục đích:**
-- Phân vùng nhân viên để dễ thống kê
-- Mỗi Sale thuộc 1 team
-- Contact được gán team khi Sale pick
+**Cấu trúc Team (v1.2):**
+- Quan hệ **Many-to-Many**: 1 Nhân viên có thể thuộc nhiều Team.
+- Quan hệ Leader: Mỗi nhân viên có 1 Leader cụ thể *trong phạm vi* 1 Team.
+- **Saturday Roster**: Admin/Manager tạo danh sách nhân viên đi làm thứ 7 theo từng tuần để hệ thống Routing phân bổ đúng.
 
 ---
 
