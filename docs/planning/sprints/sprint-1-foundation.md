@@ -236,15 +236,15 @@ Tạo migrations cho Devise users và thông tin nhân viên.
 Tạo migrations cho dynamic permissions theo SRS PERM-001→007.
 
 **Acceptance Criteria:**
-- [ ] `roles` table (name, description, is_system)
-- [ ] `permissions` table (subject, action, description)
-- [ ] `role_permissions` join table
-- [ ] `user_roles` join table
-- [ ] `user_permissions` override table (granted boolean)
+- [x] `roles` table (name, description, is_system)
+- [x] `permissions` table (subject, action, description)
+- [x] `role_permissions` join table
+- [x] `user_roles` join table
+- [x] `user_permissions` override table (granted boolean)
 
 **Test Cases:**
-- [ ] Seed 4 default roles thành công
-- [ ] Seed permissions list thành công
+- [x] Seed 4 default roles thành công
+- [x] Seed permissions list thành công
 
 **Related:** `docs/tinh-nang/phan-quyen/requirements.md`
 
@@ -278,7 +278,7 @@ Tạo migrations cho dynamic permissions theo SRS PERM-001→007.
 | **Story Points** | 2 |
 | **Priority** | 🔴 Critical |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Admin, tôi muốn có 4 roles mặc định sẵn khi deploy.
@@ -287,13 +287,13 @@ Tạo migrations cho dynamic permissions theo SRS PERM-001→007.
 Seed Super Admin, Tổng Đài, Sale, CSKH với permissions theo SRS.
 
 **Acceptance Criteria:**
-- [ ] 4 system roles seeded
-- [ ] All permissions seeded (~15 items)
-- [ ] Role-permission mappings theo SRS Section 3.2
+- [x] 4 system roles seeded
+- [x] All permissions seeded (~15 items)
+- [x] Role-permission mappings theo SRS Section 3.2
 
 **Test Cases:**
-- [ ] `rails db:seed` thành công
-- [ ] Role.find_by(name: 'Super Admin') có tất cả permissions
+- [x] `rails db:seed` thành công
+- [x] Role.find_by(name: 'Super Admin') có tất cả permissions
 
 **Related:** SRS Section 3.2, Section 4.2
 

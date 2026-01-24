@@ -6,6 +6,6 @@ class Permission < ApplicationRecord
 
   has_many :user_permissions, dependent: :destroy
 
-  validates :subject, :action, presence: true
-  validates :action, uniqueness: { scope: :subject }
+  validates :code, presence: true, uniqueness: true
+  validates :name, presence: true
 end

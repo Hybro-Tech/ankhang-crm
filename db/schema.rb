@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_22_040100) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_23_152230) do
   create_table "permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "subject", null: false
-    t.string "action", null: false
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["subject", "action"], name: "index_permissions_on_subject_and_action", unique: true
+    t.string "code", null: false
+    t.string "name"
+    t.string "category"
+    t.index ["code"], name: "index_permissions_on_code", unique: true
   end
 
   create_table "role_permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -177,6 +178,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_040100) do
     t.boolean "granted", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_by_id"
+    t.index ["created_by_id"], name: "index_user_permissions_on_created_by_id"
     t.index ["permission_id"], name: "index_user_permissions_on_permission_id"
     t.index ["user_id", "permission_id"], name: "index_user_permissions_on_user_id_and_permission_id", unique: true
     t.index ["user_id"], name: "index_user_permissions_on_user_id"
@@ -218,6 +221,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_040100) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "user_permissions", "permissions"
   add_foreign_key "user_permissions", "users"
+  add_foreign_key "user_permissions", "users", column: "created_by_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
 end
