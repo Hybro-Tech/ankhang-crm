@@ -1,6 +1,16 @@
-<%# TASK-016: Roles list page based on wireframe docs/ui-design/wireframes/roles.html %>
+<%# TASK-016: Roles list page based on wireframe roles.html %>
 <% content_for :title, "Quản lý Phân quyền" %>
 
+<%# Header & Breadcrumbs %>
+<header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between -mx-6 px-6 mb-6">
+  <nav class="flex items-center text-sm">
+    <span class="text-gray-500">Tổ chức</span>
+    <i class="fa-solid fa-chevron-right text-gray-300 text-xs mx-2"></i>
+    <span class="text-gray-800 font-medium">Phân quyền</span>
+  </nav>
+</header>
+
+<%# Page Title & Action %>
 <div class="flex items-center justify-between mb-6">
   <div>
     <h1 class="text-2xl font-bold text-gray-900">Danh sách vai trò</h1>
@@ -41,7 +51,10 @@
           <td class="px-6 py-4 text-right text-sm font-medium">
             <% if role.is_system? %>
               <span class="text-gray-400 italic text-xs mr-2">Mặc định</span>
-              <span class="text-gray-300"><i class="fa-solid fa-pen-to-square"></i></span>
+              <%= link_to edit_role_path(role), class: "text-[#0B387A] hover:text-blue-900 mr-3" do %>
+                <i class="fa-solid fa-pen-to-square"></i>
+              <% end %>
+              <button class="text-gray-300 cursor-not-allowed" title="Không thể xóa role mặc định"><i class="fa-solid fa-trash"></i></button>
             <% else %>
               <%= link_to edit_role_path(role), class: "text-[#0B387A] hover:text-blue-900 mr-3" do %>
                 <i class="fa-solid fa-pen-to-square"></i>

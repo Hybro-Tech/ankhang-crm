@@ -63,4 +63,27 @@ module RolesHelper
     }
     translations[category] || category
   end
+
+  # Find specific permission for a category and action type
+  # Action types: :view, :create, :edit, :delete, :pick
+  def find_permission_for(category, action_type, permissions)
+    perms = permissions[category] || []
+    
+    suffixes = case action_type
+               when :view
+                 %w[.view .view_own .view_all .receive]
+               when :create
+                 %w[.create .send .export]
+               when :edit
+                 %w[.edit .update .update_status .manage .manage_roles .manage_rules .override]
+               when :delete
+                 %w[.delete]
+               when :pick
+                 %w[.pick]
+               else
+                 []
+               end
+
+    perms.find { |p| suffixes.any? { |s| p.code.end_with?(s) } }
+  end
 end

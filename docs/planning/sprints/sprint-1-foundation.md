@@ -485,6 +485,37 @@ Trang quản lý roles với checkbox matrix.
 
 ---
 
+### TASK-017: Quản lý Nhân viên (Users CRUD)
+| Field | Value |
+|-------|-------|
+| **Epic** | Authorization |
+| **Story Points** | 5 |
+| **Priority** | 🔴 Critical |
+| **Assignee** | |
+| **Status** | 🔄 In Progress |
+
+**User Story:**
+> Là Admin, tôi muốn thêm/sửa/xóa nhân viên và gán quyền (Role) cho họ.
+
+**Description:**
+Xây dựng trang quản lý danh sách nhân viên.
+
+**Acceptance Criteria:**
+- [ ] List employees (search/filter by Team, Role)
+- [ ] Create employee (name, email, password, team, role)
+- [ ] Edit employee info & assignments
+- [ ] Lock/Unlock account
+- [ ] Không cho phép xóa chính mình
+
+**Test Cases:**
+- [ ] Tạo nhân viên mới → Login được ngay
+- [ ] Đổi role nhân viên → Permissions thay đổi login sau
+- [ ] Validate email unique
+
+**Related:** Wireframe `docs/ui-design/wireframes/employees.html`
+
+---
+
 ## 📊 Sprint 1 Summary
 
 | Priority | Count |

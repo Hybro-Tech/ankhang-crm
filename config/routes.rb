@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       post :clone
     end
   end
+  resources :users
 
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo

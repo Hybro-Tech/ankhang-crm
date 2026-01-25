@@ -29,8 +29,9 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     # TASK-011: Allow username for registration
-    devise_parameter_sanitizer.permit(:sign_up, keys: %i[name username])
-    devise_parameter_sanitizer.permit(:account_update, keys: %i[name username phone])
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:login, :password, :remember_me])
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[name username email password password_confirmation])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[name username phone email password password_confirmation current_password])
   end
 
   private

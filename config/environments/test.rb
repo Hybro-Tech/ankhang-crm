@@ -5,7 +5,7 @@
 
 Rails.application.configure do
   # Clear hosts to allow Capybara tests (which use www.example.com by default)
-  config.hosts.clear
+  config.hosts = nil
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.

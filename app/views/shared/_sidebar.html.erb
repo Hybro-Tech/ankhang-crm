@@ -16,28 +16,17 @@
       <span>Tổng quan</span>
     <% end %>
 
-    <%# Kinh doanh section %>
-    <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
-
-    <%= sidebar_link "Khách hàng", "#", "fa-users" %>
-
-    <%# === PHASE 2: Uncomment khi triển khai Phase 2 === %>
-    <%# <%= sidebar_link "Cơ hội bán hàng", "#", "fa-hand-holding-dollar" %> %>
-    <%# <%= sidebar_link "Sản phẩm", "#", "fa-box-open" %> %>
-    <%# <%= sidebar_link "Khuyến mãi", "#", "fa-ticket" %> %>
+    <%# Kinh doanh section (Hidden for Phase 1) %>
+    <%# Kinh doanh section (Hidden for Phase 1) %>
 
     <%# Tổ chức section %>
     <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
 
-    <%= sidebar_link "Đội nhóm", "#", "fa-user-group" %>
-    <%= sidebar_link "Phân quyền", "#", "fa-user-shield" %>
-    <%= sidebar_link "Nhân viên", "#", "fa-id-card" %>
+    <%= sidebar_link "Phân quyền", roles_path, "fa-user-shield" %>
+    <%= sidebar_link "Nhân viên", users_path, "fa-id-card" %>
 
-    <%# Hệ thống section %>
-    <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Hệ thống</div>
-
-    <%= sidebar_link "Báo cáo", "#", "fa-chart-pie" %>
-    <%= sidebar_link "Nhật ký hoạt động", "#", "fa-list-check" %>
+    <%# Hệ thống section (Hidden for Phase 1) %>
+    <%# Hệ thống section (Hidden for Phase 1) %>
   </nav>
 
   <%# Footer %>

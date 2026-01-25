@@ -45,7 +45,7 @@ class RolesController < ApplicationController
     end
 
     if @role.update(role_params)
-      update_permissions unless @role.is_system?
+      update_permissions
       redirect_to roles_path, notice: t('.success')
     else
       @permissions = Permission.grouped_by_category
