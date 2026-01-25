@@ -68,7 +68,7 @@
           </thead>
           <tbody class="divide-y divide-gray-200 bg-white">
             <% permissions.keys.each do |category| %>
-              <tr class="hover:bg-blue-50 transition-colors" data-category="<%= category %>">
+              <tr class="hover:bg-blue-50 transition-colors" data-category="<%= category %>" data-controller="checkbox-select-all">
                 <td class="px-4 py-3">
                   <div class="flex items-center">
                     <i class="<%= category_icon_class(category) %> w-8"></i>
@@ -84,6 +84,8 @@
                                name="role[permission_ids][]" 
                                value="<%= perm.id %>"
                                <%= "checked" if role.permissions.include?(perm) %>
+                               data-checkbox-select-all-target="child"
+                               data-action="change->checkbox-select-all#updateParentState"
                                class="w-5 h-5 rounded text-[#0B387A] focus:ring-[#0B387A] border-gray-300 permission-checkbox">
                       </label>
                     <% else %>
@@ -96,8 +98,8 @@
                   <label class="inline-flex items-center justify-center cursor-pointer w-full h-full">
                     <input type="checkbox" 
                            class="w-5 h-5 rounded text-[#0B387A] focus:ring-[#0B387A] border-gray-300 select-all-checkbox"
-                           data-action="change->permission-matrix#toggleCategory"
-                           data-permission-matrix-target="allCheckbox">
+                           data-checkbox-select-all-target="parent"
+                           data-action="change->checkbox-select-all#toggleChildren">
                   </label>
                 </td>
               </tr>

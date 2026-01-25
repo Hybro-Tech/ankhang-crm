@@ -5,12 +5,14 @@
 class RolesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_role, only: %i[show edit update destroy clone]
-  # TODO: Re-enable authorization after fixing request spec
-  # load_and_authorize_resource
-  skip_authorization_check
+  load_and_authorize_resource
+  # skip_authorization_check
 
   def index
-    @roles = Role.includes(:users).order(:name)
+    @roles = Role.includes(:users)
+                 .order(:name)
+                 .page(params[:page])
+                 .per(params[:per_page])
   end
 
   def show

@@ -3,12 +3,21 @@
 require 'rails_helper'
 
 RSpec.describe "Roles", type: :request do
-  include Devise::Test::IntegrationHelpers
+  include Warden::Test::Helpers
+  
+  after do
+    Warden.test_reset!
+  end
 
-  let(:admin_user) { create(:user, :super_admin) }
+  let!(:super_admin_role) { Role.find_or_create_by!(name: 'Super Admin', is_system: true) }
+  let(:admin_user) do
+    user = create(:user)
+    user.roles << super_admin_role
+    user
+  end
 
   before do
-    sign_in(admin_user, scope: :user)
+    login_as(admin_user, scope: :user)
   end
 
   describe "GET /roles" do

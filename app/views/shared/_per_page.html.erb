@@ -1,0 +1,20 @@
+<%# reusable per_page selector
+  usage: <%= render 'shared/per_page', object: @users %>
+<div class="flex items-center space-x-2 text-sm text-gray-600 border-l pl-4 ml-4">
+  <%= form_tag url_for(only_path: false), method: :get, class: "flex items-center", data: { turbo_frame: "_top" } do %>
+    <% request.query_parameters.except(:per_page, :page).each do |key, value| %>
+      <%= hidden_field_tag key, value %>
+    <% end %>
+    
+    <label for="per_page" class="mr-2 text-sm font-medium text-gray-700">Hiển thị</label>
+    <div class="relative">
+      <%= select_tag :per_page, 
+          options_for_select([10, 20, 50, 100], params[:per_page] || object.limit_value), 
+          onchange: "this.form.requestSubmit()",
+          class: "appearance-none cursor-pointer block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-[#0B387A] sm:text-sm sm:leading-6" %>
+      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+        <i class="fa-solid fa-chevron-down text-xs"></i>
+      </div>
+    </div>
+  <% end %>
+</div>

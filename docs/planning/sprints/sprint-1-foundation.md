@@ -458,7 +458,7 @@ Implement Ability class load từ roles + user overrides.
 | **Story Points** | 5 |
 | **Priority** | 🔴 Critical |
 | **Assignee** | |
-| **Status** | 🔄 In Progress |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Admin, tôi muốn xem và chỉnh sửa permissions của mỗi role qua UI.
@@ -473,8 +473,8 @@ Trang quản lý roles với checkbox matrix.
 - [x] Clone role functionality
 
 **Test Cases:**
-- [ ] Check/uncheck permission → save OK
-- [ ] Clone role → new role với same permissions
+- [x] Check/uncheck permission → save OK
+- [x] Clone role → new role với same permissions
 - [x] Delete system role → error
 
 **Implementation Notes:**
@@ -492,7 +492,7 @@ Trang quản lý roles với checkbox matrix.
 | **Story Points** | 5 |
 | **Priority** | 🔴 Critical |
 | **Assignee** | |
-| **Status** | 🔄 In Progress |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Admin, tôi muốn thêm/sửa/xóa nhân viên và gán quyền (Role) cho họ.
@@ -501,16 +501,16 @@ Trang quản lý roles với checkbox matrix.
 Xây dựng trang quản lý danh sách nhân viên.
 
 **Acceptance Criteria:**
-- [ ] List employees (search/filter by Team, Role)
-- [ ] Create employee (name, email, password, team, role)
-- [ ] Edit employee info & assignments
-- [ ] Lock/Unlock account
-- [ ] Không cho phép xóa chính mình
+- [x] List employees (search/filter by Team, Role)
+- [x] Create employee (name, email, password, team, role)
+- [x] Edit employee info & assignments
+- [x] Lock/Unlock account
+- [x] Không cho phép xóa chính mình
 
 **Test Cases:**
-- [ ] Tạo nhân viên mới → Login được ngay
-- [ ] Đổi role nhân viên → Permissions thay đổi login sau
-- [ ] Validate email unique
+- [x] Tạo nhân viên mới → Login được ngay
+- [x] Đổi role nhân viên → Permissions thay đổi login sau
+- [x] Validate email unique
 
 **Related:** Wireframe `docs/ui-design/wireframes/employees.html`
 
@@ -524,3 +524,4 @@ Xây dựng trang quản lý danh sách nhân viên.
 | 🟡 High | 4 |
 
 **Total Story Points:** ~53
+**Status:** ✅ Completed

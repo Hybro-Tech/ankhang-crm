@@ -1,0 +1,10 @@
+
+<p class="text-sm text-gray-700">
+  Hiển thị 
+  <span class="font-medium"><%= object.offset_value + 1 %></span>
+  đến 
+  <span class="font-medium"><%= [object.offset_value + object.limit_value, object.total_count].min %></span>
+  trong tổng số 
+  <span class="font-medium"><%= object.total_count %></span>
+  kết quả
+</p>
