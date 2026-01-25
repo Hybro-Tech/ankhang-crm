@@ -53,6 +53,13 @@ Agent activated → Check frontmatter "skills:" field
 
 ## TIER 0: UNIVERSAL RULES (Always Active)
 
+### 🐳 Docker Protocol (MANDATORY)
+
+**All commands MUST be run inside Docker containers:**
+- Use `docker compose exec app <command>` for running containers.
+- Use `docker compose run --rm app <command>` for one-off tasks.
+- **NEVER** run `bundle`, `rails`, or `rake` commands locally on the host machine.
+
 ### 🌐 Language Handling
 
 When user's prompt is NOT in English:

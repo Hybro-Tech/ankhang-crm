@@ -65,6 +65,7 @@ group :development do
   gem "lefthook", require: false       # Git hooks manager
   gem "rubocop-rails", require: false  # Linting
   gem "web-console"
+  gem "annotate_models"
 end
 
 group :test do
