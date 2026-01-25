@@ -38,12 +38,12 @@ end
 #
 # Name          SQL Type             Null    Primary Default
 # ------------- -------------------- ------- ------- ----------
-# id            bigint               false   true              
-# user_id       bigint               false   false             
-# permission_id bigint               false   false             
-# granted       tinyint(1)           true    false   1         
-# created_at    datetime(6)          false   false             
-# updated_at    datetime(6)          false   false             
-# created_by_id bigint               true    false             
+# id            bigint               false   true
+# user_id       bigint               false   false
+# permission_id bigint               false   false
+# granted       tinyint(1)           true    false   1
+# created_at    datetime(6)          false   false
+# updated_at    datetime(6)          false   false
+# created_by_id bigint               true    false
 #
 #------------------------------------------------------------------------------

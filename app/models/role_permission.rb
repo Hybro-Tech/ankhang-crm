@@ -31,10 +31,10 @@ end
 #
 # Name          SQL Type             Null    Primary Default
 # ------------- -------------------- ------- ------- ----------
-# id            bigint               false   true              
-# role_id       bigint               false   false             
-# permission_id bigint               false   false             
-# created_at    datetime(6)          false   false             
-# updated_at    datetime(6)          false   false             
+# id            bigint               false   true
+# role_id       bigint               false   false
+# permission_id bigint               false   false
+# created_at    datetime(6)          false   false
+# updated_at    datetime(6)          false   false
 #
 #------------------------------------------------------------------------------

@@ -33,12 +33,12 @@ class Permission < ApplicationRecord
 
   # Extract action from code (e.g., "contacts.view" -> "view")
   def action
-    code.split('.').last
+    code.split(".").last
   end
 
   # Extract subject from code (e.g., "contacts.view" -> "contacts")
   def subject
-    code.split('.').first
+    code.split(".").first
   end
 end
 
@@ -47,12 +47,12 @@ end
 #
 # Name        SQL Type             Null    Primary Default
 # ----------- -------------------- ------- ------- ----------
-# id          bigint               false   true              
-# description text                 true    false             
-# created_at  datetime(6)          false   false             
-# updated_at  datetime(6)          false   false             
-# code        varchar(255)         false   false             
-# name        varchar(255)         true    false             
-# category    varchar(255)         true    false             
+# id          bigint               false   true
+# description text                 true    false
+# created_at  datetime(6)          false   false
+# updated_at  datetime(6)          false   false
+# code        varchar(255)         false   false
+# name        varchar(255)         true    false
+# category    varchar(255)         true    false
 #
 #------------------------------------------------------------------------------

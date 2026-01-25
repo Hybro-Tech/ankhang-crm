@@ -24,38 +24,38 @@ class Role < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
 
-  before_destroy :check_system_role_for_destroy
   before_update :check_system_role_for_update
+  before_destroy :check_system_role_for_destroy
 
   def clone_with_permissions(new_name)
     new_role = dup
     new_role.name = new_name
     new_role.is_system = false
     new_role.save
-    
+
     if new_role.persisted?
       permissions.each do |perm|
         new_role.permissions << perm
       end
     end
-    
+
     new_role
   end
 
   private
 
   def check_system_role_for_destroy
-    if is_system?
-      errors.add(:base, "Không thể xóa system role")
-      throw :abort
-    end
+    return unless is_system?
+
+    errors.add(:base, "Không thể xóa system role")
+    throw :abort
   end
 
   def check_system_role_for_update
-    if is_system? && (name_changed? || is_system_changed?)
-      errors.add(:base, "Không thể sửa tên hoặc trạng thái của system role")
-      throw :abort
-    end
+    return unless is_system? && (name_changed? || is_system_changed?)
+
+    errors.add(:base, "Không thể sửa tên hoặc trạng thái của system role")
+    throw :abort
   end
 end
 
@@ -64,11 +64,11 @@ end
 #
 # Name        SQL Type             Null    Primary Default
 # ----------- -------------------- ------- ------- ----------
-# id          bigint               false   true              
-# name        varchar(255)         false   false             
-# description text                 true    false             
-# is_system   tinyint(1)           true    false   0         
-# created_at  datetime(6)          false   false             
-# updated_at  datetime(6)          false   false             
+# id          bigint               false   true
+# name        varchar(255)         false   false
+# description text                 true    false
+# is_system   tinyint(1)           true    false   0
+# created_at  datetime(6)          false   false
+# updated_at  datetime(6)          false   false
 #
 #------------------------------------------------------------------------------

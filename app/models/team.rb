@@ -26,7 +26,7 @@
 # TASK-009: Team model - Phân chia nhân viên theo vùng/nhóm
 class Team < ApplicationRecord
   # Associations
-  belongs_to :manager, class_name: 'User', optional: true
+  belongs_to :manager, class_name: "User", optional: true
   has_many :users, dependent: :nullify
 
   # Validations

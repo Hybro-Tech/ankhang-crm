@@ -68,7 +68,7 @@ module RolesHelper
   # Action types: :view, :create, :edit, :delete, :pick
   def find_permission_for(category, action_type, permissions)
     perms = permissions[category] || []
-    
+
     suffixes = case action_type
                when :view
                  %w[.view .view_own .view_all .receive]

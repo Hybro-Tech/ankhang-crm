@@ -41,7 +41,7 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :username, uniqueness: { case_sensitive: false }, allow_blank: true,
                        length: { minimum: 3, maximum: 50 },
-                       format: { with: /\A[a-zA-Z0-9_]+\z/, message: 'chỉ cho phép chữ, số và dấu gạch dưới' }
+                       format: { with: /\A[a-zA-Z0-9_]+\z/, message: "chỉ cho phép chữ, số và dấu gạch dưới" }
 
   # Associations (TASK-008)
   has_many :user_roles, dependent: :destroy
@@ -52,7 +52,7 @@ class User < ApplicationRecord
 
   # TASK-009: Team associations
   belongs_to :team, optional: true
-  has_one :managed_team, class_name: 'Team', foreign_key: :manager_id,
+  has_one :managed_team, class_name: "Team", foreign_key: :manager_id,
                          inverse_of: :manager, dependent: :nullify
 
   # TASK-011: Allow login with username or email
@@ -60,9 +60,9 @@ class User < ApplicationRecord
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     login = conditions.delete(:login) || conditions.delete(:email)
-    
+
     if login.present?
-      where('lower(email) = :value OR lower(username) = :value', value: login.downcase).first
+      where("lower(email) = :value OR lower(username) = :value", value: login.downcase).first
     else
       where(conditions.to_h).first
     end
@@ -89,7 +89,7 @@ class User < ApplicationRecord
 
   # Check if user is Super Admin
   def super_admin?
-    has_role?('Super Admin')
+    has_role?("Super Admin")
   end
 
   # Get all effective permission codes (roles + overrides)
@@ -103,10 +103,10 @@ class User < ApplicationRecord
     # Apply user-level overrides
     granted_codes = user_permissions.where(granted: true)
                                     .joins(:permission)
-                                    .pluck('permissions.code')
+                                    .pluck("permissions.code")
     denied_codes = user_permissions.where(granted: false)
                                    .joins(:permission)
-                                   .pluck('permissions.code')
+                                   .pluck("permissions.code")
 
     ((role_codes + granted_codes) - denied_codes).uniq
   end
@@ -122,17 +122,17 @@ end
 #
 # Name                   SQL Type             Null    Primary Default
 # ---------------------- -------------------- ------- ------- ----------
-# id                     bigint               false   true              
-# email                  varchar(255)         false   false             
-# encrypted_password     varchar(255)         false   false             
-# name                   varchar(255)         false   false             
-# phone                  varchar(255)         true    false             
-# status                 int                  false   false   0         
-# team_id                int                  true    false             
-# reset_password_token   varchar(255)         true    false             
-# reset_password_sent_at datetime(6)          true    false             
-# remember_created_at    datetime(6)          true    false             
-# created_at             datetime(6)          false   false             
-# updated_at             datetime(6)          false   false             
+# id                     bigint               false   true
+# email                  varchar(255)         false   false
+# encrypted_password     varchar(255)         false   false
+# name                   varchar(255)         false   false
+# phone                  varchar(255)         true    false
+# status                 int                  false   false   0
+# team_id                int                  true    false
+# reset_password_token   varchar(255)         true    false
+# reset_password_sent_at datetime(6)          true    false
+# remember_created_at    datetime(6)          true    false
+# created_at             datetime(6)          false   false
+# updated_at             datetime(6)          false   false
 #
 #------------------------------------------------------------------------------

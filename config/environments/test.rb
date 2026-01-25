@@ -4,8 +4,10 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
-  # Clear hosts to allow Capybara tests (which use www.example.com by default)
-  config.hosts = nil
+  # Allow specific hosts for testing
+  config.hosts << "www.example.com"
+  config.hosts << "127.0.0.1"
+  config.host_authorization = { exclude: ->(_request) { true } }
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.
@@ -23,6 +25,8 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
   config.cache_store = :null_store
+  config.logger = ActiveSupport::Logger.new(STDOUT)
+  config.log_level = :debug
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable

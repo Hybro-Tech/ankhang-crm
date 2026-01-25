@@ -1,23 +1,12 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Roles", type: :request do
-  include Warden::Test::Helpers
-  
-  after do
-    Warden.test_reset!
-  end
-
-  let!(:super_admin_role) { Role.find_or_create_by!(name: 'Super Admin', is_system: true) }
-  let(:admin_user) do
-    user = create(:user)
-    user.roles << super_admin_role
-    user
-  end
+  let(:admin_user) { create(:user, :super_admin) }
 
   before do
-    login_as(admin_user, scope: :user)
+    sign_in(admin_user)
   end
 
   describe "GET /roles" do
@@ -39,7 +28,10 @@ RSpec.describe "Roles", type: :request do
     end
 
     it "shows permission matrix" do
-      Permission.find_or_create_by!(code: 'contacts.view') { |p| p.name = 'Xem Contact'; p.category = 'Contacts' }
+      Permission.find_or_create_by!(code: "contacts.view") do |p|
+        p.name = "Xem Contact"
+        p.category = "Contacts"
+      end
       get new_role_path
       expect(response.body).to include("Phân quyền")
     end
@@ -51,9 +43,9 @@ RSpec.describe "Roles", type: :request do
     end
 
     it "creates a new role" do
-      expect {
+      expect do
         post roles_path, params: valid_params
-      }.to change(Role, :count).by(1)
+      end.to change(Role, :count).by(1)
     end
 
     it "redirects to index with success message" do
@@ -97,9 +89,9 @@ RSpec.describe "Roles", type: :request do
       let!(:role) { create(:role, name: "Deletable Role", is_system: false) }
 
       it "deletes the role" do
-        expect {
+        expect do
           delete role_path(role)
-        }.to change(Role, :count).by(-1)
+        end.to change(Role, :count).by(-1)
       end
 
       it "redirects to index with success message" do
@@ -109,12 +101,12 @@ RSpec.describe "Roles", type: :request do
     end
 
     context "with system role" do
-      let!(:system_role) { Role.find_or_create_by!(name: 'Test System', is_system: true) }
+      let!(:system_role) { Role.find_or_create_by!(name: "Test System", is_system: true) }
 
       it "does not delete the role" do
-        expect {
+        expect do
           delete role_path(system_role)
-        }.not_to change(Role, :count)
+        end.not_to change(Role, :count)
       end
 
       it "shows error message" do
@@ -128,16 +120,21 @@ RSpec.describe "Roles", type: :request do
 
   describe "POST /roles/:id/clone" do
     let!(:role) { create(:role, name: "Original Role") }
-    let(:contacts_perm) { Permission.find_or_create_by!(code: 'contacts.view') { |p| p.name = 'Xem Contact'; p.category = 'Contacts' } }
+    let(:contacts_perm) do
+      Permission.find_or_create_by!(code: "contacts.view") do |p|
+        p.name = "Xem Contact"
+        p.category = "Contacts"
+      end
+    end
 
     before do
       role.permissions << contacts_perm unless role.permissions.include?(contacts_perm)
     end
 
     it "creates a new role with same permissions" do
-      expect {
+      expect do
         post clone_role_path(role)
-      }.to change(Role, :count).by(1)
+      end.to change(Role, :count).by(1)
     end
 
     it "names the cloned role with (Copy) suffix" do

@@ -61,11 +61,11 @@ group :development, :test do
 end
 
 group :development do
+  gem "annotate_models"
   gem "bullet"                         # N+1 detection
   gem "lefthook", require: false       # Git hooks manager
   gem "rubocop-rails", require: false  # Linting
   gem "web-console"
-  gem "annotate_models"
 end
 
 group :test do

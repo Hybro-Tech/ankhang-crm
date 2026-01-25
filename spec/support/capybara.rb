@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'capybara/rspec'
+require "capybara/rspec"
 
 # Configure Capybara for RSpec system tests
 Capybara.app = Rails.application

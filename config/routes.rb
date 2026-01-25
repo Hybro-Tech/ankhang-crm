@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users
+  # TASK-014: Use custom controllers for auth logging
+  devise_for :users, controllers: {
+    sessions: "users/sessions",
+    passwords: "users/passwords"
+  }
 
   # Roles management (TASK-016)
   resources :roles do

@@ -9,15 +9,15 @@ module ApplicationHelper
     return nil if permission.present? && !can_access?(permission)
 
     active_class = if is_active || current_page?(path)
-                     'bg-white text-brand-blue rounded-lg shadow-md font-bold'
+                     "bg-white text-brand-blue rounded-lg shadow-md font-bold"
                    else
-                     'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'
+                     "text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium"
                    end
 
     icon_class = if is_active || current_page?(path)
-                   'text-brand-orange'
+                   "text-brand-orange"
                  else
-                   'text-blue-300 group-hover:text-white transition-colors'
+                   "text-blue-300 group-hover:text-white transition-colors"
                  end
 
     link_to path, class: "flex items-center px-4 py-2.5 group #{active_class}" do

@@ -24,44 +24,44 @@ class RolesController < ApplicationController
     @permissions = Permission.grouped_by_category
   end
 
+  def edit
+    @permissions = Permission.grouped_by_category
+  end
+
   def create
     @role = Role.new(role_params)
 
     if @role.save
       update_permissions
-      redirect_to roles_path, notice: t('.success')
+      redirect_to roles_path, notice: t(".success")
     else
       @permissions = Permission.grouped_by_category
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
-  end
-
-  def edit
-    @permissions = Permission.grouped_by_category
   end
 
   def update
     if @role.is_system? && role_params[:name] != @role.name
-      redirect_to roles_path, alert: t('.system_role_error')
+      redirect_to roles_path, alert: t(".system_role_error")
       return
     end
 
     if @role.update(role_params)
       update_permissions
-      redirect_to roles_path, notice: t('.success')
+      redirect_to roles_path, notice: t(".success")
     else
       @permissions = Permission.grouped_by_category
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
     if @role.is_system?
-      redirect_to roles_path, alert: t('.system_role_error')
+      redirect_to roles_path, alert: t(".system_role_error")
     elsif @role.destroy
-      redirect_to roles_path, notice: t('.success')
+      redirect_to roles_path, notice: t(".success")
     else
-      redirect_to roles_path, alert: @role.errors.full_messages.join(', ')
+      redirect_to roles_path, alert: @role.errors.full_messages.join(", ")
     end
   end
 
@@ -70,9 +70,9 @@ class RolesController < ApplicationController
     new_role = @role.clone_with_permissions(new_name)
 
     if new_role.persisted?
-      redirect_to edit_role_path(new_role), notice: t('.success')
+      redirect_to edit_role_path(new_role), notice: t(".success")
     else
-      redirect_to roles_path, alert: new_role.errors.full_messages.join(', ')
+      redirect_to roles_path, alert: new_role.errors.full_messages.join(", ")
     end
   end
 

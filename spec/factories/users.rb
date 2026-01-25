@@ -25,14 +25,14 @@
 FactoryBot.define do
   factory :user do
     sequence(:email) { |n| "user#{n}_#{SecureRandom.hex(4)}@test.com" }
-    password { 'password123' }
+    password { "password123" }
     name { Faker::Name.name }
     sequence(:username) { |n| "user_#{n}_#{SecureRandom.hex(4)}" }
     status { :active }
 
     trait :super_admin do
       after(:create) do |user|
-        super_admin_role = Role.find_or_create_by!(name: 'Super Admin', is_system: true)
+        super_admin_role = Role.find_or_create_by!(name: "Super Admin", is_system: true)
         user.roles << super_admin_role unless user.roles.include?(super_admin_role)
       end
     end
