@@ -1,0 +1,104 @@
+<%# TASK-016: Role form partial with permission matrix %>
+<%= form_with model: role, local: true, class: "max-w-none w-full" do |f| %>
+  <%# Error messages %>
+  <% if role.errors.any? %>
+    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+      <div class="flex items-center text-red-800">
+        <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+        <span class="font-medium">Có <%= role.errors.count %> lỗi:</span>
+      </div>
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+        <% role.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Role Info Section %>
+  <div class="mb-10">
+    <h3 class="text-lg font-bold text-gray-900 border-b border-gray-200 pb-3 mb-6">Thông tin chung</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div>
+        <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1" do %>
+          Tên Vai trò <span class="text-red-500">*</span>
+        <% end %>
+        <%= f.text_field :name, 
+            class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none",
+            placeholder: "VD: Nhân viên Kinh doanh",
+            disabled: role.is_system? %>
+      </div>
+      <div class="md:col-span-1">
+        <%= f.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_area :description, rows: 2,
+            class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none",
+            placeholder: "Mô tả vai trò..." %>
+      </div>
+    </div>
+  </div>
+
+  <%# Permission Matrix Section %>
+  <% unless role.is_system? %>
+    <div class="mb-10" data-controller="permission-matrix">
+      <div class="mb-6">
+        <h3 class="text-lg font-bold text-gray-900">Phân quyền</h3>
+        <p class="text-gray-500 text-sm mt-1">Tick chọn quyền cho từng module</p>
+      </div>
+
+      <div class="border border-gray-200 rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-200">
+                <th class="px-4 py-3 text-left font-bold text-sm text-gray-700 w-56">Module</th>
+                <th class="px-3 py-3 text-left font-medium text-sm text-gray-600">Quyền</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <% permissions.each do |category, perms| %>
+                <tr class="hover:bg-blue-50 transition-colors">
+                  <td class="px-4 py-3">
+                    <div class="flex items-center">
+                      <i class="<%= category_icon_class(category) %> w-8"></i>
+                      <span class="font-medium text-gray-900"><%= category_name_vi(category) %></span>
+                    </div>
+                  </td>
+                  <td class="px-3 py-3">
+                    <div class="flex flex-wrap gap-4">
+                      <% perms.each do |perm| %>
+                        <label class="inline-flex items-center cursor-pointer">
+                          <input type="checkbox" 
+                                 name="role[permission_ids][]" 
+                                 value="<%= perm.id %>"
+                                 <%= "checked" if role.permissions.include?(perm) %>
+                                 class="w-4 h-4 rounded text-[#0B387A] focus:ring-[#0B387A] border-gray-300">
+                          <span class="ml-2 text-sm text-gray-700"><%= perm.name %></span>
+                        </label>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="mb-10 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <div class="flex items-center text-yellow-800">
+        <i class="fa-solid fa-info-circle mr-2"></i>
+        <span>System role không thể thay đổi quyền. Role này có toàn quyền truy cập hệ thống.</span>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Action Buttons %>
+  <div class="flex items-center justify-center space-x-4 pt-8 border-t border-gray-200">
+    <%= link_to roles_path, class: "px-8 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors" do %>
+      Hủy bỏ
+    <% end %>
+    <%= f.submit "Lưu Thay đổi", 
+        class: "px-8 py-2.5 bg-[#0B387A] text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 flex items-center transition-colors cursor-pointer" %>
+  </div>
+<% end %>

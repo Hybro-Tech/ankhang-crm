@@ -2,6 +2,14 @@
 
 Rails.application.routes.draw do
   devise_for :users
+
+  # Roles management (TASK-016)
+  resources :roles do
+    member do
+      post :clone
+    end
+  end
+
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo
 

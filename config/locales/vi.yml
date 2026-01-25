@@ -3,3 +3,14 @@ vi:
     success: "Đây là thông báo thành công mẫu!"
     error: "Đây là thông báo lỗi mẫu!"
     warning: "Đây là thông báo cảnh báo mẫu!"
+  roles:
+    create:
+      success: "Vai trò đã được tạo thành công."
+    update:
+      success: "Vai trò đã được cập nhật thành công."
+      system_role_error: "Không thể sửa tên của system role."
+    destroy:
+      success: "Vai trò đã được xóa."
+      system_role_error: "Không thể xóa system role."
+    clone:
+      success: "Vai trò đã được sao chép. Vui lòng đổi tên và cấu hình quyền."

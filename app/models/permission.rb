@@ -24,6 +24,22 @@ class Permission < ApplicationRecord
 
   validates :code, presence: true, uniqueness: true
   validates :name, presence: true
+
+  # Group permissions by category for matrix display
+  # Returns Hash { category_name => [permissions] }
+  def self.grouped_by_category
+    order(:category, :code).group_by(&:category)
+  end
+
+  # Extract action from code (e.g., "contacts.view" -> "view")
+  def action
+    code.split('.').last
+  end
+
+  # Extract subject from code (e.g., "contacts.view" -> "contacts")
+  def subject
+    code.split('.').first
+  end
 end
 
 #------------------------------------------------------------------------------

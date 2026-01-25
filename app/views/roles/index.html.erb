@@ -1,0 +1,62 @@
+<%# TASK-016: Roles list page based on wireframe docs/ui-design/wireframes/roles.html %>
+<% content_for :title, "Quản lý Phân quyền" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Danh sách vai trò</h1>
+    <p class="text-sm text-gray-500 mt-1">Định nghĩa quyền hạn truy cập cho từng nhóm người dùng</p>
+  </div>
+  <%= link_to new_role_path, class: "bg-[#0B387A] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-900 transition flex items-center" do %>
+    <i class="fa-solid fa-plus mr-2"></i> Thêm vai trò
+  <% end %>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Tên Vai trò</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Mô tả</th>
+        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Số người dùng</th>
+        <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Hành động</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <% @roles.each do |role| %>
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <span class="h-8 w-8 rounded-full <%= role_icon_bg_class(role) %> flex items-center justify-center mr-3">
+                <i class="<%= role_icon_class(role) %>"></i>
+              </span>
+              <span class="text-sm font-bold text-gray-900"><%= role.name %></span>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-500"><%= role.description %></td>
+          <td class="px-6 py-4 text-center">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              <%= role.users.count %>
+            </span>
+          </td>
+          <td class="px-6 py-4 text-right text-sm font-medium">
+            <% if role.is_system? %>
+              <span class="text-gray-400 italic text-xs mr-2">Mặc định</span>
+              <span class="text-gray-300"><i class="fa-solid fa-pen-to-square"></i></span>
+            <% else %>
+              <%= link_to edit_role_path(role), class: "text-[#0B387A] hover:text-blue-900 mr-3" do %>
+                <i class="fa-solid fa-pen-to-square"></i>
+              <% end %>
+              <%= button_to clone_role_path(role), method: :post, class: "text-gray-500 hover:text-gray-700 mr-3", title: "Clone Role", form: { class: "inline" } do %>
+                <i class="fa-solid fa-copy"></i>
+              <% end %>
+              <%= button_to role_path(role), method: :delete, class: "text-red-600 hover:text-red-900", 
+                  data: { turbo_confirm: "Bạn có chắc muốn xóa vai trò này?" }, form: { class: "inline" } do %>
+                <i class="fa-solid fa-trash"></i>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

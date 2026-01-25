@@ -428,7 +428,7 @@ Log auth events vào ActivityLog.
 | **Story Points** | 5 |
 | **Priority** | 🔴 Critical |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là System, tôi muốn load permissions từ DB để check quyền động.
@@ -437,15 +437,15 @@ Log auth events vào ActivityLog.
 Implement Ability class load từ roles + user overrides.
 
 **Acceptance Criteria:**
-- [ ] Load permissions từ user.roles
-- [ ] Apply user_permissions overrides
-- [ ] Super Admin có tất cả quyền
-- [ ] Cache ability nếu cần
+- [x] Load permissions từ user.roles
+- [x] Apply user_permissions overrides
+- [x] Super Admin có tất cả quyền
+- [x] Cache ability nếu cần
 
 **Test Cases:**
-- [ ] User với role Sale có thể :pick Contact
-- [ ] User bị deny override không thể access
-- [ ] Super Admin can :manage, :all
+- [x] User với role Sale có thể :pick Contact
+- [x] User bị deny override không thể access
+- [x] Super Admin can :manage, :all
 
 **Related:** `.agent/skills/cancancan-rbac/SKILL.md`
 
@@ -458,7 +458,7 @@ Implement Ability class load từ roles + user overrides.
 | **Story Points** | 5 |
 | **Priority** | 🔴 Critical |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | 🔄 In Progress |
 
 **User Story:**
 > Là Admin, tôi muốn xem và chỉnh sửa permissions của mỗi role qua UI.
@@ -467,15 +467,19 @@ Implement Ability class load từ roles + user overrides.
 Trang quản lý roles với checkbox matrix.
 
 **Acceptance Criteria:**
-- [ ] List all roles
-- [ ] Checkbox matrix (roles × permissions)
-- [ ] Không cho xóa system roles
-- [ ] Clone role functionality
+- [x] List all roles
+- [x] Checkbox matrix (roles × permissions)
+- [x] Không cho xóa system roles
+- [x] Clone role functionality
 
 **Test Cases:**
 - [ ] Check/uncheck permission → save OK
 - [ ] Clone role → new role với same permissions
-- [ ] Delete system role → error
+- [x] Delete system role → error
+
+**Implementation Notes:**
+- Controller, routes, views đã hoàn thành
+- Request specs cần fix authorization issues
 
 **Related:** Wireframe `docs/ui-design/wireframes/roles.html`
 

@@ -1,0 +1,8 @@
+<%# TASK-016: New role form %>
+<% content_for :title, "Thêm Vai trò" %>
+
+<div class="flex items-center justify-between mb-8">
+  <h1 class="text-2xl font-bold text-gray-900">Thêm Vai trò</h1>
+</div>
+
+<%= render "form", role: @role, permissions: @permissions %>

@@ -1,0 +1,13 @@
+<%# TASK-016: Edit role form %>
+<% content_for :title, "Sửa Vai trò - #{@role.name}" %>
+
+<div class="flex items-center justify-between mb-8">
+  <h1 class="text-2xl font-bold text-gray-900">Sửa Vai trò: <%= @role.name %></h1>
+  <% if @role.is_system? %>
+    <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+      <i class="fa-solid fa-lock mr-1"></i> System Role
+    </span>
+  <% end %>
+</div>
+
+<%= render "form", role: @role, permissions: @permissions %>
