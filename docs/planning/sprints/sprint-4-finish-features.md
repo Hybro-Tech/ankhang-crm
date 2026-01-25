@@ -1,68 +1,130 @@
-# Sprint 4: Feature Finish (Notifications & Dashboard)
+# Sprint 4: Feature Finish (ZNS & Dashboard)
 
-> **Duration**: Week 8-9 (10/03 - 23/03)
-> **Focus**: Multi-channel Notifications, Products, Dashboard, Audit Logs
-> **Total Tasks**: 11
+> **Duration**: 10/03/2026 - 23/03/2026 (2 tuần)  
+> **Focus**: ZNS Integration, Email, Dashboard & Reports, Audit Logs  
+> **Goal**: Hoàn thành 100% Feature Development  
+> **Total Tasks**: 9
 
 ---
 
-## Epic: Notification Engine
+## Epic: ZNS (Zalo Notification Service)
 
-### TASK-031: Xây dựng Notification Rules Engine
+### TASK-034: Tích hợp Zalo OA
 | Field | Value |
 |-------|-------|
-| **Epic** | Notification Engine |
+| **Epic** | ZNS |
 | **Story Points** | 8 |
+| **Priority** | 🔴 Critical |
+| **Assignee** | |
+| **Status** | Backlog |
+
+**User Story:**
+> Là CSKH, tôi muốn gửi tin Zalo ZNS cho khách hàng.
+
+**Description:**
+Integration với Zalo OA API theo SRS v2 Section 7.
+
+**Acceptance Criteria:**
+- [ ] Zalo OA API client (OAuth 2.0)
+- [ ] Token refresh mechanism (auto refresh before expiry)
+- [ ] ZNS template management (store template IDs from Zalo)
+- [ ] Send ZNS với dynamic data
+- [ ] Rate limiting handling
+- [ ] Error handling + retry via Sidekiq
+
+**Test Cases:**
+- [ ] Send ZNS → Delivered
+- [ ] Invalid phone → Error logged
+- [ ] Rate limited → Retry via Sidekiq
+
+**Related:** SRS v2 Section 7
+
+---
+
+### TASK-054: Quản lý Mẫu ZNS (CRUD)
+| Field | Value |
+|-------|-------|
+| **Epic** | ZNS |
+| **Story Points** | 3 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
 | **Status** | Backlog |
 
 **User Story:**
-> Là Admin, tôi muốn tạo rules để tự động gửi thông báo khi có events.
+> Là Admin, tôi muốn quản lý các mẫu tin nhắn ZNS.
 
 **Description:**
-Engine xử lý notification rules theo SRS Section 4.9.
+CRUD cho ZNS templates theo SRS v2 Section 7.3.
 
 **Acceptance Criteria:**
-- [ ] `notification_rules` table: name, trigger_event, conditions (JSON), channels, template, enabled
-- [ ] Trigger events: contact.created, contact.picked, contact.status_changed, deal.created
-- [ ] Conditions: filter by role, team, etc.
-- [ ] Channels: web_push, email, zalo
-- [ ] Template với placeholders ({{contact.name}}, etc.)
-- [ ] Rule builder UI
+- [ ] `zns_templates` table: name, zalo_template_id, preview_content, variables (JSON), status
+- [ ] List templates với status filter
+- [ ] Create/Edit form:
+  - [ ] Tên mẫu
+  - [ ] Mã Zalo (Template ID từ Zalo OA)
+  - [ ] Nội dung preview
+  - [ ] Biến động (placeholders): `{ten_kh}`, `{so_dien_thoai}`
+- [ ] Activate/Deactivate
 
 **Test Cases:**
-- [ ] Create rule → trigger event fires → notification sent
-- [ ] Disabled rule → không trigger
-- [ ] Condition not met → không gửi
+- [ ] Create template → Appears in list
+- [ ] Deactivate → Không hiện trong send form
 
 ---
 
-### TASK-032: Thông báo Web Push
+### TASK-055: Giao diện Gửi ZNS (CSKH)
 | Field | Value |
 |-------|-------|
-| **Epic** | Notifications |
+| **Epic** | ZNS |
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
 | **Status** | Backlog |
 
 **User Story:**
-> Là Sale, tôi muốn nhận push notification khi có contact mới.
+> Là CSKH, tôi muốn gửi tin ZNS cho khách hàng một cách dễ dàng.
+
+**Description:**
+UI gửi ZNS thủ công theo SRS v2 Section 7.1.
 
 **Acceptance Criteria:**
-- [ ] Service worker registration
-- [ ] Push subscription management (save to DB)
-- [ ] Send to 100-200 users trong < 5 giây (SRS requirement)
-- [ ] Notification content: title, body, icon, click action
-- [ ] Sidekiq job cho batch sending
+- [ ] Chọn 1 hoặc nhiều khách hàng (checkbox list)
+- [ ] Filter KH: Theo trạng thái, team, ngày tạo
+- [ ] Chọn mẫu ZNS từ dropdown
+- [ ] Preview tin nhắn với data thực
+- [ ] Confirm trước khi gửi
+- [ ] Hiển thị kết quả: Thành công / Thất bại
 
 **Test Cases:**
-- [ ] User grants permission → subscription saved
-- [ ] Contact created → all Sales receive push
-- [ ] Click notification → redirect to contact
+- [ ] Select 5 KH → Preview → Send → 5 ZNS sent
+- [ ] KH không có SĐT → Warning
 
 ---
+
+### TASK-056: Lịch sử Gửi ZNS
+| Field | Value |
+|-------|-------|
+| **Epic** | ZNS |
+| **Story Points** | 3 |
+| **Priority** | 🟢 Medium |
+| **Assignee** | |
+| **Status** | Backlog |
+
+**User Story:**
+> Là CSKH/Admin, tôi muốn xem lịch sử gửi ZNS.
+
+**Acceptance Criteria:**
+- [ ] `zns_logs` table: contact_id, template_id, sent_by_id, status, error_message, sent_at
+- [ ] List view với filter: by contact, by date range, by status
+- [ ] Detail view: Nội dung đã gửi
+
+**Test Cases:**
+- [ ] Send ZNS → Log created
+- [ ] Filter by date → Correct results
+
+---
+
+## Epic: Email Notifications
 
 ### TASK-033: Thông báo qua Email
 | Field | Value |
@@ -78,101 +140,22 @@ Engine xử lý notification rules theo SRS Section 4.9.
 
 **Acceptance Criteria:**
 - [ ] ActionMailer setup với SendGrid/SMTP
-- [ ] Email templates (HTML) cho các events
+- [ ] Email templates (HTML) cho các events:
+  - [ ] Contact assigned to you
+  - [ ] Reminder: Lịch hẹn sắp tới
+  - [ ] Admin: Daily summary
 - [ ] Async sending via Sidekiq
-- [ ] Unsubscribe option
+- [ ] Unsubscribe option (optional)
 
 **Test Cases:**
-- [ ] Event fires → email sent
+- [ ] Event fires → Email sent
 - [ ] Email format correct (HTML rendered)
-- [ ] Unsubscribed user → không nhận email
 
 ---
 
-### TASK-034: Tích hợp Zalo OA
-| Field | Value |
-|-------|-------|
-| **Epic** | Notifications |
-| **Story Points** | 8 |
-| **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
+## Epic: Dashboard & Reports
 
-**User Story:**
-> Là CSKH, tôi muốn gửi tin Zalo ZNS cho khách hàng.
-
-**Description:**
-Integration với Zalo OA API theo SRS Section 4.12.4.
-
-**Acceptance Criteria:**
-- [ ] Zalo OA API client (OAuth 2.0)
-- [ ] Token refresh mechanism
-- [ ] ZNS template management (store template IDs)
-- [ ] Send ZNS với dynamic data
-- [ ] Zalo composer UI (CSKH page)
-- [ ] Rate limiting handling
-- [ ] Error handling + retry
-
-**Test Cases:**
-- [ ] Send ZNS → delivered
-- [ ] Invalid phone → error logged
-- [ ] Rate limited → retry via Sidekiq
-
----
-
-### TASK-035: Cập nhật UI Real-time
-| Field | Value |
-|-------|-------|
-| **Epic** | Notifications |
-| **Story Points** | 5 |
-| **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Sale, tôi muốn thấy contact mới xuất hiện real-time mà không cần refresh.
-
-**Acceptance Criteria:**
-- [ ] ActionCable setup
-- [ ] Turbo Streams subscription cho contacts channel
-- [ ] Broadcast khi contact.created
-- [ ] Broadcast khi contact.picked (update UI cho others)
-- [ ] Connection status indicator
-
-**Test Cases:**
-- [ ] Contact created → appears real-time
-- [ ] Contact picked → button disappears for others
-- [ ] Disconnect → reconnect automatically
-
----
-
-### TASK-036: Giao diện Cài đặt Thông báo
-| Field | Value |
-|-------|-------|
-| **Epic** | Notifications |
-| **Story Points** | 3 |
-| **Priority** | 🟢 Medium |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Admin, tôi muốn quản lý notification rules qua UI.
-
-**Acceptance Criteria:**
-- [ ] List rules với enable/disable toggle
-- [ ] Create/Edit rule form
-- [ ] Test send button
-- [ ] View send history
-
-**Test Cases:**
-- [ ] Toggle disable → rule không fire
-- [ ] Test send → notification received
-
----
-
-## Epic: Dashboard
-
-### TASK-037: Thẻ KPI trên Dashboard
+### TASK-037: Thẻ KPI trên Dashboard (Admin)
 | Field | Value |
 |-------|-------|
 | **Epic** | Dashboard |
@@ -185,17 +168,17 @@ Integration với Zalo OA API theo SRS Section 4.12.4.
 > Là Admin, tôi muốn xem các KPI quan trọng ngay khi vào dashboard.
 
 **Acceptance Criteria:**
-- [ ] Tổng Contacts
-- [ ] Contacts mới (tuần này)
-- [ ] Số deals chốt
-- [ ] Tỷ lệ chốt (%)
-- [ ] Tổng doanh thu
+- [ ] KPI Cards:
+  - [ ] Tổng Contacts
+  - [ ] Contacts mới (tuần này)
+  - [ ] Số contacts đã chốt
+  - [ ] Tỷ lệ chốt (%)
 - [ ] Date range filter
+- [ ] Performance < 2s load
 
 **Test Cases:**
 - [ ] KPIs calculated correctly
-- [ ] Filter by date → numbers update
-- [ ] Performance < 2s load
+- [ ] Filter by date → Numbers update
 
 ---
 
@@ -214,9 +197,9 @@ Integration với Zalo OA API theo SRS Section 4.12.4.
 **Acceptance Criteria:**
 - [ ] Pie/Donut chart: Contact status distribution
 - [ ] Line chart: Contacts trend (by day/week/month)
-- [ ] Bar chart: Sales comparison
-- [ ] Bar chart: Revenue by team
+- [ ] Bar chart: Sales comparison (số contact picked)
 - [ ] Chart library: Chart.js hoặc ApexCharts
+- [ ] Responsive trên mobile
 
 **Test Cases:**
 - [ ] Charts render correctly
@@ -238,13 +221,14 @@ Integration với Zalo OA API theo SRS Section 4.12.4.
 > Là Admin, tôi muốn xem ai là top performers.
 
 **Acceptance Criteria:**
-- [ ] Table: Name, Số KH picked, Số deals, Doanh thu
+- [ ] Table: Name, Số KH picked, Số KH chốt, Tỷ lệ
 - [ ] Sortable columns
 - [ ] Top 10 mặc định
+- [ ] Filter by team, date range
 
 **Test Cases:**
 - [ ] Data accurate
-- [ ] Sort by revenue works
+- [ ] Sort by picked count works
 
 ---
 
@@ -267,32 +251,14 @@ Integration với Zalo OA API theo SRS Section 4.12.4.
 - [ ] Filter by: user, action, date range, entity type
 - [ ] Search bằng keyword
 - [ ] Display: timestamp, user, action, entity, IP
-- [ ] Diff view (before/after JSON)
+- [ ] Diff view (before/after JSON) cho update actions
 
 **Test Cases:**
 - [ ] All actions logged
 - [ ] Filter works
 - [ ] Diff view shows changes
 
----
-
-### TASK-041: Trang Báo cáo
-| Field | Value |
-|-------|-------|
-| **Epic** | Reports |
-| **Story Points** | 3 |
-| **Priority** | 🟢 Medium |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Admin, tôi muốn xem reports chi tiết hơn dashboard.
-
-**Acceptance Criteria:**
-- [ ] Revenue by period
-- [ ] Conversion funnel
-- [ ] Team performance comparison
-- [ ] Export button (Phase 2)
+**Related:** SRS v2 Section 9
 
 ---
 
@@ -300,12 +266,20 @@ Integration với Zalo OA API theo SRS Section 4.12.4.
 
 | Priority | Count |
 |----------|-------|
-| 🟡 High | 6 |
-| 🟢 Medium | 5 |
+| 🔴 Critical | 1 |
+| 🟡 High | 4 |
+| 🟢 Medium | 4 |
 
-**Total Story Points:** ~50
+**Total Story Points:** ~37
 
 **Dependencies:**
-- Sprint 3 completed
+- Sprint 3 completed (Contacts + Real-time working)
 - Sidekiq running
 - Zalo OA credentials configured
+
+**Success Criteria:**
+- [ ] CSKH có thể gửi ZNS cho khách hàng
+- [ ] Email notifications hoạt động
+- [ ] Admin Dashboard với KPI và Charts
+- [ ] Activity Logs hoàn chỉnh
+- [ ] **100% Feature Development hoàn thành**

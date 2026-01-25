@@ -723,7 +723,17 @@ _(Tiếp tục Sprint 3, 4, 5...)_
 
 # Sprint 3: Core Features Part 2 (Week 5)
 
-## Epic: Deals
+---
+
+> ⚠️ **PHASE 2 - CÁC TASKS BÊN DƯỚI KHÔNG NẰM TRONG SCOPE PHASE 1**
+> 
+> Các tasks từ TASK-025 đến TASK-028 (Deals, Products, Coupons) đã được chuyển sang Phase 2.
+> Xem chi tiết: `docs/planning/phase2_notes.md`
+
+---
+
+<!--
+## Epic: Deals (PHASE 2)
 
 ### TASK-025: Deal Model & Migrations
 | Field | Value |
@@ -732,7 +742,7 @@ _(Tiếp tục Sprint 3, 4, 5...)_
 | **Story Points** | 3 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | Phase 2 |
 
 **User Story:**
 > Là Developer, tôi muốn có model Deal để track cơ hội bán hàng.
@@ -754,7 +764,7 @@ _(Tiếp tục Sprint 3, 4, 5...)_
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | Phase 2 |
 
 **User Story:**
 > Là Sale, tôi muốn tạo deal khi chốt thành công với khách.
@@ -774,7 +784,7 @@ _(Tiếp tục Sprint 3, 4, 5...)_
 | **Story Points** | 3 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | Phase 2 |
 
 **User Story:**
 > Là Admin, tôi muốn quản lý danh sách sản phẩm/dịch vụ.
@@ -790,7 +800,7 @@ _(Tiếp tục Sprint 3, 4, 5...)_
 | **Story Points** | 3 |
 | **Priority** | 🟢 Medium |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | Phase 2 |
 
 **User Story:**
 > Là Admin, tôi muốn tạo coupon và gán cho nhân viên specific.
@@ -799,6 +809,8 @@ _(Tiếp tục Sprint 3, 4, 5...)_
 - [ ] Create coupon (code, type: %, fixed)
 - [ ] Expiry date
 - [ ] Assign to specific employees
+
+END PHASE 2 TASKS -->
 
 ---
 

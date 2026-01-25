@@ -1,96 +1,15 @@
-# Sprint 3: Core Features Part 2 (Week 5)
+# Sprint 3: Core Features (Contacts + Real-time)
 
-> **Duration**: Week 5  
-> **Focus**: Contacts, Pick Mechanism, Deals, Products  
-> **Total Tasks**: 13
-
----
-
-## Epic: Contacts
-
-### TASK-019: Tạo Model & Migration Contact
-| Field | Value |
-|-------|-------|
-| **Epic** | Contacts |
-| **Story Points** | 3 |
-| **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Developer, tôi muốn có model Contact với đầy đủ fields.
-
-**Acceptance Criteria:**
-- [ ] Migration với all fields từ SRS (Code: KH2026-XXX)
-- [ ] Enums: status, need_type, source
-- [ ] Validations: name, phone required
-- [ ] Database Indexing (search performance)
-
-**Test Cases:**
-- [ ] Contact.create với valid data OK
+> **Duration**: 23/02/2026 - 09/03/2026 (2 tuần)  
+> **Focus**: Pick Mechanism, Smart Routing, Real-time Notifications  
+> **Goal**: Flow Pick hoàn thiện với real-time updates  
+> **Total Tasks**: 8
 
 ---
 
----
+## Epic: Contacts (Advanced)
 
-### TASK-022b: Xây dựng Pick Rules Engine (Backend)
-| Field | Value |
-|-------|-------|
-| **Epic** | Contacts |
-| **Story Points** | 5 |
-| **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Admin, tôi muốn cấu hình giới hạn nhận khách cho từng loại dịch vụ.
-
-**Acceptance Criteria:**
-- [ ] Update `service_types` table: add `max_pick_per_day` column
-- [ ] UI: Form edit Service Type có input cho field này
-- [ ] Backend Service: `PickEligibilityService` để check rule này
-
----
-
-### TASK-021: Form tạo Contact mới
-| Field | Value |
-|-------|-------|
-| **Epic** | Contacts |
-| **Story Points** | 3 |
-| **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Tổng đài, tôi muốn tạo contact mới khi có lead gọi đến.
-
-**Acceptance Criteria:**
-- [ ] Form fields chuẩn SRS
-- [ ] Dropdown "Loại nhu cầu" (Load từ DB - Dynamic)
-- [ ] Auto assigning "Mới" status
-
----
-
-### TASK-020: Trang danh sách Contact
-| Field | Value |
-|-------|-------|
-| **Epic** | Contacts |
-| **Story Points** | 5 |
-| **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Sale, tôi muốn xem danh sách contacts để tìm khách cần xử lý.
-
-**Acceptance Criteria:**
-- [ ] Table columns: code, name, phone, status, assignee
-- [ ] Pagination & Filtering (Status, Team)
-- [ ] Search by Phone/Name
-
----
-
-### TASK-022: Chức năng Nhận khách (⚠️ Quan trọng)
+### TASK-022: Chức năng Nhận khách (Pick) - Core
 | Field | Value |
 |-------|-------|
 | **Epic** | Contacts |
@@ -108,16 +27,44 @@ Core feature với concurrency handling và dynamic rules checking.
 **Acceptance Criteria:**
 - [ ] Nút "Nhận khách" chỉ hiện khi đủ điều kiện
 - [ ] **Logic Check**:
-    - [ ] Cooldown 5 phút.
-    - [ ] **Dynamic Limit**: Check số lượng đã pick trong ngày theo loại nhu cầu (VD: Kế toán < 2).
-- [ ] DB Locking (Transaction)
-- [ ] Real-time update: Ẩn nút với users khác khi có người pick thành công.
-- [ ] **Admin Re-assign**: Admin có nút chuyển contact cho người khác.
+    - [ ] Cooldown (VD: 5 phút giữa 2 lần pick)
+    - [ ] **Dynamic Limit**: Check số lượng đã pick trong ngày theo loại nhu cầu
+- [ ] DB Locking (Transaction) - tránh race condition
+- [ ] Update Contact: assigned_user_id, status = "Tiềm_năng", picked_at
+- [ ] Log activity
 
 **Test Cases:**
-- [ ] Pick -> Success (Update Assignee, Status=Processing)
-- [ ] Pick quá giới hạn -> Error "Bạn đã nhận đủ số lượng khách loại này trong ngày"
-- [ ] Admin Re-assign -> Success + Logged
+- [ ] Pick → Success (Update Assignee, Status)
+- [ ] Pick quá giới hạn → Error "Bạn đã nhận đủ số lượng khách loại này trong ngày"
+- [ ] 2 users pick cùng lúc → Chỉ 1 thành công
+
+---
+
+### TASK-022b: Pick Rules Engine (Backend)
+| Field | Value |
+|-------|-------|
+| **Epic** | Contacts |
+| **Story Points** | 5 |
+| **Priority** | 🟡 High |
+| **Assignee** | |
+| **Status** | Backlog |
+
+**User Story:**
+> Là Admin, tôi muốn cấu hình giới hạn nhận khách cho từng loại dịch vụ.
+
+**Description:**
+Extensible rules engine, ban đầu hardcode nhưng sẵn sàng mở rộng.
+
+**Acceptance Criteria:**
+- [ ] `pick_rules` table: service_type_id, max_per_day, cooldown_minutes, enabled
+- [ ] Seed default rules cho các loại nhu cầu
+- [ ] Service: `PickEligibilityService.check(user, contact)` → {eligible: true/false, reason: "..."}
+- [ ] Admin UI: Form edit Service Type có input cho max_pick_per_day
+- [ ] Code extensible: Có thể thêm conditions mới dễ dàng
+
+**Test Cases:**
+- [ ] PickEligibilityService trả về đúng
+- [ ] Admin chỉnh limit → Áp dụng ngay
 
 ---
 
@@ -134,166 +81,171 @@ Core feature với concurrency handling và dynamic rules checking.
 > Là Sale, tôi muốn xem chi tiết và ghi lại lịch sử chăm sóc.
 
 **Acceptance Criteria:**
-- [ ] View Detail Contact
-- [ ] Log Interaction (Call/Zalo) -> Timeline view
-- [ ] Change Status flow
+- [ ] View Detail Contact với tất cả fields
+- [ ] Lịch sử trao đổi (Timeline view):
+  - [ ] Ngày giờ, Nội dung, Phương thức (Gọi điện/Zalo/Email/Gặp mặt)
+  - [ ] Form thêm ghi chú mới
+- [ ] Lịch hẹn tiếp theo (datetime picker)
+- [ ] Edit Contact info (quyền theo role)
+
+**Test Cases:**
+- [ ] Add interaction → Appears in timeline
+- [ ] Set lịch hẹn → Hiển thị trên Dashboard
+
+**Related:** SRS v2 Section 5.3
 
 ---
 
-## Epic: Deals
-
-### TASK-025: Tạo Model & Migration Deal
+### TASK-051: Trạng thái Contact Flow (State Machine)
 | Field | Value |
 |-------|-------|
-| **Epic** | Deals |
+| **Epic** | Contacts |
+| **Story Points** | 5 |
+| **Priority** | 🔴 Critical |
+| **Assignee** | |
+| **Status** | Backlog |
+
+**User Story:**
+> Là Sale, tôi muốn chuyển trạng thái Contact theo đúng quy trình công ty.
+
+**Description:**
+Implement state machine theo SRS v2 Section 5.2.
+
+**Acceptance Criteria:**
+- [ ] State machine: Mới → Tiềm_năng → Đang_tư_vấn → Chốt_Mới/Thất_bại
+- [ ] Transition rules:
+  - [ ] Mới → Tiềm_năng: Khi Sale nhận
+  - [ ] Tiềm_năng → Đang_tư_vấn: Khi Sale bắt đầu tư vấn
+  - [ ] Tiềm_năng → Tiềm_năng_cũ: Cronjob đầu tháng
+  - [ ] Đang_tư_vấn → Chốt_Mới: Thành công trong tháng
+  - [ ] Tiềm_năng_cũ → Chốt_Cũ: Thành công từ tháng trước
+  - [ ] Thất_bại → CSKH_L1: Chuyển CSKH
+- [ ] UI: Dropdown chọn trạng thái (chỉ hiện valid transitions)
+- [ ] Log mỗi lần chuyển trạng thái
+
+**Test Cases:**
+- [ ] Valid transition → Success
+- [ ] Invalid transition (VD: Mới → Chốt) → Error
+- [ ] Log ghi nhận đúng
+
+**Related:** SRS v2 Section 5.2 State Diagram
+
+---
+
+### TASK-052: Admin Re-assign Contact
+| Field | Value |
+|-------|-------|
+| **Epic** | Contacts |
 | **Story Points** | 3 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
 | **Status** | Backlog |
 
 **User Story:**
-> Là Developer, tôi muốn có model Deal để track cơ hội bán hàng.
+> Là Admin, tôi muốn chuyển Contact cho người khác khi cần thiết.
 
 **Acceptance Criteria:**
-- [ ] Migration: contact_id, total_value, payment_status, closed_by, closed_at, notes
-- [ ] Enum: payment_status (pending, partial, paid, refunded)
-- [ ] belongs_to :contact
-- [ ] has_many :deal_products
-- [ ] Auto calculate total_value từ deal_products
+- [ ] Chỉ Admin có quyền
+- [ ] Modal: Chọn user mới từ dropdown (filter by team)
+- [ ] Nhập lý do re-assign (bắt buộc)
+- [ ] Update assigned_user_id
+- [ ] Log chi tiết: ai, cho ai, lý do, thời gian
+- [ ] Notification cho user mới
 
 **Test Cases:**
-- [ ] Deal.create với contact OK
-- [ ] total_value cập nhật khi thêm/xóa products
-- [ ] payment_status transitions hợp lệ
+- [ ] Admin re-assign → Success + Logged
+- [ ] Non-admin re-assign → Forbidden
 
 ---
 
-### TASK-026: Liên kết Deal - Products
+## Epic: Smart Routing Config
+
+### TASK-053: Cấu hình Smart Routing (Admin)
 | Field | Value |
 |-------|-------|
-| **Epic** | Deals |
-| **Story Points** | 2 |
-| **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Developer, tôi muốn 1 deal có thể có nhiều sản phẩm.
-
-**Acceptance Criteria:**
-- [ ] `deal_products` table: deal_id, product_id, quantity, unit_price, coupon_id
-- [ ] belongs_to :deal, :product, :coupon (optional)
-- [ ] Validate quantity > 0
-
-**Test Cases:**
-- [ ] Add product to deal → total updated
-- [ ] Apply coupon → discounted price calculated
-
----
-
-### TASK-027: Luồng tạo Deal
-| Field | Value |
-|-------|-------|
-| **Epic** | Deals |
+| **Epic** | Smart Routing |
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
 | **Status** | Backlog |
 
 **User Story:**
-> Là Sale, tôi muốn tạo deal khi chốt thành công với khách.
+> Là Admin, tôi muốn cấu hình các tham số cho Smart Routing.
+
+**Description:**
+UI cho Admin cấu hình theo SRS v2 Section 6.2.
 
 **Acceptance Criteria:**
-- [ ] Trigger khi contact status → 'chot'
-- [ ] Modal/Page: chọn products từ list
-- [ ] Số lượng input cho mỗi product
-- [ ] Chọn coupon (optional, chỉ coupon assigned cho user)
-- [ ] Auto calculate total với discount
-- [ ] Save deal + deal_products
-- [ ] Update contact status
+- [ ] Settings table hoặc config file
+- [ ] UI Settings page với:
+  - [ ] Thời gian chờ (X phút) - default 2 phút
+  - [ ] Mapping Loại nhu cầu → Team (multi-select)
+- [ ] API: Smart Routing service đọc config này
+- [ ] Realtime: Thay đổi config có hiệu lực ngay
 
 **Test Cases:**
-- [ ] Chọn 2 products → total = sum
-- [ ] Apply coupon 10% → total giảm 10%
-- [ ] Submit → Deal created, contact status = chot
+- [ ] Admin đổi thời gian chờ → Áp dụng ngay
+- [ ] Mapping mới → Contact mới được routing đúng team
+
+**Related:** SRS v2 Section 6.2
 
 ---
 
-## Epic: Products
+## Epic: Real-time & Notifications
 
-### TASK-028: Quản lý Sản phẩm (CRUD)
+### TASK-035: Cập nhật UI Real-time (ActionCable)
 | Field | Value |
 |-------|-------|
-| **Epic** | Products |
-| **Story Points** | 3 |
+| **Epic** | Notifications |
+| **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
 | **Status** | Backlog |
 
 **User Story:**
-> Là Admin, tôi muốn quản lý danh sách sản phẩm/dịch vụ.
+> Là Sale, tôi muốn thấy contact mới xuất hiện real-time mà không cần refresh.
+
+**Description:**
+WebSocket với ActionCable + Turbo Streams.
 
 **Acceptance Criteria:**
-- [ ] List products với filter by status (active/inactive)
-- [ ] Create/Edit form: code, name, description, base_price, status
-- [ ] Deactivate (không xóa, chỉ ẩn)
-- [ ] Search by name/code
+- [ ] ActionCable setup
+- [ ] Turbo Streams subscription cho contacts channel
+- [ ] Broadcast khi contact.created → List update
+- [ ] Broadcast khi contact.picked → Ẩn nút "Nhận khách" cho users khác
+- [ ] Connection status indicator (online/offline)
 
 **Test Cases:**
-- [ ] Create product → appears in list
-- [ ] Deactivate → không hiện trong deal form
-- [ ] Edit price → saved
+- [ ] Contact created → Appears real-time trên Dashboard
+- [ ] Contact picked → Button disappears for others
+- [ ] Disconnect → Reconnect automatically
 
 ---
 
-## Epic: Coupons
-
-### TASK-029: Quản lý Coupon (CRUD)
+### TASK-032: Thông báo Web Push
 | Field | Value |
 |-------|-------|
-| **Epic** | Coupons |
-| **Story Points** | 3 |
-| **Priority** | 🟢 Medium |
+| **Epic** | Notifications |
+| **Story Points** | 5 |
+| **Priority** | 🟡 High |
 | **Assignee** | |
 | **Status** | Backlog |
 
 **User Story:**
-> Là Admin, tôi muốn tạo coupon và gán cho nhân viên specific.
+> Là Sale, tôi muốn nhận push notification khi có contact mới ngay cả khi không focus tab.
 
 **Acceptance Criteria:**
-- [ ] Create coupon: code, description, discount_type (percent/fixed), value, expiry_date
-- [ ] Assign to specific employees (multi-select)
-- [ ] Coupon chỉ hiện cho employees được gán
-- [ ] Validate expiry date
+- [ ] Service worker registration
+- [ ] Push subscription management (save to DB)
+- [ ] Permission request UI
+- [ ] Notification content: title, body, icon, click action
+- [ ] Sidekiq job cho batch sending
+- [ ] Click notification → Redirect to contact
 
 **Test Cases:**
-- [ ] Create coupon → assigned employees thấy trong deal form
-- [ ] Expired coupon → không thể apply
-- [ ] Non-assigned employee → không thấy coupon
-
----
-
-### TASK-030: Danh sách & Chi tiết Deal
-| Field | Value |
-|-------|-------|
-| **Epic** | Deals |
-| **Story Points** | 3 |
-| **Priority** | 🟢 Medium |
-| **Assignee** | |
-| **Status** | Backlog |
-
-**User Story:**
-> Là Admin/Sale, tôi muốn xem danh sách deals và chi tiết.
-
-**Acceptance Criteria:**
-- [ ] List deals: contact name, total_value, payment_status, closed_by, closed_at
-- [ ] Filter by payment_status, date range
-- [ ] Detail page: products list, coupon applied, payment history
-- [ ] Update payment_status
-
-**Test Cases:**
-- [ ] Filter by date → correct results
-- [ ] Update payment_status → logged
+- [ ] User grants permission → Subscription saved
+- [ ] Contact created → All Sales receive push
+- [ ] Click notification → Redirect to contact
 
 ---
 
@@ -301,11 +253,18 @@ Core feature với concurrency handling và dynamic rules checking.
 
 | Priority | Count |
 |----------|-------|
-| 🟡 High | 4 |
-| 🟢 Medium | 2 |
+| 🔴 Critical | 3 |
+| 🟡 High | 5 |
 
-**Total Story Points:** ~48 (Heavy Sprint)
+**Total Story Points:** ~41
 
 **Dependencies:**
-- Sprint 2 completed (Contacts working)
-- Products seeded for testing
+- Sprint 2 completed (Contact model, Dashboard UI working)
+- Sidekiq running for background jobs
+
+**Success Criteria:**
+- [ ] Sale có thể Pick contact với rules check
+- [ ] Contact status flow hoạt động đúng
+- [ ] Admin có thể re-assign và cấu hình Smart Routing
+- [ ] Real-time updates hoạt động
+- [ ] Web Push notifications hoạt động

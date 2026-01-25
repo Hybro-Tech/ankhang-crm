@@ -8,7 +8,8 @@ RolePermission.delete_all
 Permission.delete_all
 Role.delete_all
 
-# 2. Define Permissions
+# 2. Define Permissions (Phase 1 Only)
+# NOTE: See docs/planning/phase2_notes.md for Phase 2 permissions (Deals, Products, Coupons)
 permissions_data = [
   # Contacts
   { code: 'contacts.view', name: 'Xem Contact', category: 'Contacts', description: 'Xem danh sách và chi tiết contact' },
@@ -21,18 +22,6 @@ permissions_data = [
   # Teams
   { code: 'teams.view', name: 'Xem Team', category: 'Teams', description: 'Xem danh sách team' },
   { code: 'teams.manage', name: 'Quản lý Team', category: 'Teams', description: 'Quản lý team (tạo/sửa/xóa)' },
-
-  # Products & Coupons
-  { code: 'products.view', name: 'Xem Sản phẩm', category: 'Products', description: 'Xem danh sách sản phẩm' },
-  { code: 'products.manage', name: 'Quản lý Sản phẩm', category: 'Products', description: 'Quản lý sản phẩm' },
-  { code: 'coupons.view', name: 'Xem Coupon', category: 'Coupons', description: 'Xem danh sách mã giảm giá' },
-  { code: 'coupons.manage', name: 'Quản lý Coupon', category: 'Coupons', description: 'Quản lý mã giảm giá' },
-
-  # Deals
-  { code: 'deals.view', name: 'Xem Deal', category: 'Deals', description: 'Xem danh sách deal' },
-  { code: 'deals.create', name: 'Tạo Deal', category: 'Deals', description: 'Tạo deal' },
-  { code: 'deals.edit', name: 'Sửa Deal', category: 'Deals', description: 'Sửa deal' },
-  { code: 'deals.update_payment', name: 'Cập nhật Thanh toán', category: 'Deals', description: 'Cập nhật thanh toán' },
 
   # Employees (User model)
   { code: 'employees.view', name: 'Xem Nhân viên', category: 'Employees', description: 'Xem danh sách nhân viên' },
@@ -102,10 +91,9 @@ roles['Super Admin'].permissions = Permission.all
 td_codes = %w[contacts.view contacts.create notifications.receive]
 roles['Tổng Đài'].permissions = Permission.where(code: td_codes)
 
-# Sale
+# Sale (Phase 1: No deals - see Phase 2 notes)
 sale_codes = %w[
   contacts.view contacts.pick contacts.edit contacts.update_status
-  deals.view deals.create deals.edit deals.update_payment
   notifications.receive logs.view_own
 ]
 roles['Sale'].permissions = Permission.where(code: sale_codes)
