@@ -77,6 +77,44 @@ class User < ApplicationRecord
   def inactive_message
     active? ? super : :inactive
   end
+
+  # ============================================================================
+  # TASK-015: Authorization Helpers
+  # ============================================================================
+
+  # Check if user has specific role
+  def has_role?(role_name)
+    roles.exists?(name: role_name)
+  end
+
+  # Check if user is Super Admin
+  def super_admin?
+    has_role?('Super Admin')
+  end
+
+  # Get all effective permission codes (roles + overrides)
+  # Used for view helpers and authorization checks
+  def effective_permission_codes
+    return Permission.pluck(:code) if super_admin?
+
+    # Get permissions from roles
+    role_codes = roles.eager_load(:permissions).flat_map { |r| r.permissions.pluck(:code) }
+
+    # Apply user-level overrides
+    granted_codes = user_permissions.where(granted: true)
+                                    .joins(:permission)
+                                    .pluck('permissions.code')
+    denied_codes = user_permissions.where(granted: false)
+                                   .joins(:permission)
+                                   .pluck('permissions.code')
+
+    ((role_codes + granted_codes) - denied_codes).uniq
+  end
+
+  # Check specific permission by code
+  def can_access?(permission_code)
+    effective_permission_codes.include?(permission_code)
+  end
 end
 
 #------------------------------------------------------------------------------

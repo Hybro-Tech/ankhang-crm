@@ -1,10 +1,29 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  # TASK-015: CanCanCan authorization
+  include CanCan::ControllerAdditions
+
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   # TASK-012: Use separate layout for Devise auth pages
   layout :layout_by_resource
+
+  # TASK-015: Handle authorization errors
+  rescue_from CanCan::AccessDenied do |exception|
+    respond_to do |format|
+      format.html do
+        flash[:alert] = 'Bạn không có quyền thực hiện thao tác này.'
+        redirect_to(request.referer || root_path)
+      end
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update('flash',
+                                                 partial: 'shared/flash_messages',
+                                                 locals: { alert: 'Bạn không có quyền thực hiện thao tác này.' })
+      end
+      format.json { render json: { error: exception.message }, status: :forbidden }
+    end
+  end
 
   protected
 

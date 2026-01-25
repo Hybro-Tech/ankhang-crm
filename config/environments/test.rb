@@ -4,8 +4,8 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
-  # Allow Capybara host
-  config.hosts << "www.example.com"
+  # Clear hosts to allow Capybara tests (which use www.example.com by default)
+  config.hosts.clear
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.

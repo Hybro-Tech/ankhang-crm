@@ -24,10 +24,10 @@
 #
 FactoryBot.define do
   factory :user do
-    email { Faker::Internet.email }
-    password { "password123" }
+    sequence(:email) { |n| "user#{n}_#{SecureRandom.hex(4)}@test.com" }
+    password { 'password123' }
     name { Faker::Name.name }
-    username { Faker::Internet.username(specifier: 5..10) }
+    sequence(:username) { |n| "user_#{n}_#{SecureRandom.hex(4)}" }
     status { :active }
   end
 end

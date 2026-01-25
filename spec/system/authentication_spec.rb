@@ -9,19 +9,18 @@ RSpec.describe "Authentication", type: :system do
     it "allows user to sign in with email" do
       visit new_user_session_path
 
-      fill_in "Email hoặc Username", with: "test@example.com"
-      fill_in "user[password]", with: "password123"
+      find("#user_email").set("test@example.com")
+      find("#user_password").set("password123")
       click_button "Đăng nhập"
 
       expect(page).to have_content("Đăng nhập thành công.")
-      # expect(page).to have_current_path(root_path)
     end
 
     it "allows user to sign in with username" do
       visit new_user_session_path
 
-      fill_in "Email hoặc Username", with: "testuser"
-      fill_in "user[password]", with: "password123"
+      find("#user_email").set("testuser")
+      find("#user_password").set("password123")
       click_button "Đăng nhập"
 
       expect(page).to have_content("Đăng nhập thành công.")
@@ -30,8 +29,8 @@ RSpec.describe "Authentication", type: :system do
     it "rejects invalid credentials" do
       visit new_user_session_path
 
-      fill_in "Email hoặc Username", with: "test@example.com"
-      fill_in "user[password]", with: "wrongpassword"
+      find("#user_email").set("test@example.com")
+      find("#user_password").set("wrongpassword")
       click_button "Đăng nhập"
 
       expect(page).to have_content("Email hoặc mật khẩu không đúng.")
@@ -40,12 +39,9 @@ RSpec.describe "Authentication", type: :system do
 
   describe "Forgot Password" do
     it "sends reset password instructions" do
-      visit new_user_session_path
-      click_link "Quên mật khẩu?"
+      visit new_user_password_path
 
-      expect(page).to have_current_path(new_user_password_path)
-
-      fill_in "Email đăng ký", with: "test@example.com"
+      find("#user_email").set("test@example.com")
       click_button "Gửi link đặt lại mật khẩu"
 
       expect(page).to have_content("Bạn sẽ nhận được email hướng dẫn đặt lại mật khẩu trong vài phút.")

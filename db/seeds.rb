@@ -120,4 +120,115 @@ teams_data.each do |t|
   end
 end
 
+# 6. Create Test Users (TASK-015)
+puts "➡️ Creating Test Users..."
+
+# Clean up existing test users first
+User.where("email LIKE '%@ankhang.test'").destroy_all
+
+teams = Team.all.index_by(&:name)
+
+test_users = [
+  # Super Admin
+  {
+    email: 'admin@ankhang.test',
+    username: 'admin',
+    name: 'Nguyễn Văn Admin',
+    password: 'Admin@123',
+    role: 'Super Admin',
+    team: nil
+  },
+  # Tổng Đài
+  {
+    email: 'tongdai1@ankhang.test',
+    username: 'tongdai1',
+    name: 'Trần Thị Tổng Đài',
+    password: 'Tongdai@123',
+    role: 'Tổng Đài',
+    team: nil
+  },
+  {
+    email: 'tongdai2@ankhang.test',
+    username: 'tongdai2',
+    name: 'Lê Văn Tiếp Nhận',
+    password: 'Tongdai@123',
+    role: 'Tổng Đài',
+    team: nil
+  },
+  # Sale - Team Hà Nội
+  {
+    email: 'sale.hn1@ankhang.test',
+    username: 'sale_hn1',
+    name: 'Phạm Văn Sale HN',
+    password: 'Sale@123',
+    role: 'Sale',
+    team: 'Team Hà Nội'
+  },
+  {
+    email: 'sale.hn2@ankhang.test',
+    username: 'sale_hn2',
+    name: 'Hoàng Thị Kinh Doanh',
+    password: 'Sale@123',
+    role: 'Sale',
+    team: 'Team Hà Nội'
+  },
+  # Sale - Team HCM
+  {
+    email: 'sale.hcm1@ankhang.test',
+    username: 'sale_hcm1',
+    name: 'Võ Văn Sale HCM',
+    password: 'Sale@123',
+    role: 'Sale',
+    team: 'Team HCM'
+  },
+  {
+    email: 'sale.hcm2@ankhang.test',
+    username: 'sale_hcm2',
+    name: 'Đặng Thị Bán Hàng',
+    password: 'Sale@123',
+    role: 'Sale',
+    team: 'Team HCM'
+  },
+  # CSKH
+  {
+    email: 'cskh1@ankhang.test',
+    username: 'cskh1',
+    name: 'Bùi Văn Chăm Sóc',
+    password: 'Cskh@123',
+    role: 'CSKH',
+    team: nil
+  },
+  {
+    email: 'cskh2@ankhang.test',
+    username: 'cskh2',
+    name: 'Ngô Thị Hỗ Trợ',
+    password: 'Cskh@123',
+    role: 'CSKH',
+    team: nil
+  }
+]
+
+test_users.each do |u|
+  user = User.find_or_create_by!(email: u[:email]) do |new_user|
+    new_user.username = u[:username]
+    new_user.name = u[:name]
+    new_user.password = u[:password]
+    new_user.password_confirmation = u[:password]
+    new_user.team = teams[u[:team]] if u[:team]
+  end
+
+  # Assign role
+  role = roles[u[:role]]
+  user.roles << role unless user.roles.include?(role)
+
+  puts "   ✓ #{u[:email]} (#{u[:role]})"
+end
+
 puts "✅ Seed completed!"
+puts ""
+puts "📧 Test Accounts:"
+puts "   admin@ankhang.test / Admin@123 (Super Admin)"
+puts "   tongdai1@ankhang.test / Tongdai@123 (Tổng Đài)"
+puts "   sale.hn1@ankhang.test / Sale@123 (Sale - Team Hà Nội)"
+puts "   sale.hcm1@ankhang.test / Sale@123 (Sale - Team HCM)"
+puts "   cskh1@ankhang.test / Cskh@123 (CSKH)"
