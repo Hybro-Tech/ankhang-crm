@@ -257,17 +257,17 @@ Tạo migrations cho dynamic permissions theo SRS PERM-001→007.
 | **Story Points** | 2 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Developer, tôi muốn có bảng teams để nhóm nhân viên.
 
 **Acceptance Criteria:**
-- [ ] `teams` table (name, description, manager_id, region)
-- [ ] FK từ users.team_id → teams.id
+- [x] `teams` table (name, description, manager_id, region)
+- [x] FK từ users.team_id → teams.id
 
 **Test Cases:**
-- [ ] Team với users association hoạt động
+- [x] Team với users association hoạt động
 
 ---
 
@@ -308,7 +308,7 @@ Seed Super Admin, Tổng Đài, Sale, CSKH với permissions theo SRS.
 | **Story Points** | 3 |
 | **Priority** | 🔴 Critical |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là User, tôi muốn đăng nhập vào hệ thống bằng username/password.
@@ -317,16 +317,16 @@ Seed Super Admin, Tổng Đài, Sale, CSKH với permissions theo SRS.
 Setup Devise theo SRS AUTH-001→006.
 
 **Acceptance Criteria:**
-- [ ] Login với username/email
-- [ ] Password bcrypt cost 12
-- [ ] Session timeout 3 ngày
-- [ ] Remember me 30 ngày
-- [ ] Lock sau 5 lần fail (15 phút)
+- [x] Login với username/email
+- [x] Password bcrypt cost 12
+- [x] Session timeout 3 ngày
+- [x] Remember me 30 ngày
+- [x] Lock sau 5 lần fail (15 phút)
 
 **Test Cases:**
-- [ ] Login với valid credentials → success
-- [ ] Login với wrong password → error
-- [ ] 5 wrong attempts → account locked
+- [x] Login với valid credentials → success
+- [x] Login với wrong password → error
+- [x] 5 wrong attempts → account locked
 
 **Related:** SRS Section 4.1
 
@@ -339,7 +339,7 @@ Setup Devise theo SRS AUTH-001→006.
 | **Story Points** | 2 |
 | **Priority** | 🔴 Critical |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là User, tôi muốn có trang login đẹp và dễ dùng.
@@ -348,14 +348,14 @@ Setup Devise theo SRS AUTH-001→006.
 Implement login page theo wireframe `index.html`.
 
 **Acceptance Criteria:**
-- [ ] Form login (username, password, remember me)
-- [ ] Link "Quên mật khẩu"
-- [ ] Error message khi login fail
-- [ ] Responsive design
+- [x] Form login (username, password, remember me)
+- [x] Link "Quên mật khẩu"
+- [x] Error message khi login fail
+- [x] Responsive design
 
 **Test Cases:**
-- [ ] UI giống wireframe
-- [ ] Form submit qua Turbo
+- [x] UI giống wireframe
+- [x] Form submit qua Turbo
 
 **Related:** Wireframe `docs/ui-design/wireframes/index.html`
 
@@ -368,7 +368,7 @@ Implement login page theo wireframe `index.html`.
 | **Story Points** | 3 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là User, tôi muốn reset password nếu quên.
@@ -377,16 +377,16 @@ Implement login page theo wireframe `index.html`.
 Implement forgot password theo SRS AUTH-003.
 
 **Acceptance Criteria:**
-- [ ] Form nhập email
-- [ ] Gửi email với reset link
-- [ ] Link hết hạn sau 1 giờ
-- [ ] Form đổi password mới
+- [x] Form nhập email
+- [x] Gửi email với reset link
+- [x] Link hết hạn sau 1 giờ
+- [x] Form đổi password mới
 
 **Test Cases:**
-- [ ] Request reset → email sent
-- [ ] Click link → form hiển thị
-- [ ] Submit new password → login OK
-- [ ] Click expired link → error
+- [x] Request reset → email sent
+- [x] Click link → form hiển thị
+- [x] Submit new password → login OK
+- [x] Click expired link → error
 
 **Related:** Wireframe `docs/ui-design/wireframes/forgot_password.html`
 
@@ -399,7 +399,7 @@ Implement forgot password theo SRS AUTH-003.
 | **Story Points** | 2 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Admin, tôi muốn xem log ai đã login/logout.
@@ -408,14 +408,14 @@ Implement forgot password theo SRS AUTH-003.
 Log auth events vào ActivityLog.
 
 **Acceptance Criteria:**
-- [ ] Log login success
-- [ ] Log login failed (username + IP)
-- [ ] Log logout
-- [ ] Log password change
+- [x] Log login success
+- [x] Log login failed (username + IP)
+- [x] Log logout
+- [x] Log password change
 
 **Test Cases:**
-- [ ] Login → ActivityLog created với action 'login'
-- [ ] Log chứa IP address và user_agent
+- [x] Login → ActivityLog created với action 'login'
+- [x] Log chứa IP address và user_agent
 
 ---
 

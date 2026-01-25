@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= content_for(:title) || "Đăng nhập" %> - AnKhangCRM</title>
+  <meta name="description" content="Hệ thống Quản lý Luật An Khang">
+  
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  
+  <%# Stylesheets %>
+  <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  
+  <%# Font Awesome %>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
+  <%# JavaScript %>
+  <%= javascript_importmap_tags %>
+</head>
+
+<body class="bg-gray-100 font-sans text-gray-800 min-h-screen flex items-center justify-center">
+  <%# Flash Messages %>
+  <% if notice %>
+    <div class="fixed top-4 right-4 z-50 max-w-sm">
+      <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg shadow-lg flex items-center" role="alert">
+        <i class="fa-solid fa-check-circle mr-2"></i>
+        <span><%= notice %></span>
+        <button type="button" class="ml-auto" data-action="click->flash#dismiss">
+          <i class="fa-solid fa-times text-green-600"></i>
+        </button>
+      </div>
+    </div>
+  <% end %>
+  
+  <% if alert %>
+    <div class="fixed top-4 right-4 z-50 max-w-sm">
+      <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg shadow-lg flex items-center" role="alert">
+        <i class="fa-solid fa-exclamation-circle mr-2"></i>
+        <span><%= alert %></span>
+        <button type="button" class="ml-auto" data-action="click->flash#dismiss">
+          <i class="fa-solid fa-times text-red-600"></i>
+        </button>
+      </div>
+    </div>
+  <% end %>
+
+  <%= yield %>
+</body>
+</html>

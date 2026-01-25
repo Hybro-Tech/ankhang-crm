@@ -105,4 +105,19 @@ cskh_codes = %w[
 ]
 roles['CSKH'].permissions = Permission.where(code: cskh_codes)
 
+# 5. Create Teams (TASK-009)
+puts "➡️ Creating Teams..."
+teams_data = [
+  { name: 'Team Hà Nội', description: 'Đội ngũ kinh doanh khu vực Miền Bắc', region: 'Bắc' },
+  { name: 'Team HCM', description: 'Đội ngũ kinh doanh khu vực Miền Nam', region: 'Nam' },
+  { name: 'Team Kế toán', description: 'Đội ngũ xử lý dịch vụ Kế toán', region: 'Trung' }
+]
+
+teams_data.each do |t|
+  Team.find_or_create_by!(name: t[:name]) do |team|
+    team.description = t[:description]
+    team.region = t[:region]
+  end
+end
+
 puts "✅ Seed completed!"

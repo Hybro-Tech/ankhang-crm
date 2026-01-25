@@ -23,16 +23,25 @@
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  # TASK-011: Devise modules
+  # :lockable - khóa sau 5 lần fail (15 phút)
+  # :timeoutable - session timeout sau 3 ngày
+  # :trackable - theo dõi lịch sử đăng nhập
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         :lockable, :timeoutable, :trackable
+
+  # Virtual attribute for authenticating by either username or email
+  attr_accessor :login
 
   # Enums (TASK-007)
   enum :status, { active: 0, inactive: 1, locked: 2 }
 
   # Validations
   validates :name, presence: true
+  validates :username, uniqueness: { case_sensitive: false }, allow_blank: true,
+                       length: { minimum: 3, maximum: 50 },
+                       format: { with: /\A[a-zA-Z0-9_]+\z/, message: 'chỉ cho phép chữ, số và dấu gạch dưới' }
 
   # Associations (TASK-008)
   has_many :user_roles, dependent: :destroy
@@ -40,6 +49,34 @@ class User < ApplicationRecord
 
   has_many :user_permissions, dependent: :destroy
   # We might want direct permissions link later
+
+  # TASK-009: Team associations
+  belongs_to :team, optional: true
+  has_one :managed_team, class_name: 'Team', foreign_key: :manager_id,
+                         inverse_of: :manager, dependent: :nullify
+
+  # TASK-011: Allow login with username or email
+  # Override Devise's find_for_database_authentication
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    login = conditions.delete(:login) || conditions.delete(:email)
+    
+    if login.present?
+      where('lower(email) = :value OR lower(username) = :value', value: login.downcase).first
+    else
+      where(conditions.to_h).first
+    end
+  end
+
+  # Check if user can login (active status)
+  def active_for_authentication?
+    super && active?
+  end
+
+  # Custom message for inactive account
+  def inactive_message
+    active? ? super : :inactive
+  end
 end
 
 #------------------------------------------------------------------------------

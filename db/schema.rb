@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_23_152230) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_25_042150) do
+  create_table "activity_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "action", limit: 50, null: false
+    t.string "subject_type"
+    t.bigint "subject_id"
+    t.json "details"
+    t.string "ip_address", limit: 45
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action"], name: "index_activity_logs_on_action"
+    t.index ["subject_type", "subject_id", "created_at"], name: "index_activity_logs_on_subject_and_created_at"
+    t.index ["subject_type", "subject_id"], name: "index_activity_logs_on_subject"
+    t.index ["user_id", "created_at"], name: "index_activity_logs_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_activity_logs_on_user_id"
+  end
+
   create_table "permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "description"
     t.datetime "created_at", null: false
@@ -172,6 +189,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_152230) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "teams", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.text "description"
+    t.string "region", limit: 50
+    t.bigint "manager_id", comment: "FK to users.id - Team manager"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["manager_id"], name: "index_teams_on_manager_id"
+    t.index ["name"], name: "index_teams_on_name", unique: true
+    t.index ["region"], name: "index_teams_on_region"
+  end
+
   create_table "user_permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "permission_id", null: false
@@ -201,16 +230,29 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_152230) do
     t.string "name", default: "", null: false
     t.string "phone", default: ""
     t.integer "status", default: 0, null: false
-    t.integer "team_id"
+    t.bigint "team_id"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "username", limit: 50
+    t.integer "failed_attempts", default: 0, null: false
+    t.string "unlock_token"
+    t.datetime "locked_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["team_id"], name: "index_users_on_team_id"
+    t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "activity_logs", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -219,9 +261,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_23_152230) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "teams", "users", column: "manager_id", on_delete: :nullify
   add_foreign_key "user_permissions", "permissions"
   add_foreign_key "user_permissions", "users"
   add_foreign_key "user_permissions", "users", column: "created_by_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
+  add_foreign_key "users", "teams", on_delete: :nullify
 end

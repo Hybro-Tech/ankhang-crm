@@ -22,6 +22,10 @@ module App
     # Use Solid Cache for Caching
     config.cache_store = :solid_cache_store
 
+    # TASK-014b: Set default locale to Vietnamese
+    config.i18n.available_locales = [:en, :vi]
+    config.i18n.default_locale = :vi
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

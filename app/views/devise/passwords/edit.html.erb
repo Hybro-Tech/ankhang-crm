@@ -1,25 +1,87 @@
-<h2>Change your password</h2>
+<%# TASK-013: Reset Password page based on mockup docs/ui-design/wireframes/reset_password.html %>
+<% content_for :title, "Đặt lại mật khẩu" %>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-  <%= f.hidden_field :reset_password_token %>
+<div class="w-full max-w-md">
+  <%# Logo %>
+  <div class="text-center mb-8">
+    <div class="inline-flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 mb-4 shadow-sm">
+      <i class="fa-solid fa-scale-balanced text-[#0B387A] text-4xl"></i>
+    </div>
+    <h1 class="text-3xl font-bold text-[#0B387A] tracking-wide">AnKhangCRM</h1>
+    <p class="text-blue-600/80 mt-2">Hệ thống quản lý khách hàng</p>
+  </div>
 
-  <div class="field">
-    <%= f.label :password, "New password" %><br />
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em><br />
+  <%# Reset Password Card %>
+  <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-4">
+        <i class="fa-solid fa-lock text-[#0B387A] text-2xl"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800">Đặt lại mật khẩu</h2>
+      <p class="text-gray-500 mt-2 text-sm">Vui lòng nhập mật khẩu mới cho tài khoản của bạn</p>
+    </div>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "space-y-5" }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+      <%= f.hidden_field :reset_password_token %>
+
+      <%# New Password %>
+      <div>
+        <%= f.label :password, "Mật khẩu mới", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <% if @minimum_password_length %>
+          <em class="text-xs text-gray-400">(Tối thiểu <%= @minimum_password_length %> ký tự)</em>
+        <% end %>
+        <div class="relative" data-controller="password-toggle">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fa-solid fa-key text-gray-400"></i>
+          </div>
+          <%= f.password_field :password, autofocus: true, autocomplete: "new-password", placeholder: "••••••••",
+              data: { password_toggle_target: "input" },
+              class: "w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B387A] focus:border-[#0B387A] transition-colors outline-none" %>
+          <button type="button" 
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  data-action="click->password-toggle#toggle">
+            <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <%# Confirm Password %>
+      <div>
+        <%= f.label :password_confirmation, "Xác nhận mật khẩu", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <div class="relative" data-controller="password-toggle">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fa-solid fa-key text-gray-400"></i>
+          </div>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••",
+              data: { password_toggle_target: "input" },
+              class: "w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B387A] focus:border-[#0B387A] transition-colors outline-none" %>
+          <button type="button" 
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  data-action="click->password-toggle#toggle">
+            <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <%# Submit Button %>
+      <%= f.button type: "submit", class: "w-full bg-[#0B387A] text-white py-3 rounded-lg font-semibold hover:bg-blue-900 transition-colors shadow-lg shadow-blue-500/30 flex items-center justify-center cursor-pointer" do %>
+        <i class="fa-solid fa-check-circle mr-2"></i>
+        <span>Đổi mật khẩu</span>
+      <% end %>
     <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "new-password" %>
+
+    <%# Back to Login %>
+    <div class="mt-6 text-center">
+      <%= link_to new_session_path(resource_name), class: "text-[#0B387A] hover:text-blue-900 text-sm font-medium inline-flex items-center" do %>
+        <i class="fa-solid fa-arrow-left mr-2"></i>
+        <span>Quay lại Đăng nhập</span>
+      <% end %>
+    </div>
   </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Change my password" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+  <%# Footer %>
+  <p class="text-center text-gray-500 text-sm mt-6">
+    © 2026 AnKhangCRM. All rights reserved.
+  </p>
+</div>
