@@ -9,7 +9,7 @@ RSpec.describe "Authentication", type: :system do
     it "allows user to sign in with email" do
       visit new_user_session_path
 
-      find("#user_email").set("test@example.com")
+      find("#user_login").set("test@example.com")
       find("#user_password").set("password123")
       click_button "Đăng nhập"
 
@@ -19,7 +19,7 @@ RSpec.describe "Authentication", type: :system do
     it "allows user to sign in with username" do
       visit new_user_session_path
 
-      find("#user_email").set("testuser")
+      find("#user_login").set("testuser")
       find("#user_password").set("password123")
       click_button "Đăng nhập"
 
@@ -29,7 +29,7 @@ RSpec.describe "Authentication", type: :system do
     it "rejects invalid credentials" do
       visit new_user_session_path
 
-      find("#user_email").set("test@example.com")
+      find("#user_login").set("test@example.com")
       find("#user_password").set("wrongpassword")
       click_button "Đăng nhập"
 

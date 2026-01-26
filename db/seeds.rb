@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-puts "🌱 Seeding RBAC data..."
+Rails.logger.debug "🌱 Seeding RBAC data..."
 
 # 1. Clean up
 UserPermission.delete_all
@@ -60,7 +60,7 @@ permissions_data = [
   { code: "settings.manage", name: "Quản lý Cài đặt", category: "Settings", description: "Quản lý cài đặt" }
 ]
 
-puts "➡️ Creating #{permissions_data.size} permissions..."
+Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }
 permissions_data.each do |p|
   Permission.find_or_create_by!(code: p[:code]) do |perm|
     perm.name = p[:name]
@@ -70,7 +70,7 @@ permissions_data.each do |p|
 end
 
 # 3. Create Roles
-puts "➡️ Creating Roles..."
+Rails.logger.debug "➡️ Creating Roles..."
 roles_data = [
   { name: "Super Admin", description: "Quản trị viên hệ thống", is_system: true },
   { name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: false },
@@ -87,7 +87,7 @@ roles_data.each do |r|
 end
 
 # 4. Assign Permissions
-puts "➡️ Assigning Permissions..."
+Rails.logger.debug "➡️ Assigning Permissions..."
 
 # Super Admin: All permissions
 roles["Super Admin"].permissions = Permission.all
@@ -111,7 +111,7 @@ cskh_codes = %w[
 roles["CSKH"].permissions = Permission.where(code: cskh_codes)
 
 # 5. Create Teams (TASK-009)
-puts "➡️ Creating Teams..."
+Rails.logger.debug "➡️ Creating Teams..."
 teams_data = [
   { name: "Team Hà Nội", description: "Đội ngũ kinh doanh khu vực Miền Bắc", region: "Bắc" },
   { name: "Team HCM", description: "Đội ngũ kinh doanh khu vực Miền Nam", region: "Nam" },
@@ -126,7 +126,7 @@ teams_data.each do |t|
 end
 
 # 6. Create Test Users (TASK-015)
-puts "➡️ Creating Test Users..."
+Rails.logger.debug "➡️ Creating Test Users..."
 
 # Clean up existing test users first
 User.where("email LIKE '%@ankhang.test'").destroy_all
@@ -226,14 +226,14 @@ test_users.each do |u|
   role = roles[u[:role]]
   user.roles << role unless user.roles.include?(role)
 
-  puts "   ✓ #{u[:email]} (#{u[:role]})"
+  Rails.logger.debug { "   ✓ #{u[:email]} (#{u[:role]})" }
 end
 
-puts "✅ Seed completed!"
-puts ""
-puts "📧 Test Accounts:"
-puts "   admin@ankhang.test / Admin@123 (Super Admin)"
-puts "   tongdai1@ankhang.test / Tongdai@123 (Tổng Đài)"
-puts "   sale.hn1@ankhang.test / Sale@123 (Sale - Team Hà Nội)"
-puts "   sale.hcm1@ankhang.test / Sale@123 (Sale - Team HCM)"
-puts "   cskh1@ankhang.test / Cskh@123 (CSKH)"
+Rails.logger.debug "✅ Seed completed!"
+Rails.logger.debug ""
+Rails.logger.debug "📧 Test Accounts:"
+Rails.logger.debug "   admin@ankhang.test / Admin@123 (Super Admin)"
+Rails.logger.debug "   tongdai1@ankhang.test / Tongdai@123 (Tổng Đài)"
+Rails.logger.debug "   sale.hn1@ankhang.test / Sale@123 (Sale - Team Hà Nội)"
+Rails.logger.debug "   sale.hcm1@ankhang.test / Sale@123 (Sale - Team HCM)"
+Rails.logger.debug "   cskh1@ankhang.test / Cskh@123 (CSKH)"

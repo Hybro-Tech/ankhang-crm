@@ -4,9 +4,7 @@
 # Provides CRUD operations for roles with permission matrix
 class RolesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_role, only: %i[show edit update destroy clone]
   load_and_authorize_resource
-  # skip_authorization_check
 
   def index
     @roles = Role.includes(:users)
@@ -83,15 +81,11 @@ class RolesController < ApplicationController
   end
 
   def role_params
-    params.require(:role).permit(:name, :description)
+    params.expect(role: %i[name description])
   end
 
   def update_permissions
     permission_ids = params[:role][:permission_ids]&.reject(&:blank?)&.map(&:to_i) || []
     @role.permission_ids = permission_ids
-  end
-
-  def authorize_roles_manage
-    authorize! :manage, Role
   end
 end

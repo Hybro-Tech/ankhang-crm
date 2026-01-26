@@ -29,7 +29,7 @@ Rails.application.reload_routes!
 # require only the support files necessary.
 #
 # Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Rails.root.glob("spec/support/**/*.rb").each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -73,4 +73,17 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # TASK-FIX: Force localhost and disable CSRF for request specs
+  # This resolves HostAuthorization blocks and 422 Unprocessable Content errors
+  config.before(:each, type: :request) do
+    host! "localhost"
+    ActionController::Base.allow_forgery_protection = false
+  end
+
+  config.before(:each, type: :system) do
+    driven_by :rack_test
+    host! "localhost"
+    ActionController::Base.allow_forgery_protection = false
+  end
 end
