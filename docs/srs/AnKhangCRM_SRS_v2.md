@@ -120,7 +120,7 @@ erDiagram
 |--------|:--------:|-------|
 | Mã liên hệ | Tự động | VD: KH2026-001 |
 | Tên KH | ✅ | Thường là tên Zalo |
-| SĐT | ✅ | Check trùng lặp realtime |
+| SĐT | ✅ | Unique (Trùng → Block + Báo Sale cũ) |
 | Zalo Link | | Link profile Zalo |
 | Zalo QR | | Upload/Paste ảnh QR |
 | Email | | Email liên hệ |
@@ -131,7 +131,18 @@ erDiagram
 | Lịch hẹn tiếp theo | | Nhắc trên Dashboard Sale |
 | Trạng thái | Tự động | Xem sơ đồ bên dưới |
 
-### 5.2 Trạng thái Contact
+### 5.2 Xử lý Trùng Contact
+
+```mermaid
+flowchart TD
+    A[Tổng đài nhập SĐT/Zalo] --> B{Check trùng?}
+    B -->|Không| C[Tạo mới -> Smart Routing]
+    B -->|Có| D[⚠️ Block tạo mới]
+    D --> E[🔔 Notify Sale phụ trách cũ]
+    E --> F[Sale cũ nhận thông báo + gọi lại]
+```
+
+### 5.3 Trạng thái Contact
 
 ```mermaid
 stateDiagram-v2
