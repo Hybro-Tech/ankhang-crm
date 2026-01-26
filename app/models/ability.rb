@@ -82,7 +82,8 @@ class Ability
     settings: "Setting",
     deals: "Deal",
     products: "Product",
-    coupons: "Coupon"
+    coupons: "Coupon",
+    holidays: "Holiday"
   }.freeze
 
   def subject_to_model_class(subject)

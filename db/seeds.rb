@@ -6,7 +6,7 @@ Rails.logger.debug "🌱 Seeding RBAC data..."
 # NOTE: If running seed on fresh DB, uncomment these lines
 # Skip cleanup on existing data to avoid FK constraint errors
 # UserPermission.delete_all
-# RolePermission.delete_all  
+# RolePermission.delete_all
 # Permission.delete_all
 # Role.delete_all
 
@@ -59,7 +59,11 @@ permissions_data = [
   { code: "reports.view", name: "Xem Báo cáo", category: "Reports", description: "Xem báo cáo" },
   { code: "reports.export", name: "Xuất Báo cáo", category: "Reports", description: "Xuất báo cáo" },
   { code: "settings.view", name: "Xem Cài đặt", category: "Settings", description: "Xem cài đặt" },
-  { code: "settings.manage", name: "Quản lý Cài đặt", category: "Settings", description: "Quản lý cài đặt" }
+  { code: "settings.manage", name: "Quản lý Cài đặt", category: "Settings", description: "Quản lý cài đặt" },
+
+  # Holidays (TASK-047)
+  { code: "holidays.manage", name: "Quản lý Ngày nghỉ", category: "Organization",
+    description: "Thêm/sửa/xóa ngày nghỉ lễ" }
 ]
 
 Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }
@@ -131,7 +135,10 @@ end
 Rails.logger.debug "➡️ Creating Test Users..."
 
 # Clean up existing test users first
-User.where("email LIKE '%@ankhang.test'").destroy_all
+users_to_delete = User.where("email LIKE '%@ankhang.test'")
+# Delete dependent logs to avoid FK error
+ActivityLog.where(user_id: users_to_delete.pluck(:id)).delete_all if defined?(ActivityLog)
+users_to_delete.destroy_all
 
 teams = Team.all.index_by(&:name)
 
@@ -229,6 +236,40 @@ test_users.each do |u|
   user.roles << role unless user.roles.include?(role)
 
   Rails.logger.debug { "   ✓ #{u[:email]} (#{u[:role]})" }
+end
+
+# 7. Seed Holidays (TASK-047)
+Rails.logger.debug "➡️ Creating Holidays..."
+holidays2025 = [
+  { date: "2025-01-01", name: "Tết Dương lịch" },
+  # Tet Nguyen Dan (Jan 25 - Feb 2)
+  { date: "2025-01-25", name: "Nghỉ Tết Âm lịch (26 tháng Chạp)" },
+  { date: "2025-01-26", name: "Nghỉ Tết Âm lịch (27 tháng Chạp)" },
+  { date: "2025-01-27", name: "Nghỉ Tết Âm lịch (28 tháng Chạp)" },
+  { date: "2025-01-28", name: "Nghỉ Tết Âm lịch (29 tháng Chạp)" },
+  { date: "2025-01-29", name: "Tết Nguyên Đán (Mùng 1)" },
+  { date: "2025-01-30", name: "Tết Nguyên Đán (Mùng 2)" },
+  { date: "2025-01-31", name: "Tết Nguyên Đán (Mùng 3)" },
+  { date: "2025-02-01", name: "Nghỉ Tết Âm lịch (Mùng 4)" },
+  { date: "2025-02-02", name: "Nghỉ Tết Âm lịch (Mùng 5)" },
+  # Hung Kings
+  { date: "2025-04-07", name: "Giỗ tổ Hùng Vương" },
+  # 30/4 - 1/5
+  { date: "2025-04-30", name: "Ngày Thống nhất đất nước" },
+  { date: "2025-05-01", name: "Quốc tế Lao động" },
+  { date: "2025-05-02", name: "Nghỉ lễ 30/4-1/5 (Hoán đổi/Nghỉ bù)" },
+  # National Day (Aug 30 - Sep 2)
+  { date: "2025-08-30", name: "Nghỉ lễ Quốc khánh" },
+  { date: "2025-08-31", name: "Nghỉ lễ Quốc khánh" },
+  { date: "2025-09-01", name: "Nghỉ lễ Quốc khánh" },
+  { date: "2025-09-02", name: "Quốc khánh" }
+]
+
+holidays2025.each do |h|
+  Holiday.find_or_create_by!(date: h[:date]) do |holiday|
+    holiday.name = h[:name]
+    holiday.description = "Lịch nghỉ lễ chính thức năm 2025"
+  end
 end
 
 Rails.logger.debug "✅ Seed completed!"

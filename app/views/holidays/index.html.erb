@@ -1,0 +1,200 @@
+<% content_for :title, "Quản lý Lịch nghỉ lễ #{@selected_year}" %>
+
+<%
+  month_names = {
+    1 => "Tháng 1", 2 => "Tháng 2", 3 => "Tháng 3", 4 => "Tháng 4",
+    5 => "Tháng 5", 6 => "Tháng 6", 7 => "Tháng 7", 8 => "Tháng 8",
+    9 => "Tháng 9", 10 => "Tháng 10", 11 => "Tháng 11", 12 => "Tháng 12"
+  }
+  month_abbr = { 1 => "T1", 2 => "T2", 3 => "T3", 4 => "T4", 5 => "T5", 6 => "T6", 
+                 7 => "T7", 8 => "T8", 9 => "T9", 10 => "T10", 11 => "T11", 12 => "T12" }
+%>
+
+<!-- Header -->
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Lịch nghỉ lễ <%= @selected_year %></h1>
+    <p class="text-sm text-gray-500">Quản lý ngày nghỉ để hệ thống hoạt động chính xác</p>
+  </div>
+  <div class="flex items-center gap-3">
+    <%= form_with url: holidays_path, method: :get, local: true, class: "flex items-center gap-2" do %>
+      <%= select_tag :year, 
+          options_for_select(@available_years.map { |y| [y, y] }, @selected_year),
+          class: "border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-blue",
+          onchange: "this.form.submit()" %>
+    <% end %>
+    <% if can? :create, Holiday %>
+      <%= link_to new_holiday_path, class: "bg-brand-blue text-white px-4 py-2 rounded-lg shadow hover:bg-blue-900 transition flex items-center" do %>
+        <i class="fa-solid fa-plus mr-2"></i> Thêm ngày nghỉ
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<!-- Main Content: 2-Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  
+  <!-- Left: Year Calendar Overview -->
+  <div class="lg:col-span-1 space-y-4">
+    <!-- Stats Summary Box -->
+    <div class="bg-brand-blue text-white rounded-xl p-4">
+      <div class="text-center">
+        <p class="text-4xl font-bold"><%= @total_holidays %></p>
+        <p class="text-blue-100 text-sm">ngày nghỉ trong năm <%= @selected_year %></p>
+      </div>
+      <div class="mt-4 pt-4 border-t border-blue-400/30 grid grid-cols-2 gap-4 text-center">
+        <div>
+          <p class="text-2xl font-bold"><%= @holidays_by_month.keys.count %></p>
+          <p class="text-blue-200 text-xs">tháng có nghỉ</p>
+        </div>
+        <div>
+          <p class="text-2xl font-bold"><%= @holidays_by_month.values.flatten.group_by(&:name).keys.count %></p>
+          <p class="text-blue-200 text-xs">dịp lễ</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Year Month Grid - CLICKABLE -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold text-gray-900 text-sm">Chọn tháng xem</h3>
+        <% if @selected_month.present? %>
+          <%= link_to holidays_path(year: @selected_year), class: "text-xs text-brand-blue hover:underline" do %>
+            Xem tất cả
+          <% end %>
+        <% end %>
+      </div>
+      <div class="grid grid-cols-4 gap-2">
+        <% (1..12).each do |month| %>
+          <% count = @holidays_by_month[month]&.count || 0 %>
+          <% is_selected = @selected_month == month %>
+          <%= link_to holidays_path(year: @selected_year, month: month), 
+              class: "text-center p-2 rounded-lg transition cursor-pointer hover:ring-2 hover:ring-brand-blue #{
+                if is_selected
+                  'bg-brand-blue text-white ring-2 ring-brand-blue'
+                elsif count > 0
+                  'bg-red-50 border border-red-200 hover:bg-red-100'
+                else
+                  'bg-gray-50 hover:bg-gray-100'
+                end
+              }" do %>
+            <p class="text-xs font-medium <%= is_selected ? 'text-blue-100' : 'text-gray-600' %>"><%= month_abbr[month] %></p>
+            <p class="text-lg font-bold <%= 
+              if is_selected
+                'text-white'
+              elsif count > 0
+                'text-red-600'
+              else
+                'text-gray-300'
+              end
+            %>"><%= count %></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Quick Legend -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+      <h3 class="font-semibold text-gray-900 mb-3 text-sm">Các dịp lễ chính</h3>
+      <div class="space-y-2">
+        <% @holidays_by_month.values.flatten.group_by(&:name).sort_by { |_, days| -days.count }.first(6).each do |name, days| %>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-700 flex-1"><%= name %></span>
+            <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-medium ml-2 whitespace-nowrap"><%= days.count %> ngày</span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Right: Detailed List -->
+  <div class="lg:col-span-2">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <!-- Header with context -->
+      <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+        <div>
+          <% if @selected_month.present? %>
+            <h2 class="font-semibold text-gray-900">
+              <i class="fa-regular fa-calendar mr-2 text-brand-blue"></i>
+              <%= month_names[@selected_month] %> <%= @selected_year %>
+            </h2>
+            <p class="text-xs text-gray-500"><%= @holidays.count %> ngày nghỉ</p>
+          <% else %>
+            <h2 class="font-semibold text-gray-900">Tất cả ngày nghỉ năm <%= @selected_year %></h2>
+            <p class="text-xs text-gray-500">Click vào tháng bên trái để lọc</p>
+          <% end %>
+        </div>
+      </div>
+      
+      <!-- Table Header -->
+      <div class="bg-white px-4 py-2 border-b border-gray-100">
+        <div class="grid grid-cols-12 gap-4 text-xs font-semibold text-gray-500 uppercase">
+          <div class="col-span-2">Ngày</div>
+          <div class="col-span-4">Tên dịp lễ</div>
+          <div class="col-span-4">Ghi chú</div>
+          <div class="col-span-2 text-right">Thao tác</div>
+        </div>
+      </div>
+      
+      <!-- Holiday Rows -->
+      <div class="divide-y divide-gray-100">
+        <% if @holidays.empty? %>
+          <div class="p-8 text-center">
+            <i class="fa-regular fa-calendar-xmark text-4xl text-gray-300 mb-3"></i>
+            <% if @selected_month.present? %>
+              <p class="text-gray-500">Không có ngày nghỉ trong <%= month_names[@selected_month] %></p>
+              <%= link_to "← Xem tất cả", holidays_path(year: @selected_year), class: "text-brand-blue text-sm hover:underline mt-2 inline-block" %>
+            <% else %>
+              <p class="text-gray-500">Chưa có ngày nghỉ nào trong năm <%= @selected_year %></p>
+            <% end %>
+          </div>
+        <% else %>
+          <% current_month = nil %>
+          <% @holidays.each do |holiday| %>
+            <% if holiday.date.month != current_month && @selected_month.blank? %>
+              <% current_month = holiday.date.month %>
+              <!-- Month Separator (only when showing all) -->
+              <div class="bg-gray-100 px-4 py-2">
+                <span class="text-sm font-bold text-gray-700">
+                  <i class="fa-regular fa-calendar mr-2"></i><%= month_names[current_month] %>
+                </span>
+                <span class="text-xs text-gray-500 ml-2">(<%= @holidays_by_month[current_month]&.count || 0 %> ngày)</span>
+              </div>
+            <% end %>
+            
+            <!-- Holiday Row -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-3 hover:bg-gray-50 items-center group" data-testid="holiday-item-<%= holiday.id %>">
+              <div class="col-span-2">
+                <div class="bg-red-500 text-white rounded-lg px-2 py-1 text-center min-w-[44px] inline-block">
+                  <p class="text-xs font-medium"><%= holiday.date.strftime("%a").upcase %></p>
+                  <p class="text-lg font-bold leading-tight"><%= holiday.date.day %></p>
+                </div>
+              </div>
+              <div class="col-span-4">
+                <p class="font-medium text-gray-900"><%= holiday.name %></p>
+                <p class="text-xs text-gray-500"><%= holiday.date.strftime("%d/%m/%Y") %></p>
+              </div>
+              <div class="col-span-4">
+                <p class="text-sm text-gray-500"><%= holiday.description || "-" %></p>
+              </div>
+              <div class="col-span-2 text-right">
+                <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                  <% if can? :edit, holiday %>
+                    <%= link_to edit_holiday_path(holiday), class: "p-1.5 text-gray-400 hover:text-brand-blue hover:bg-blue-50 rounded" do %>
+                      <i class="fa-solid fa-pen text-sm"></i>
+                    <% end %>
+                  <% end %>
+                  <% if can? :destroy, holiday %>
+                    <%= button_to holiday_path(holiday), method: :delete, data: { turbo_confirm: "Xóa ngày nghỉ này?" }, class: "p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded" do %>
+                      <i class="fa-solid fa-trash text-sm"></i>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

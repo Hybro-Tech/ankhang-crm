@@ -10,14 +10,10 @@ class UsersController < ApplicationController
     @users = User.accessible_by(current_ability).includes(:roles, :teams)
 
     # Filter by Team
-    if params[:team_id].present?
-      @users = @users.joins(:team_members).where(team_members: { team_id: params[:team_id] })
-    end
+    @users = @users.joins(:team_members).where(team_members: { team_id: params[:team_id] }) if params[:team_id].present?
 
     # Filter by Status
-    if params[:status].present?
-      @users = @users.where(status: params[:status])
-    end
+    @users = @users.where(status: params[:status]) if params[:status].present?
 
     @users = @users.page(params[:page]).per(params[:per_page])
   end

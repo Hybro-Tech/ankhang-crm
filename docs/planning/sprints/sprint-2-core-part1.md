@@ -71,8 +71,8 @@
 | **Epic** | Organization |
 | **Story Points** | 3 |
 | **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | Completed |
 
 **User Story:**
 > Là Admin, tôi muốn quản lý lịch nghỉ lễ của công ty để Smart Routing hoạt động đúng.
@@ -81,17 +81,17 @@
 Quản lý ngày nghỉ/lễ để hệ thống biết khi nào là ngoài giờ làm việc.
 
 **Acceptance Criteria:**
-- [ ] Seed sẵn lịch nghỉ lễ VN (Tết, 30/4, 1/5, 2/9, Giỗ tổ...)
-- [ ] Admin thêm/sửa/xóa ngày nghỉ
-- [ ] UI: Calendar view hoặc List view với date picker
-- [ ] Cronjob hoặc manual tạo lịch cho năm mới
-- [ ] API: Check ngày X có phải ngày nghỉ không
+- [x] Seed sẵn lịch nghỉ lễ VN (Tết, 30/4, 1/5, 2/9, Giỗ tổ...)
+- [x] Admin thêm/sửa/xóa ngày nghỉ
+- [x] UI: Calendar view hoặc List view với date picker
+- [ ] Cronjob hoặc manual tạo lịch cho năm mới (deferred)
+- [x] API: Check ngày X có phải ngày nghỉ không
 
 **Test Cases:**
-- [ ] Seed data có đủ ngày lễ VN
-- [ ] Add ngày nghỉ → appears in calendar
-- [ ] Delete ngày nghỉ → removed
-- [ ] Check API trả về đúng
+- [x] Seed data có đủ ngày lễ VN
+- [x] Add ngày nghỉ → appears in calendar
+- [x] Delete ngày nghỉ → removed
+- [x] Check API trả về đúng
 
 ---
 

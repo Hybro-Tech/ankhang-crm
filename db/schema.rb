@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_26_143704) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_26_153840) do
   create_table "activity_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "action", limit: 50, null: false
@@ -26,6 +26,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_26_143704) do
     t.index ["subject_type", "subject_id"], name: "index_activity_logs_on_subject"
     t.index ["user_id", "created_at"], name: "index_activity_logs_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_activity_logs_on_user_id"
+  end
+
+  create_table "holidays", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.date "date"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_holidays_on_date", unique: true
   end
 
   create_table "permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

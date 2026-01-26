@@ -1,8 +1,10 @@
-require 'rails_helper'
+# frozen_string_literal: true
+
+require "rails_helper"
 
 RSpec.describe "Teams Management", type: :system do
   let!(:admin) { create(:user, :super_admin, email: "admin_sys@test.com", password: "password123") }
-  
+
   before do
     login_as(admin, scope: :user)
   end
@@ -10,14 +12,14 @@ RSpec.describe "Teams Management", type: :system do
   describe "Teams CRUD" do
     it "allows creating a new team with members" do
       create(:user, name: "Available Member", email: "member@test.com")
-      
+
       visit teams_path
       click_link "Tạo đội mới"
 
       fill_in "Tên Team", with: "New System Team"
       select "Bắc", from: "Vùng / Miền"
       fill_in "Mô tả", with: "Test Description"
-      
+
       # Select member (using label click or checkbox)
       check "Available Member"
 
@@ -29,10 +31,10 @@ RSpec.describe "Teams Management", type: :system do
     end
 
     it "allows editing a team" do
-      team = create(:team, name: "Old Team")
-      
+      create(:team, name: "Old Team")
+
       visit teams_path
-      
+
       # Click edit on the team row
       within("tr", text: "Old Team") do
         click_link "Sửa"
@@ -47,9 +49,9 @@ RSpec.describe "Teams Management", type: :system do
 
     it "allows deleting a team" do
       create(:team, name: "Delete Me")
-      
+
       visit teams_path
-      
+
       within("tr", text: "Delete Me") do
         click_button "Xóa"
       end

@@ -1,0 +1,22 @@
+<% content_for :title, "Thêm ngày nghỉ" %>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-6">
+    <nav class="flex mb-4" aria-label="Breadcrumb">
+      <ol class="flex items-center space-x-2">
+        <li>
+          <%= link_to root_path, class: "text-gray-400 hover:text-gray-500" do %>
+            <i class="fa-solid fa-house"></i>
+          <% end %>
+        </li>
+        <li><span class="text-gray-300">/</span></li>
+        <li><%= link_to "Lịch nghỉ lễ", holidays_path, class: "text-gray-500 hover:text-gray-700 font-medium" %></li>
+        <li><span class="text-gray-300">/</span></li>
+        <li><span class="text-gray-900 font-medium">Thêm mới</span></li>
+      </ol>
+    </nav>
+    <h1 class="text-2xl font-bold text-gray-900">Thêm ngày nghỉ lễ</h1>
+  </div>
+
+  <%= render "form", holiday: @holiday %>
+</div>

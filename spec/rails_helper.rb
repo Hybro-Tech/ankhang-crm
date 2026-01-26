@@ -87,4 +87,3 @@ RSpec.configure do |config|
     ActionController::Base.allow_forgery_protection = false
   end
 end
-
