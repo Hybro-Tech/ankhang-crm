@@ -14,6 +14,8 @@ Rails.application.routes.draw do
     end
   end
   resources :users
+  resources :teams
+
 
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo

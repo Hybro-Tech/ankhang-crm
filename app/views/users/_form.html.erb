@@ -76,8 +76,15 @@
       </div>
 
       <div>
-        <%= f.label :team_id, "Thuộc Team", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.collection_select :team_id, Team.all, :id, :name, { include_blank: "Không thuộc team nào" }, { class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none bg-white" } %>
+        <%= f.label :team_ids, "Thuộc Team", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <div class="border border-gray-300 rounded-lg px-4 py-2 bg-white max-h-32 overflow-y-auto">
+          <%= f.collection_check_boxes :team_ids, Team.all, :id, :name do |b| %>
+            <label class="flex items-center mb-1 cursor-pointer hover:bg-gray-50 p-1 rounded -mx-1">
+              <%= b.check_box(class: "h-4 w-4 text-[#0B387A] rounded border-gray-300 focus:ring-[#0B387A] mr-2 cursor-pointer") %>
+              <span class="text-sm text-gray-700 font-medium"><%= b.text %></span>
+            </label>
+          <% end %>
+        </div>
       </div>
 
       <div>

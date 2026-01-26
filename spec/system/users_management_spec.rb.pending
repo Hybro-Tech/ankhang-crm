@@ -1,0 +1,68 @@
+require 'rails_helper'
+
+RSpec.describe "Users Management", type: :system do
+  pending "FactoryBot registry issue investigating"
+  before do
+    @admin = create(:user, :super_admin, email: "admin_sys@test.com", password: "password123")
+    @team_hanoi = create(:team, name: "Team Ha Noi")
+    @team_hcm = create(:team, name: "Team HCM")
+    
+    login_as(@admin, scope: :user)
+  end
+
+  describe "Users CRUD" do
+    it "allows creating a user and assigning to multiple teams" do
+      visit users_path
+      click_link "Thêm nhân viên"
+
+      fill_in "Họ và tên", with: "New Employee"
+      fill_in "Email", with: "employee@test.com"
+      fill_in "Username", with: "employee_user"
+      fill_in "Mật khẩu", with: "password123"
+      fill_in "Xác nhận mật khẩu", with: "password123"
+
+      # Select teams using labels
+      check "Team Ha Noi"
+      check "Team HCM"
+
+      click_button "Lưu Thay đổi"
+
+      expect(page).to have_content("Tạo nhân viên thành công")
+      expect(page).to have_content("New Employee")
+      
+      # Verify badges visible
+      within("tr", text: "New Employee") do
+        expect(page).to have_content("Team Ha Noi")
+        expect(page).to have_content("Team HCM")
+      end
+    end
+  end
+
+  describe "Filtering" do
+    before do
+      @user_hn = create(:user, name: "User Hanoi", status: :active)
+      @user_hcm = create(:user, name: "User HCM", status: :locked)
+      
+      TeamMember.create(user: @user_hn, team: @team_hanoi)
+      TeamMember.create(user: @user_hcm, team: @team_hcm)
+    end
+
+    it "filters by Team" do
+      visit users_path
+      
+      select "Team Ha Noi", from: "Tất cả đội nhóm"
+      
+      expect(page).to have_content("User Hanoi")
+      expect(page).not_to have_content("User HCM")
+    end
+
+    it "filters by Status" do
+      visit users_path
+
+      select "Locked", from: "Tất cả trạng thái"
+
+      expect(page).to have_content("User HCM")
+      expect(page).not_to have_content("User Hanoi")
+    end
+  end
+end

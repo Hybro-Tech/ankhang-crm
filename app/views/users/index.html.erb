@@ -12,6 +12,31 @@
   <% end %>
 </div>
 
+<div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between mb-6">
+  <div class="font-medium text-gray-700">Bộ lọc</div>
+  <%= form_with url: users_path, method: :get, class: "flex items-center space-x-4", data: { turbo_frame: "_top" } do |f| %>
+    <div>
+      <%= f.select :status, 
+          User.statuses.keys.map { |k| [k.titleize, k] }, 
+          { include_blank: "Tất cả trạng thái", selected: params[:status] }, 
+          { class: "border border-gray-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-blue-500", onchange: "this.form.requestSubmit()" } %>
+    </div>
+    
+    <div>
+      <%= f.select :team_id, 
+          Team.all.pluck(:name, :id), 
+          { include_blank: "Tất cả đội nhóm", selected: params[:team_id] }, 
+          { class: "border border-gray-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-blue-500", onchange: "this.form.requestSubmit()" } %>
+    </div>
+    
+    <% if params[:team_id].present? || params[:status].present? %>
+      <%= link_to users_path, class: "text-gray-400 hover:text-red-500 text-sm flex items-center" do %>
+        <i class="fa-solid fa-times-circle mr-1"></i> Xóa lọc
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
   <table class="min-w-full divide-y divide-gray-200">
     <thead class="bg-gray-50">
@@ -36,10 +61,14 @@
             </div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <% if user.team %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                <%= user.team.name %>
-              </span>
+            <% if user.teams.any? %>
+              <div class="flex flex-wrap gap-1">
+                <% user.teams.each do |team| %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                    <%= team.name %>
+                  </span>
+                <% end %>
+              </div>
             <% else %>
               <span class="text-gray-400 text-sm">—</span>
             <% end %>

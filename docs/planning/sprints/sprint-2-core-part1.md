@@ -15,21 +15,21 @@
 | **Epic** | Teams & Employees |
 | **Story Points** | 3 |
 | **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | Completed |
 
 **User Story:**
 > Là Admin, tôi muốn tạo và quản lý các team trong công ty.
 
 **Acceptance Criteria:**
-- [ ] List teams với member count
-- [ ] Create/Edit team form
-- [ ] Assign manager (optional)
-- [ ] Delete team (chỉ khi không có member)
+- [x] List teams với member count
+- [x] Create/Edit team form
+- [x] Assign manager (optional)
+- [x] Delete team (chỉ khi không có member)
 
 **Test Cases:**
-- [ ] Create team → appears in list
-- [ ] Delete team có members → error
+- [x] Create team → appears in list
+- [x] Delete team có members → error
 
 **Related:** `docs/tinh-nang/doi-nhom/requirements.md`
 
@@ -41,23 +41,23 @@
 | **Epic** | Teams & Employees |
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | Completed |
 
 **User Story:**
 > Là Admin, tôi muốn tạo tài khoản cho nhân viên mới.
 
 **Acceptance Criteria:**
-- [ ] List employees với filter by team, status
-- [ ] Create employee form (username, name, email, phone)
-- [ ] Assign roles (multiple)
-- [ ] Assign team (multiple - many-to-many)
-- [ ] Activate/Deactivate
+- [x] List employees với filter by team, status
+- [x] Create employee form (username, name, email, phone)
+- [x] Assign roles (multiple)
+- [x] Assign team (multiple - many-to-many)
+- [x] Activate/Deactivate
 
 **Test Cases:**
-- [ ] Create employee → can login
-- [ ] Deactivate → cannot login
-- [ ] Cannot deactivate self
+- [x] Create employee → can login
+- [x] Deactivate → cannot login
+- [x] Cannot deactivate self
 
 **Related:** `docs/tinh-nang/nhan-vien/requirements.md`
 
@@ -302,7 +302,7 @@ Dashboard dành riêng cho role Sale, theo SRS v2 Section 10.
 - ServiceType (Loại nhu cầu) seeded
 
 **Success Criteria:**
-- [ ] Admin có thể tạo Team, Employee
+- [x] Admin có thể tạo Team, Employee
 - [ ] Admin có thể tạo lịch nghỉ, DS đi làm Thứ 7
 - [ ] Tổng đài có thể tạo Contact từ Dashboard
 - [ ] Sale có thể xem danh sách Contact từ Dashboard

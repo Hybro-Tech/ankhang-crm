@@ -7,10 +7,19 @@ class UsersController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @users = User.accessible_by(current_ability)
-                 .includes(:roles, :team)
-                 .page(params[:page])
-                 .per(params[:per_page])
+    @users = User.accessible_by(current_ability).includes(:roles, :teams)
+
+    # Filter by Team
+    if params[:team_id].present?
+      @users = @users.joins(:team_members).where(team_members: { team_id: params[:team_id] })
+    end
+
+    # Filter by Status
+    if params[:status].present?
+      @users = @users.where(status: params[:status])
+    end
+
+    @users = @users.page(params[:page]).per(params[:per_page])
   end
 
   def new
@@ -57,7 +66,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.expect(user: [:name, :email, :username, :password, :password_confirmation, :team_id, :status,
-                         { role_ids: [] }])
+    params.expect(user: [:name, :email, :username, :password, :password_confirmation, :status,
+                         { role_ids: [], team_ids: [] }])
   end
 end

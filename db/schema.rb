@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_25_042150) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_26_143704) do
   create_table "activity_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "action", limit: 50, null: false
@@ -189,6 +189,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_25_042150) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "team_members", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_team_members_on_team_id"
+    t.index ["user_id", "team_id"], name: "index_team_members_on_user_id_and_team_id", unique: true
+    t.index ["user_id"], name: "index_team_members_on_user_id"
+  end
+
   create_table "teams", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", limit: 100, null: false
     t.text "description"
@@ -230,7 +240,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_25_042150) do
     t.string "name", default: "", null: false
     t.string "phone", default: ""
     t.integer "status", default: 0, null: false
-    t.bigint "team_id"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -247,7 +256,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_25_042150) do
     t.string "last_sign_in_ip"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["team_id"], name: "index_users_on_team_id"
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
@@ -261,11 +269,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_25_042150) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "team_members", "teams"
+  add_foreign_key "team_members", "users"
   add_foreign_key "teams", "users", column: "manager_id", on_delete: :nullify
   add_foreign_key "user_permissions", "permissions"
   add_foreign_key "user_permissions", "users"
   add_foreign_key "user_permissions", "users", column: "created_by_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
-  add_foreign_key "users", "teams", on_delete: :nullify
 end

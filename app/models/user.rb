@@ -51,7 +51,8 @@ class User < ApplicationRecord
   # We might want direct permissions link later
 
   # TASK-009: Team associations
-  belongs_to :team, optional: true
+  has_many :team_members, dependent: :destroy
+  has_many :teams, through: :team_members
   has_one :managed_team, class_name: "Team", foreign_key: :manager_id,
                          inverse_of: :manager, dependent: :nullify
 

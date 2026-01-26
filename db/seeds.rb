@@ -2,11 +2,13 @@
 
 Rails.logger.debug "🌱 Seeding RBAC data..."
 
-# 1. Clean up
-UserPermission.delete_all
-RolePermission.delete_all
-Permission.delete_all
-Role.delete_all
+# 1. Clean up only if no FK dependencies exist
+# NOTE: If running seed on fresh DB, uncomment these lines
+# Skip cleanup on existing data to avoid FK constraint errors
+# UserPermission.delete_all
+# RolePermission.delete_all  
+# Permission.delete_all
+# Role.delete_all
 
 # 2. Define Permissions (Phase 1 Only)
 # NOTE: See docs/planning/phase2_notes.md for Phase 2 permissions (Deals, Products, Coupons)
@@ -219,7 +221,7 @@ test_users.each do |u|
     new_user.name = u[:name]
     new_user.password = u[:password]
     new_user.password_confirmation = u[:password]
-    new_user.team = teams[u[:team]] if u[:team]
+    new_user.teams << teams[u[:team]] if u[:team]
   end
 
   # Assign role

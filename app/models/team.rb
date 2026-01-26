@@ -27,7 +27,8 @@
 class Team < ApplicationRecord
   # Associations
   belongs_to :manager, class_name: "User", optional: true
-  has_many :users, dependent: :nullify
+  has_many :team_members, dependent: :destroy
+  has_many :users, through: :team_members
 
   # Validations
   validates :name, presence: true, uniqueness: true, length: { maximum: 100 }
