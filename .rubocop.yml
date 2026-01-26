@@ -75,3 +75,47 @@ Rails:
 Rails/Exit:
   Exclude:
     - "spec/**/*"  # RSpec generator uses abort
+
+# ==========================================
+# Rails-specific exclusions
+# ==========================================
+
+# I18n: Allow hardcoded Vietnamese for MVP, will migrate to locales later
+Rails/I18nLocaleTexts:
+  Enabled: false  # TODO: Enable and migrate to config/locales in Phase 2
+
+# Devise controllers use callbacks for inherited actions
+Rails/LexicallyScopedActionFilter:
+  Exclude:
+    - 'app/controllers/users/sessions_controller.rb'
+    - 'app/controllers/users/passwords_controller.rb'
+
+# ==========================================
+# Naming
+# ==========================================
+
+# has_role? is clearer than role? for authorization checks
+Naming/PredicatePrefix:
+  Exclude:
+    - 'app/models/user.rb'
+    - 'app/helpers/authorization_helper.rb'
+
+# ==========================================
+# Metrics relaxations for helpers
+# ==========================================
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'app/helpers/**/*'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'app/helpers/**/*'
+
+# ==========================================
+# Lint
+# ==========================================
+
+# Allow private constants when organizing code
+Lint/UselessConstantScoping:
+  Enabled: false

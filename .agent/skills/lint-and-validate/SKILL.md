@@ -20,6 +20,14 @@ allowed-tools: Read, Glob, Grep, Bash
 2. **Security (Bandit):** `bandit -r "path" -ll`
 3. **Types (MyPy):** `mypy "path"`
 
+#### Ruby on Rails (MANDATORY for this project)
+1. **Lint (Rubocop):** `docker compose exec app bundle exec rubocop --format simple`
+2. **Auto-fix:** `docker compose exec app bundle exec rubocop -A`
+3. **Tests (RSpec):** `docker compose exec app bundle exec rspec`
+4. **Security (Brakeman):** `docker compose exec app bundle exec brakeman -q`
+
+> 🔴 **CRITICAL:** All Ruby code MUST pass Rubocop and RSpec before completion.
+
 ## The Quality Loop
 1. **Write/Edit Code**
 2. **Run Audit:** `npm run lint && npx tsc --noEmit`
@@ -42,4 +50,3 @@ allowed-tools: Read, Glob, Grep, Bash
 |--------|---------|---------|
 | `scripts/lint_runner.py` | Unified lint check | `python scripts/lint_runner.py <project_path>` |
 | `scripts/type_coverage.py` | Type coverage analysis | `python scripts/type_coverage.py <project_path>` |
-

@@ -87,6 +87,25 @@ When user's prompt is NOT in English:
 - **Global Performance Mandate:** "Measure first, optimize second." Every agent must ensure their changes adhere to 2025 performance standards (Core Web Vitals for Web, query optimization for DB, bundle limits for FS).
 - **Infrastructure & Safety Mandate:** Every agent is responsible for the deployability and operational safety of their changes. Follow the "5-Phase Deployment Process" (Prepare, Backup, Deploy, Verify, Confirm/Rollback). Always verify environment variables and secrets security.
 
+### 💎 Ruby/Rails Code Quality (MANDATORY)
+
+> 🔴 **CRITICAL:** ALL Ruby code MUST pass Rubocop and RSpec before completion. NO EXCEPTIONS.
+
+**Before completing ANY Ruby/Rails code task:**
+
+| Step | Command | Must Pass |
+|------|---------|-----------|
+| 1. Lint | `docker compose exec app bundle exec rubocop --format simple` | ✅ |
+| 2. Auto-fix | `docker compose exec app bundle exec rubocop -A` | - |
+| 3. Tests | `docker compose exec app bundle exec rspec` | ✅ |
+| 4. Security | `docker compose exec app bundle exec brakeman -q` | ✅ |
+
+**Rules:**
+- **FAIL = STOP** → Fix ALL errors before reporting completion
+- **Never skip** → Even for "quick fixes", run Rubocop
+- **Auto-fix first** → Use `rubocop -A` to fix correctable offenses
+- **Test coverage** → New features MUST have RSpec tests
+
 ### 📁 File Dependency Awareness
 
 **Before modifying ANY file:**
