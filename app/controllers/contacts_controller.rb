@@ -2,6 +2,7 @@
 
 # TASK-019/020/021: Contacts Controller
 # Manages customer contacts with role-based access control
+# rubocop:disable Metrics/ClassLength
 class ContactsController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource except: %i[check_phone check_identity recent]
@@ -103,7 +104,7 @@ class ContactsController < ApplicationController
     return unless @identity_value
 
     @contact = if params[:phone].present?
-                 Contact.find_by_phone(params[:phone])
+                 Contact.find_by(phone: params[:phone])
                elsif params[:zalo_id].present?
                  Contact.find_by(zalo_id: params[:zalo_id])
                end
@@ -112,7 +113,7 @@ class ContactsController < ApplicationController
       format.turbo_stream
     end
   end
-  
+
   # GET /contacts/recent
   # TASK-049: Restore recent contacts list
   def recent
@@ -156,3 +157,4 @@ class ContactsController < ApplicationController
     )
   end
 end
+# rubocop:enable Metrics/ClassLength

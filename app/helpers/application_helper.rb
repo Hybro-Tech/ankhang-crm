@@ -12,8 +12,8 @@ module ApplicationHelper
     # 1. Explicitly active
     # 2. Exact match (current_page?)
     # 3. Sub-path match (e.g. /contacts/new starts with /contacts/), ignoring root to avoid all-match
-    active = is_active || 
-             current_page?(path) || 
+    active = is_active ||
+             current_page?(path) ||
              (path.to_s != root_path.to_s && request.path.start_with?("#{path}/"))
 
     active_class = if active

@@ -85,11 +85,11 @@ class Contact < ApplicationRecord
   # ============================================================================
 
   validates :name, presence: true, length: { maximum: 100 }
-  
+
   # TASK-049: Dynamic Identity (Phone OR Zalo)
   validates :phone, presence: true, length: { minimum: 10, maximum: 20 }, unless: -> { zalo_id.present? }
   validates :phone, uniqueness: { message: "đã tồn tại trong hệ thống" }, allow_blank: true
-  
+
   validates :zalo_id, presence: true, unless: -> { phone.present? }
   validates :zalo_id, uniqueness: { message: "Zalo ID này đã tồn tại" }, allow_blank: true
   validates :email, length: { maximum: 100 },

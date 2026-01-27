@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_27_044202) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_27_082338) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -87,7 +87,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_27_044202) do
     t.index ["status"], name: "index_contacts_on_status"
     t.index ["team_id", "created_at"], name: "index_contacts_on_team_and_created_at"
     t.index ["team_id"], name: "index_contacts_on_team_id"
-    t.index ["zalo_id"], name: "index_contacts_on_zalo_id"
+    t.index ["zalo_id"], name: "index_contacts_on_zalo_id", unique: true
   end
 
   create_table "holidays", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

@@ -110,7 +110,7 @@ roles["Super Admin"].permissions = Permission.all
 
 # Tổng Đài - Full quyền Contact để nhập liệu và xử lý
 td_codes = %w[
-  contacts.view contacts.create contacts.edit contacts.pick 
+  contacts.view contacts.create contacts.edit contacts.pick
   contacts.update_status contacts.view_failed
   notifications.receive dashboards.view_call_center
 ]

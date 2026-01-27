@@ -47,17 +47,17 @@ class Ability
 
   def apply_permission(perm)
     subject, action = parse_permission_code(perm.code)
-    
+
     # Map custom permission actions to standard Rails/CanCan actions
     rails_action = map_action(action)
-    
+
     can rails_action, subject
 
     # Also authorize the corresponding model class for load_and_authorize_resource
     model_class = subject_to_model_class(subject)
-    if model_class
-      can rails_action, model_class 
-    end
+    return unless model_class
+
+    can rails_action, model_class
   end
 
   def revoke_permission(perm)
