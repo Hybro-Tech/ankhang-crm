@@ -60,6 +60,12 @@ class User < ApplicationRecord
   has_many :saturday_schedule_users, dependent: :destroy
   has_many :saturday_schedules, through: :saturday_schedule_users
 
+  # TASK-019: Contact relationships
+  has_many :assigned_contacts, class_name: "Contact", foreign_key: :assigned_user_id,
+                               inverse_of: :assigned_user, dependent: :nullify
+  has_many :created_contacts, class_name: "Contact", foreign_key: :created_by_id,
+                              inverse_of: :creator, dependent: :restrict_with_error
+
   # TASK-011: Allow login with username or email
   # Override Devise's find_for_database_authentication
   def self.find_for_database_authentication(warden_conditions)

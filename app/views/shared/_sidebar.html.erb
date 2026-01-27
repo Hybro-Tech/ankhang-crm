@@ -16,8 +16,11 @@
       <span>Tổng quan</span>
     <% end %>
 
-    <%# Kinh doanh section (Hidden for Phase 1) %>
-    <%# Kinh doanh section (Hidden for Phase 1) %>
+    <%# Kinh doanh section - TASK-019 %>
+    <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
+
+    <%= sidebar_link "Khách hàng", contacts_path, "fa-address-book", permission: "contacts.view" %>
+    <%= sidebar_link "Loại nhu cầu", service_types_path, "fa-layer-group", permission: "settings.manage" %>
 
     <%# Tổ chức section %>
     <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>

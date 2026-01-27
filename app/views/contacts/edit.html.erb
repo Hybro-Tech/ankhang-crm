@@ -1,0 +1,26 @@
+<%# TASK-019: Edit Contact %>
+<% content_for :page_title, "Sửa thông tin khách hàng" %>
+
+<div class="max-w-3xl mx-auto">
+  <%# Header %>
+  <div class="mb-6">
+    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+      <%= link_to contacts_path, class: "hover:text-brand-blue" do %>
+        <i class="fa-solid fa-address-book mr-1"></i>Khách hàng
+      <% end %>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+      <%= link_to @contact, class: "hover:text-brand-blue" do %>
+        <%= @contact.code %>
+      <% end %>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+      <span class="text-gray-900">Sửa</span>
+    </nav>
+    <h1 class="text-2xl font-bold text-gray-900">Sửa thông tin khách hàng</h1>
+    <p class="text-sm text-gray-500 mt-1">Cập nhật thông tin khách hàng <%= @contact.name %> (<%= @contact.code %>)</p>
+  </div>
+
+  <%# Form Card %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <%= render "form" %>
+  </div>
+</div>

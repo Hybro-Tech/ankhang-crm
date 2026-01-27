@@ -18,6 +18,17 @@ Rails.application.routes.draw do
   resources :holidays, except: [:show]
   resources :saturday_schedules
 
+  # TASK-019/020/021: Contacts & Service Types
+  resources :contacts do
+    member do
+      post :pick
+    end
+    collection do
+      get :check_phone
+    end
+  end
+  resources :service_types
+
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo
 

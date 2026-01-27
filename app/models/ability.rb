@@ -83,7 +83,9 @@ class Ability
     deals: "Deal",
     products: "Product",
     coupons: "Coupon",
-    holidays: "Holiday"
+    holidays: "Holiday",
+    service_types: "ServiceType",
+    saturday_schedules: "SaturdaySchedule"
   }.freeze
 
   def subject_to_model_class(subject)

@@ -1,0 +1,199 @@
+<%# TASK-020: Contacts Index with Turbo Frame Filtering %>
+<% content_for :page_title, "Quản lý Khách hàng" %>
+
+<div class="flex flex-col gap-6">
+  <%# Header %>
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Quản lý Khách hàng</h1>
+      <p class="text-sm text-gray-500 mt-1">Danh sách tất cả khách hàng trong hệ thống</p>
+    </div>
+    <% if can?(:create, Contact) %>
+      <%= link_to new_contact_path, class: "inline-flex items-center gap-2 bg-brand-blue hover:bg-blue-800 text-white px-4 py-2.5 rounded-lg font-medium transition-colors shadow-sm" do %>
+        <i class="fa-solid fa-plus"></i>
+        <span>Thêm khách hàng</span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Filters - Turbo Frame %>
+  <%= form_with url: contacts_path, method: :get, data: { turbo_frame: "contacts_list", controller: "filter-form", action: "change->filter-form#submit" } do |f| %>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+      <div class="flex flex-wrap gap-4">
+        <%# Search %>
+        <div class="flex-1 min-w-[200px]">
+          <div class="relative">
+            <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <%= text_field_tag :q, params[:q], 
+                placeholder: "Tìm theo tên, SĐT, mã...", 
+                class: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue",
+                data: { action: "input->filter-form#debounce" } %>
+          </div>
+        </div>
+        
+        <%# Status filter %>
+        <%= select_tag :status, 
+            options_for_select(
+              [["Tất cả trạng thái", ""]] + @statuses.map { |s| [t("contacts.status.#{s}"), s] }, 
+              params[:status]
+            ),
+            class: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue" %>
+        
+        <%# Team filter %>
+        <%= select_tag :team_id, 
+            options_for_select(
+              [["Tất cả team", ""]] + @teams.map { |t| [t.name, t.id] }, 
+              params[:team_id]
+            ),
+            class: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue" %>
+        
+        <%# Service Type filter %>
+        <%= select_tag :service_type_id, 
+            options_for_select(
+              [["Tất cả loại nhu cầu", ""]] + @service_types_filter.map { |st| [st.name, st.id] }, 
+              params[:service_type_id]
+            ),
+            class: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue" %>
+        
+        <%# Reset button %>
+        <% if params[:q].present? || params[:status].present? || params[:team_id].present? || params[:service_type_id].present? %>
+          <%= link_to contacts_path, class: "px-4 py-2 text-gray-600 hover:text-gray-900 flex items-center gap-1" do %>
+            <i class="fa-solid fa-times"></i> Xóa lọc
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Contacts Table - Turbo Frame %>
+  <%= turbo_frame_tag "contacts_list" do %>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Mã KH</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tên</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">SĐT</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Loại nhu cầu</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Trạng thái</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Người phụ trách</th>
+              <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ngày tạo</th>
+              <th class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% if @contacts.any? %>
+              <% @contacts.each do |contact| %>
+                <tr class="hover:bg-gray-50 transition-colors" id="<%= dom_id(contact) %>">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <%= link_to contact, class: "text-sm font-medium text-brand-blue hover:underline" do %>
+                      <%= contact.code %>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900"><%= contact.name %></div>
+                    <% if contact.email.present? %>
+                      <div class="text-xs text-gray-500"><%= contact.email %></div>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <a href="tel:<%= contact.phone %>" class="text-sm text-gray-900 hover:text-brand-blue">
+                      <%= contact.phone %>
+                    </a>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= contact.service_type&.name %></td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                      <%= case contact.status
+                          when 'new_contact' then 'bg-blue-100 text-blue-800'
+                          when 'potential', 'potential_old' then 'bg-yellow-100 text-yellow-800'
+                          when 'in_progress' then 'bg-purple-100 text-purple-800'
+                          when 'closed_new', 'closed_old' then 'bg-green-100 text-green-800'
+                          when 'failed' then 'bg-red-100 text-red-800'
+                          when 'cskh_l1', 'cskh_l2' then 'bg-orange-100 text-orange-800'
+                          else 'bg-gray-100 text-gray-800'
+                          end %>">
+                      <%= contact.status_label %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <% if contact.assigned_user.present? %>
+                      <span class="text-gray-900"><%= contact.assigned_user.name %></span>
+                    <% else %>
+                      <span class="text-orange-600 font-medium">
+                        <i class="fa-solid fa-exclamation-circle mr-1"></i>Chưa gán
+                      </span>
+                    <% end %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= l(contact.created_at, format: :short) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                    <div class="flex items-center justify-end gap-3">
+                      <%# Pick button - only for pickable contacts %>
+                      <% if can?(:pick, Contact) && contact.pickable? %>
+                        <%= button_to pick_contact_path(contact), 
+                            method: :post, 
+                            class: "text-green-600 hover:text-green-900 transition-colors",
+                            title: "Nhận khách này",
+                            data: { turbo_confirm: "Bạn có chắc muốn nhận khách #{contact.name}?" } do %>
+                          <i class="fa-solid fa-hand-pointer text-lg"></i>
+                        <% end %>
+                      <% end %>
+                      
+                      <%# View button %>
+                      <%= link_to contact, class: "text-gray-600 hover:text-gray-900 transition-colors", title: "Xem chi tiết" do %>
+                        <i class="fa-solid fa-eye"></i>
+                      <% end %>
+                      
+                      <%# Edit button %>
+                      <% if can?(:edit, contact) %>
+                        <%= link_to edit_contact_path(contact), class: "text-brand-blue hover:text-blue-900 transition-colors", title: "Sửa" do %>
+                          <i class="fa-solid fa-pen-to-square"></i>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="8" class="px-6 py-12 text-center">
+                  <div class="flex flex-col items-center gap-2">
+                    <i class="fa-solid fa-address-book text-4xl text-gray-300"></i>
+                    <p class="text-gray-500">
+                      <% if params[:q].present? || params[:status].present? %>
+                        Không tìm thấy khách hàng phù hợp
+                      <% else %>
+                        Chưa có khách hàng nào
+                      <% end %>
+                    </p>
+                    <% if can?(:create, Contact) && params[:q].blank? %>
+                      <%= link_to new_contact_path, class: "text-brand-blue hover:underline" do %>
+                        <i class="fa-solid fa-plus mr-1"></i>Thêm khách hàng đầu tiên
+                      <% end %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      
+      <%# Pagination %>
+      <% if @contacts.respond_to?(:total_pages) && @contacts.total_pages > 1 %>
+        <div class="px-6 py-4 border-t border-gray-200">
+          <%= paginate @contacts %>
+        </div>
+      <% end %>
+      
+      <%# Count info %>
+      <div class="px-6 py-3 border-t border-gray-200 bg-gray-50 text-sm text-gray-500">
+        Hiển thị <%= @contacts.offset_value + 1 %>-<%= [@contacts.offset_value + @contacts.length, @contacts.total_count].min %> 
+        / <%= @contacts.total_count %> khách hàng
+      </div>
+    </div>
+  <% end %>
+</div>

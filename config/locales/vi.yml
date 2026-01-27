@@ -1,4 +1,14 @@
 vi:
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M"
+      short: "%d/%m %H:%M"
+      long: "%d/%m/%Y lúc %H:%M"
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d/%m"
+      long: "%d tháng %m, %Y"
   demo:
     success: "Đây là thông báo thành công mẫu!"
     error: "Đây là thông báo lỗi mẫu!"
@@ -14,3 +24,40 @@ vi:
       system_role_error: "Không thể xóa system role."
     clone:
       success: "Vai trò đã được sao chép. Vui lòng đổi tên và cấu hình quyền."
+  # TASK-019: Contact translations
+  contacts:
+    status:
+      new_contact: "Mới"
+      potential: "Tiềm năng"
+      in_progress: "Đang tư vấn"
+      potential_old: "Tiềm năng cũ"
+      closed_new: "Chốt Mới"
+      closed_old: "Chốt Cũ"
+      failed: "Thất bại"
+      cskh_l1: "CSKH L1"
+      cskh_l2: "CSKH L2"
+      closed: "Đóng"
+    source:
+      ladi_zalo_hotline: "Ladi Zalo/Hotline"
+      facebook: "Facebook"
+      google: "Google"
+      referral: "Giới thiệu"
+      other: "Khác"
+    create:
+      success: "Khách hàng đã được tạo thành công."
+      duplicate_phone: "Số điện thoại đã tồn tại trong hệ thống."
+    update:
+      success: "Thông tin khách hàng đã được cập nhật."
+    destroy:
+      success: "Khách hàng đã được xóa."
+    assign:
+      success: "Bạn đã nhận khách hàng thành công."
+      already_assigned: "Khách hàng đã được gán cho người khác."
+  service_types:
+    create:
+      success: "Loại nhu cầu đã được tạo thành công."
+    update:
+      success: "Loại nhu cầu đã được cập nhật."
+    destroy:
+      success: "Loại nhu cầu đã được xóa."
+      has_contacts: "Không thể xóa vì đang có khách hàng sử dụng."

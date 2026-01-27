@@ -1,0 +1,129 @@
+<%# TASK-019: Contact Form Partial %>
+<%= form_with(model: @contact, class: "space-y-6") do |f| %>
+  <% if @contact.errors.any? %>
+    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+      <div class="flex items-center gap-2 text-red-800 font-medium">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>Có <%= pluralize(@contact.errors.count, "lỗi") %> cần sửa:</span>
+      </div>
+      <ul class="mt-2 ml-6 list-disc text-sm text-red-700">
+        <% @contact.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Thông tin cơ bản %>
+  <div class="border-b border-gray-200 pb-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+      <i class="fa-solid fa-user text-brand-blue mr-2"></i>Thông tin khách hàng
+    </h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%# Tên %>
+      <div>
+        <%= f.label :name, "Họ tên *", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :name, 
+            class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
+            placeholder: "Nguyễn Văn A" %>
+      </div>
+
+      <%# SĐT with real-time duplicate check %>
+      <div data-controller="phone-check" data-phone-check-url-value="<%= check_phone_contacts_path %>">
+        <%= f.label :phone, "Số điện thoại *", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.telephone_field :phone, 
+            class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
+            placeholder: "0912345678",
+            data: { phone_check_target: "phone", action: "input->phone-check#check" } %>
+        <div data-phone-check-target="feedback"></div>
+        <p class="mt-1 text-xs text-gray-500">Số điện thoại phải là duy nhất trong hệ thống</p>
+      </div>
+
+      <%# Email %>
+      <div>
+        <%= f.label :email, "Email", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.email_field :email, 
+            class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
+            placeholder: "email@example.com" %>
+      </div>
+
+      <%# Link Zalo %>
+      <div>
+        <%= f.label :zalo_link, "Link Zalo", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.url_field :zalo_link, 
+            class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
+            placeholder: "https://zalo.me/..." %>
+      </div>
+    </div>
+  </div>
+
+  <%# Phân loại %>
+  <div class="border-b border-gray-200 pb-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+      <i class="fa-solid fa-tags text-brand-orange mr-2"></i>Phân loại
+    </h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%# Loại nhu cầu %>
+      <div>
+        <%= f.label :service_type_id, "Loại nhu cầu *", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.collection_select :service_type_id, @service_types, :id, :name,
+            { prompt: "-- Chọn loại nhu cầu --" },
+            { class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors" } %>
+      </div>
+
+      <%# Nguồn khách %>
+      <div>
+        <%= f.label :source, "Nguồn khách hàng", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.select :source, 
+            Contact.sources.keys.map { |s| [t("contacts.source.#{s}"), s] },
+            { include_blank: "-- Chọn nguồn --" },
+            { class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors" } %>
+      </div>
+
+      <% if @contact.persisted? %>
+        <%# Trạng thái - Chỉ hiển thị khi edit %>
+        <div>
+          <%= f.label :status, "Trạng thái", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.select :status, 
+              Contact.statuses.keys.map { |s| [t("contacts.status.#{s}"), s] },
+              {},
+              { class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors" } %>
+        </div>
+
+        <%# Người phụ trách %>
+        <div>
+          <%= f.label :assigned_user_id, "Người phụ trách", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.collection_select :assigned_user_id, User.active.order(:name), :id, :name,
+              { include_blank: "-- Chưa gán --" },
+              { class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors" } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Ghi chú %>
+  <div>
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+      <i class="fa-solid fa-sticky-note text-green-600 mr-2"></i>Ghi chú
+    </h3>
+    
+    <div>
+      <%= f.label :notes, "Ghi chú", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_area :notes, 
+          rows: 4,
+          class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
+          placeholder: "Thông tin thêm về khách hàng..." %>
+    </div>
+  </div>
+
+  <%# Actions %>
+  <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+    <%= link_to contacts_path, class: "px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors" do %>
+      Hủy
+    <% end %>
+    <%= f.submit @contact.persisted? ? "Cập nhật" : "Tạo khách hàng", 
+        class: "px-6 py-2.5 bg-brand-blue hover:bg-blue-800 text-white rounded-lg font-medium transition-colors cursor-pointer" %>
+  </div>
+<% end %>

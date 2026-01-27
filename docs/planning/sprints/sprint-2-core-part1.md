@@ -132,25 +132,25 @@ Mỗi Thứ 7, chỉ một số nhân viên đi làm. Admin cần tạo danh sá
 | **Epic** | Contacts |
 | **Story Points** | 3 |
 | **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | Completed |
 
 **User Story:**
 > Là Developer, tôi muốn có model Contact với đầy đủ fields theo SRS v2.
 
 **Acceptance Criteria:**
-- [ ] Migration với all fields từ SRS v2 Section 5.1
-- [ ] Auto-generate code: KH2026-XXX
-- [ ] Enums: status (theo state machine SRS 5.2), source
-- [ ] Foreign keys: team_id, assigned_user_id, created_by_id
-- [ ] Validations: name, phone required
-- [ ] Check trùng SĐT (unique constraint)
-- [ ] Database Indexing (phone, status, team_id)
+- [x] Migration với all fields từ SRS v2 Section 5.1
+- [x] Auto-generate code: KH2026-XXX
+- [x] Enums: status (theo state machine SRS 5.2), source
+- [x] Foreign keys: team_id, assigned_user_id, created_by_id
+- [x] Validations: name, phone required
+- [x] Check trùng SĐT (unique constraint)
+- [x] Database Indexing (phone, status, team_id)
 
 **Test Cases:**
-- [ ] Contact.create với valid data OK
-- [ ] Duplicate phone → error
-- [ ] Auto code generated
+- [x] Contact.create với valid data OK
+- [x] Duplicate phone → error
+- [x] Auto code generated
 
 ---
 
@@ -160,8 +160,8 @@ Mỗi Thứ 7, chỉ một số nhân viên đi làm. Admin cần tạo danh sá
 | **Epic** | Contacts |
 | **Story Points** | 5 |
 | **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | Completed |
 
 **User Story:**
 > Là Sale, tôi muốn xem danh sách contacts để tìm khách cần xử lý.
@@ -170,18 +170,18 @@ Mỗi Thứ 7, chỉ một số nhân viên đi làm. Admin cần tạo danh sá
 Trang chính cho Sale xem và quản lý khách hàng.
 
 **Acceptance Criteria:**
-- [ ] Table columns: code, name, phone, status, loại nhu cầu, assignee, created_at
-- [ ] Pagination (Kaminari)
-- [ ] Filtering: Status, Team, Loại nhu cầu
-- [ ] Search by Phone/Name
-- [ ] Sort: Mới nhất trước, Chưa ai nhận lên đầu
-- [ ] Nút "Nhận khách" cho contacts chưa có owner
+- [x] Table columns: code, name, phone, status, loại nhu cầu, assignee, created_at
+- [x] Pagination (Kaminari)
+- [x] Filtering: Status, Team, Loại nhu cầu
+- [x] Search by Phone/Name
+- [x] Sort: Mới nhất trước, Chưa ai nhận lên đầu
+- [x] Nút "Nhận khách" cho contacts chưa có owner
 
 **Test Cases:**
-- [ ] List render đúng columns
-- [ ] Filter by status works
-- [ ] Search by phone works
-- [ ] Pagination works
+- [x] List render đúng columns
+- [x] Filter by status works
+- [x] Search by phone works
+- [x] Pagination works
 
 **Related:** Wireframe `docs/ui-design/wireframes/contacts_list.html`
 
@@ -193,8 +193,8 @@ Trang chính cho Sale xem và quản lý khách hàng.
 | **Epic** | Contacts |
 | **Story Points** | 3 |
 | **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | Completed |
 
 **User Story:**
 > Là Tổng đài, tôi muốn tạo contact mới nhanh chóng khi có lead gọi đến.
@@ -203,19 +203,19 @@ Trang chính cho Sale xem và quản lý khách hàng.
 Form tối ưu cho việc nhập nhanh thông tin khách hàng.
 
 **Acceptance Criteria:**
-- [ ] Form fields theo SRS v2 Section 5.1
-- [ ] Dropdown "Loại nhu cầu" (load từ DB - ServiceType)
-- [ ] Dropdown "Nguồn" (Ladi Zalo/Hotline, FB, Google, Giới thiệu, Khác)
-- [ ] Auto assign status = "Mới"
-- [ ] Auto assign created_by = current_user
-- [ ] Check trùng SĐT real-time (Turbo)
-- [ ] Zalo Link & Zalo QR upload (optional)
-- [ ] Success → Redirect to list hoặc tạo tiếp
+- [x] Form fields theo SRS v2 Section 5.1
+- [x] Dropdown "Loại nhu cầu" (load từ DB - ServiceType)
+- [x] Dropdown "Nguồn" (Ladi Zalo/Hotline, FB, Google, Giới thiệu, Khác)
+- [x] Auto assign status = "Mới"
+- [x] Auto assign created_by = current_user
+- [x] Check trùng SĐT real-time (Turbo)
+- [x] Zalo Link & Zalo QR upload (optional)
+- [x] Success → Redirect to list hoặc tạo tiếp
 
 **Test Cases:**
-- [ ] Submit valid form → Contact created
-- [ ] Duplicate phone → Warning message
-- [ ] Required fields empty → Validation error
+- [x] Submit valid form → Contact created
+- [x] Duplicate phone → Warning message
+- [x] Required fields empty → Validation error
 
 **Related:** Wireframe `docs/ui-design/wireframes/contact_form.html`
 

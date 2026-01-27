@@ -135,6 +135,31 @@ teams_data.each do |t|
   end
 end
 
+# 6. Create Service Types (TASK-019 prerequisite)
+Rails.logger.debug "➡️ Creating Service Types (Loại nhu cầu)..."
+teams_lookup = Team.all.index_by(&:name)
+
+service_types_data = [
+  { name: "Thành lập công ty", description: "Dịch vụ thành lập doanh nghiệp", team: "Team Hà Nội", position: 1 },
+  { name: "Thay đổi đăng ký kinh doanh", description: "Thay đổi thông tin ĐKKD", team: "Team Hà Nội", position: 2 },
+  { name: "Giải thể công ty", description: "Thủ tục giải thể doanh nghiệp", team: "Team Hà Nội", position: 3 },
+  { name: "Kế toán thuế", description: "Dịch vụ kế toán - khai thuế", team: "Team Kế toán", position: 4 },
+  { name: "Báo cáo tài chính", description: "Lập BCTC hàng năm", team: "Team Kế toán", position: 5 },
+  { name: "Sở hữu trí tuệ", description: "Đăng ký nhãn hiệu, bản quyền", team: "Team HCM", position: 6 },
+  { name: "Giấy phép con", description: "Xin các loại giấy phép kinh doanh", team: "Team HCM", position: 7 },
+  { name: "Tư vấn pháp lý", description: "Tư vấn pháp luật doanh nghiệp", team: "Team HCM", position: 8 },
+  { name: "Khác", description: "Nhu cầu khác", team: nil, position: 99 }
+]
+
+service_types_data.each do |st|
+  ServiceType.find_or_create_by!(name: st[:name]) do |service_type|
+    service_type.description = st[:description]
+    service_type.team = teams_lookup[st[:team]] if st[:team]
+    service_type.position = st[:position]
+    service_type.active = true
+  end
+end
+
 # 6. Create Test Users (TASK-015)
 Rails.logger.debug "➡️ Creating Test Users..."
 

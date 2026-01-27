@@ -206,4 +206,144 @@ RSpec.describe Ability, type: :model do
       expect(ability.can?(:edit, :contacts)).to be true
     end
   end
+
+  # ============================================================================
+  # TASK-019: Role-specific Contact permissions per SRS v2 Section 2
+  # ============================================================================
+
+  describe "Tổng Đài role - Contact permissions" do
+    let(:user) { create(:user) }
+    let(:tongdai_role) do
+      Role.find_or_create_by!(name: "Tổng Đài") do |r|
+        r.description = "Nhân viên tổng đài"
+      end
+    end
+
+    before do
+      # Ensure permissions exist
+      Permission.find_or_create_by!(code: "contacts.view") { |p| p.name = "Xem" }
+      Permission.find_or_create_by!(code: "contacts.create") { |p| p.name = "Tạo" }
+      Permission.find_or_create_by!(code: "contacts.pick") { |p| p.name = "Pick" }
+      Permission.find_or_create_by!(code: "contacts.edit") { |p| p.name = "Sửa" }
+
+      # Assign correct permissions to Tổng Đài
+      tongdai_role.permissions = Permission.where(code: %w[contacts.view contacts.create])
+      user.roles << tongdai_role unless user.roles.include?(tongdai_role)
+    end
+
+    subject(:ability) { described_class.new(user) }
+
+    it "CAN view contacts" do
+      expect(ability.can?(:view, :contacts)).to be true
+    end
+
+    it "CAN create contacts" do
+      expect(ability.can?(:create, :contacts)).to be true
+    end
+
+    it "CANNOT pick contacts" do
+      expect(ability.can?(:pick, :contacts)).to be false
+    end
+
+    it "CANNOT edit contacts" do
+      expect(ability.can?(:edit, :contacts)).to be false
+    end
+  end
+
+  describe "Sale role - Contact permissions" do
+    let(:user) { create(:user) }
+    let(:sale_role) do
+      Role.find_or_create_by!(name: "Sale") do |r|
+        r.description = "Nhân viên kinh doanh"
+      end
+    end
+
+    before do
+      # Ensure permissions exist
+      Permission.find_or_create_by!(code: "contacts.view") { |p| p.name = "Xem" }
+      Permission.find_or_create_by!(code: "contacts.create") { |p| p.name = "Tạo" }
+      Permission.find_or_create_by!(code: "contacts.pick") { |p| p.name = "Pick" }
+      Permission.find_or_create_by!(code: "contacts.edit") { |p| p.name = "Sửa" }
+      Permission.find_or_create_by!(code: "contacts.update_status") { |p| p.name = "Cập nhật status" }
+
+      # Assign correct permissions to Sale
+      sale_role.permissions = Permission.where(
+        code: %w[contacts.view contacts.pick contacts.edit contacts.update_status]
+      )
+      user.roles << sale_role unless user.roles.include?(sale_role)
+    end
+
+    subject(:ability) { described_class.new(user) }
+
+    it "CAN view contacts" do
+      expect(ability.can?(:view, :contacts)).to be true
+    end
+
+    it "CANNOT create contacts" do
+      expect(ability.can?(:create, :contacts)).to be false
+    end
+
+    it "CAN pick contacts" do
+      expect(ability.can?(:pick, :contacts)).to be true
+    end
+
+    it "CAN edit contacts" do
+      expect(ability.can?(:edit, :contacts)).to be true
+    end
+
+    it "CAN update_status contacts" do
+      expect(ability.can?(:update_status, :contacts)).to be true
+    end
+  end
+
+  describe "CSKH role - Contact permissions" do
+    let(:user) { create(:user) }
+    let(:cskh_role) do
+      Role.find_or_create_by!(name: "CSKH") do |r|
+        r.description = "Chăm sóc khách hàng"
+      end
+    end
+
+    before do
+      # Ensure permissions exist
+      Permission.find_or_create_by!(code: "contacts.view") { |p| p.name = "Xem" }
+      Permission.find_or_create_by!(code: "contacts.create") { |p| p.name = "Tạo" }
+      Permission.find_or_create_by!(code: "contacts.pick") { |p| p.name = "Pick" }
+      Permission.find_or_create_by!(code: "contacts.edit") { |p| p.name = "Sửa" }
+      Permission.find_or_create_by!(code: "contacts.view_failed") { |p| p.name = "Xem failed" }
+      Permission.find_or_create_by!(code: "contacts.update_status") { |p| p.name = "Cập nhật status" }
+
+      # Assign correct permissions to CSKH
+      cskh_role.permissions = Permission.where(
+        code: %w[contacts.view_failed contacts.edit contacts.update_status]
+      )
+      user.roles << cskh_role unless user.roles.include?(cskh_role)
+    end
+
+    subject(:ability) { described_class.new(user) }
+
+    it "CANNOT view all contacts" do
+      expect(ability.can?(:view, :contacts)).to be false
+    end
+
+    it "CAN view_failed contacts" do
+      expect(ability.can?(:view_failed, :contacts)).to be true
+    end
+
+    it "CANNOT create contacts" do
+      expect(ability.can?(:create, :contacts)).to be false
+    end
+
+    it "CANNOT pick contacts" do
+      expect(ability.can?(:pick, :contacts)).to be false
+    end
+
+    it "CAN edit contacts" do
+      expect(ability.can?(:edit, :contacts)).to be true
+    end
+
+    it "CAN update_status contacts" do
+      expect(ability.can?(:update_status, :contacts)).to be true
+    end
+  end
 end

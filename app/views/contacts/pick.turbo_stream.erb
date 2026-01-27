@@ -1,0 +1,69 @@
+<%# TASK-020: Turbo stream response for pick action %>
+<%= turbo_stream.replace dom_id(@contact) do %>
+  <tr class="bg-green-50 transition-colors" id="<%= dom_id(@contact) %>">
+    <td class="px-6 py-4 whitespace-nowrap">
+      <%= link_to @contact, class: "text-sm font-medium text-brand-blue hover:underline" do %>
+        <%= @contact.code %>
+      <% end %>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+      <div class="text-sm font-medium text-gray-900"><%= @contact.name %></div>
+      <% if @contact.email.present? %>
+        <div class="text-xs text-gray-500"><%= @contact.email %></div>
+      <% end %>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+      <a href="tel:<%= @contact.phone %>" class="text-sm text-gray-900 hover:text-brand-blue">
+        <%= @contact.phone %>
+      </a>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= @contact.service_type&.name %></td>
+    <td class="px-6 py-4 whitespace-nowrap">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+        <%= case @contact.status
+            when 'new_contact' then 'bg-blue-100 text-blue-800'
+            when 'potential', 'potential_old' then 'bg-yellow-100 text-yellow-800'
+            when 'in_progress' then 'bg-purple-100 text-purple-800'
+            when 'closed_new', 'closed_old' then 'bg-green-100 text-green-800'
+            when 'failed' then 'bg-red-100 text-red-800'
+            when 'cskh_l1', 'cskh_l2' then 'bg-orange-100 text-orange-800'
+            else 'bg-gray-100 text-gray-800'
+            end %>">
+        <%= @contact.status_label %>
+      </span>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm">
+      <span class="text-green-700 font-medium">
+        <i class="fa-solid fa-check-circle mr-1"></i><%= @contact.assigned_user.name %>
+      </span>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      <%= l(@contact.created_at, format: :short) %>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+      <div class="flex items-center justify-end gap-3">
+        <%# View button %>
+        <%= link_to @contact, class: "text-gray-600 hover:text-gray-900 transition-colors", title: "Xem chi tiết" do %>
+          <i class="fa-solid fa-eye"></i>
+        <% end %>
+        
+        <%# Edit button %>
+        <% if can?(:edit, @contact) %>
+          <%= link_to edit_contact_path(@contact), class: "text-brand-blue hover:text-blue-900 transition-colors", title: "Sửa" do %>
+            <i class="fa-solid fa-pen-to-square"></i>
+          <% end %>
+        <% end %>
+      </div>
+    </td>
+  </tr>
+<% end %>
+
+<%# Flash message %>
+<%= turbo_stream.prepend "flash-messages" do %>
+  <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4 rounded-r-lg" data-controller="flash" data-flash-timeout-value="5000">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-check-circle text-green-500"></i>
+      <p class="text-green-700 font-medium"><%= flash[:notice] %></p>
+    </div>
+  </div>
+<% end %>

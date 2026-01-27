@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_27_021445) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_27_030100) do
   create_table "activity_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "action", limit: 50, null: false
@@ -26,6 +26,38 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_27_021445) do
     t.index ["subject_type", "subject_id"], name: "index_activity_logs_on_subject"
     t.index ["user_id", "created_at"], name: "index_activity_logs_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_activity_logs_on_user_id"
+  end
+
+  create_table "contacts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "code", limit: 20, null: false, comment: "Auto-generated: KH2026-XXX"
+    t.string "name", limit: 100, null: false, comment: "Tên KH (thường là tên Zalo)"
+    t.string "phone", limit: 20, null: false, comment: "SĐT - Unique"
+    t.string "email", limit: 100
+    t.string "zalo_link", comment: "Link profile Zalo"
+    t.bigint "service_type_id", null: false, comment: "Loại nhu cầu - FK to service_types"
+    t.integer "source", default: 0, null: false, comment: "Enum: Nguồn khách hàng"
+    t.integer "status", default: 0, null: false, comment: "Enum: Trạng thái contact"
+    t.bigint "team_id", comment: "Team được phân (từ loại nhu cầu)"
+    t.bigint "assigned_user_id", comment: "Sale được gán"
+    t.bigint "created_by_id", null: false, comment: "Người tạo (Tổng đài)"
+    t.datetime "assigned_at", comment: "Thời điểm gán cho Sale"
+    t.datetime "next_appointment", comment: "Lịch hẹn tiếp theo"
+    t.text "notes", comment: "Ghi chú tổng quát"
+    t.datetime "closed_at", comment: "Thời điểm chốt/đóng"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_user_id", "status"], name: "index_contacts_on_assignee_and_status"
+    t.index ["assigned_user_id"], name: "index_contacts_on_assigned_user_id"
+    t.index ["code"], name: "index_contacts_on_code", unique: true
+    t.index ["created_by_id"], name: "index_contacts_on_created_by_id"
+    t.index ["next_appointment"], name: "index_contacts_on_next_appointment"
+    t.index ["phone"], name: "index_contacts_on_phone", unique: true
+    t.index ["service_type_id"], name: "index_contacts_on_service_type_id"
+    t.index ["source"], name: "index_contacts_on_source"
+    t.index ["status", "team_id"], name: "index_contacts_on_status_and_team"
+    t.index ["status"], name: "index_contacts_on_status"
+    t.index ["team_id", "created_at"], name: "index_contacts_on_team_and_created_at"
+    t.index ["team_id"], name: "index_contacts_on_team_id"
   end
 
   create_table "holidays", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -82,6 +114,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_27_021445) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["date"], name: "index_saturday_schedules_on_date", unique: true
+  end
+
+  create_table "service_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.text "description"
+    t.bigint "team_id", comment: "Default team for Smart Routing"
+    t.boolean "active", default: true, null: false
+    t.integer "position", default: 0, null: false, comment: "For ordering in dropdowns"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_service_types_on_active"
+    t.index ["name"], name: "index_service_types_on_name", unique: true
+    t.index ["team_id"], name: "index_service_types_on_team_id"
   end
 
   create_table "solid_cache_entries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -288,10 +333,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_27_021445) do
   end
 
   add_foreign_key "activity_logs", "users"
+  add_foreign_key "contacts", "service_types"
+  add_foreign_key "contacts", "teams", on_delete: :nullify
+  add_foreign_key "contacts", "users", column: "assigned_user_id", on_delete: :nullify
+  add_foreign_key "contacts", "users", column: "created_by_id"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "saturday_schedule_users", "saturday_schedules"
   add_foreign_key "saturday_schedule_users", "users"
+  add_foreign_key "service_types", "teams", on_delete: :nullify
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

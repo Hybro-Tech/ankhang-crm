@@ -1,0 +1,162 @@
+<%# TASK-019: Contact Detail %>
+<% content_for :page_title, "Chi tiết khách hàng #{@contact.code}" %>
+
+<div class="max-w-4xl mx-auto">
+  <%# Header %>
+  <div class="mb-6">
+    <nav class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+      <%= link_to contacts_path, class: "hover:text-brand-blue" do %>
+        <i class="fa-solid fa-address-book mr-1"></i>Khách hàng
+      <% end %>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+      <span class="text-gray-900"><%= @contact.code %></span>
+    </nav>
+    
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900"><%= @contact.name %></h1>
+        <p class="text-sm text-gray-500 mt-1"><%= @contact.code %> • Tạo bởi <%= @contact.creator&.name %></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <% if can?(:edit, @contact) %>
+          <%= link_to edit_contact_path(@contact), class: "inline-flex items-center gap-2 bg-brand-blue hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-colors" do %>
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Sửa</span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <%# Main Info %>
+    <div class="lg:col-span-2 space-y-6">
+      <%# Thông tin cơ bản %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+          <i class="fa-solid fa-user text-brand-blue mr-2"></i>Thông tin liên hệ
+        </h3>
+        
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <dt class="text-sm text-gray-500">Số điện thoại</dt>
+            <dd class="text-base font-medium text-gray-900">
+              <a href="tel:<%= @contact.phone %>" class="text-brand-blue hover:underline">
+                <i class="fa-solid fa-phone mr-1"></i><%= @contact.phone %>
+              </a>
+            </dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm text-gray-500">Email</dt>
+            <dd class="text-base text-gray-900">
+              <% if @contact.email.present? %>
+                <a href="mailto:<%= @contact.email %>" class="text-brand-blue hover:underline">
+                  <i class="fa-solid fa-envelope mr-1"></i><%= @contact.email %>
+                </a>
+              <% else %>
+                <span class="text-gray-400">-</span>
+              <% end %>
+            </dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm text-gray-500">Zalo</dt>
+            <dd class="text-base text-gray-900">
+              <% if @contact.zalo_link.present? %>
+                <a href="<%= @contact.zalo_link %>" target="_blank" class="text-blue-600 hover:underline">
+                  <i class="fa-solid fa-external-link mr-1"></i>Mở Zalo
+                </a>
+              <% else %>
+                <span class="text-gray-400">-</span>
+              <% end %>
+            </dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm text-gray-500">Nguồn</dt>
+            <dd class="text-base text-gray-900"><%= @contact.source_label %></dd>
+          </div>
+        </dl>
+      </div>
+
+      <%# Ghi chú %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+          <i class="fa-solid fa-sticky-note text-green-600 mr-2"></i>Ghi chú
+        </h3>
+        <% if @contact.notes.present? %>
+          <p class="text-gray-700 whitespace-pre-wrap"><%= @contact.notes %></p>
+        <% else %>
+          <p class="text-gray-400 italic">Chưa có ghi chú</p>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Sidebar %>
+    <div class="space-y-6">
+      <%# Trạng thái %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Trạng thái</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+              <%= case @contact.status
+                  when 'new_contact' then 'bg-blue-100 text-blue-800'
+                  when 'potential', 'potential_old' then 'bg-yellow-100 text-yellow-800'
+                  when 'in_progress' then 'bg-purple-100 text-purple-800'
+                  when 'closed_new', 'closed_old' then 'bg-green-100 text-green-800'
+                  when 'failed' then 'bg-red-100 text-red-800'
+                  else 'bg-gray-100 text-gray-800'
+                  end %>">
+              <%= @contact.status_label %>
+            </span>
+          </div>
+          
+          <div>
+            <dt class="text-sm text-gray-500">Loại nhu cầu</dt>
+            <dd class="text-base font-medium text-gray-900"><%= @contact.service_type&.name || '-' %></dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm text-gray-500">Team</dt>
+            <dd class="text-base text-gray-900"><%= @contact.team&.name || '-' %></dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm text-gray-500">Người phụ trách</dt>
+            <dd class="text-base text-gray-900">
+              <%= @contact.assigned_user&.name || '<span class="text-orange-600">Chưa gán</span>'.html_safe %>
+            </dd>
+          </div>
+        </div>
+      </div>
+
+      <%# Timeline %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Lịch sử</h3>
+        
+        <div class="space-y-3 text-sm">
+          <div class="flex items-start gap-2">
+            <i class="fa-solid fa-plus-circle text-green-500 mt-0.5"></i>
+            <div>
+              <p class="text-gray-700">Tạo mới</p>
+              <p class="text-gray-400"><%= l(@contact.created_at, format: :long) %></p>
+            </div>
+          </div>
+          
+          <% if @contact.assigned_at.present? %>
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-user-check text-brand-blue mt-0.5"></i>
+              <div>
+                <p class="text-gray-700">Được gán cho <%= @contact.assigned_user&.name %></p>
+                <p class="text-gray-400"><%= l(@contact.assigned_at, format: :long) %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

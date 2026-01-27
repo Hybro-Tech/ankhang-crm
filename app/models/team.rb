@@ -30,6 +30,10 @@ class Team < ApplicationRecord
   has_many :team_members, dependent: :destroy
   has_many :users, through: :team_members
 
+  # TASK-019: Contact relationships
+  has_many :service_types, dependent: :nullify
+  has_many :contacts, dependent: :nullify
+
   # Validations
   validates :name, presence: true, uniqueness: true, length: { maximum: 100 }
   validates :region, length: { maximum: 50 }, allow_blank: true
