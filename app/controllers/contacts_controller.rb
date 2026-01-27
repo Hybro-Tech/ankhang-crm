@@ -34,7 +34,11 @@ class ContactsController < ApplicationController
     @contact.created_by_id = current_user.id
 
     if @contact.save
-      redirect_to contacts_path, notice: t(".success")
+      respond_to do |format|
+        format.html { redirect_to contacts_path, notice: t(".success") }
+        # TASK-049: Support inline creation for Call Center Dashboard
+        format.turbo_stream
+      end
     else
       @service_types = ServiceType.for_dropdown
       render :new, status: :unprocessable_content

@@ -1,0 +1,15 @@
+vi:
+  datetime:
+    distance_in_words:
+      about_x_hours: "khoảng %{count} giờ"
+      about_x_months: "khoảng %{count} tháng"
+      about_x_years: "khoảng %{count} năm"
+      almost_x_years: "gần %{count} năm"
+      half_a_minute: "nửa phút"
+      less_than_x_minutes: "vài giây"
+      less_than_x_seconds: "vài giây"
+      over_x_years: "hơn %{count} năm"
+      x_days: "%{count} ngày"
+      x_minutes: "%{count} phút"
+      x_months: "%{count} tháng"
+      x_seconds: "%{count} giây"

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get "dashboard/index"
+  get "dashboard/call_center"
   # TASK-014: Use custom controllers for auth logging
   devise_for :users, controllers: {
     sessions: "users/sessions",

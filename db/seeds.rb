@@ -67,7 +67,13 @@ permissions_data = [
 
   # Saturday Schedules (TASK-048)
   { code: "saturday_schedules.manage", name: "Quản lý Lịch Thứ 7", category: "Organization",
-    description: "Tạo danh sách đi làm Thứ 7" }
+    description: "Tạo danh sách đi làm Thứ 7" },
+
+  # Dashboards (TASK-049/050)
+  { code: "dashboards.view_call_center", name: "Dashboard Tổng đài", category: "Dashboards",
+    description: "Xem dashboard dành cho tổng đài" },
+  { code: "dashboards.view_sale", name: "Dashboard Sale", category: "Dashboards",
+    description: "Xem dashboard dành cho sale" }
 ]
 
 Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }
@@ -103,13 +109,13 @@ Rails.logger.debug "➡️ Assigning Permissions..."
 roles["Super Admin"].permissions = Permission.all
 
 # Tổng Đài
-td_codes = %w[contacts.view contacts.create notifications.receive]
+td_codes = %w[contacts.view contacts.create notifications.receive dashboards.view_call_center]
 roles["Tổng Đài"].permissions = Permission.where(code: td_codes)
 
 # Sale (Phase 1: No deals - see Phase 2 notes)
 sale_codes = %w[
   contacts.view contacts.pick contacts.edit contacts.update_status
-  notifications.receive logs.view_own
+  notifications.receive logs.view_own dashboards.view_sale
 ]
 roles["Sale"].permissions = Permission.where(code: sale_codes)
 
