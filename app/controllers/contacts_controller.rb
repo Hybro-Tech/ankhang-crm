@@ -65,6 +65,15 @@ class ContactsController < ApplicationController
     authorize! :pick, @contact
 
     if @contact.assign_to!(current_user)
+      # Log activity for Sales Workspace
+      ActivityLog.create(
+        user: current_user,
+        action: "contact.pick",
+        subject: @contact,
+        ip_address: request.remote_ip,
+        user_agent: request.user_agent
+      )
+
       respond_to do |format|
         format.html { redirect_to @contact, notice: t("contacts.assign.success") }
         format.turbo_stream { flash.now[:notice] = t("contacts.assign.success") }

@@ -1,0 +1,50 @@
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <main class="flex-1 p-0 w-full space-y-8">
+    
+    <div class="flex items-center justify-between px-1">
+       <h1 class="text-xl font-bold text-gray-900">Nhập thông tin khách hàng</h1>
+    </div>
+
+    <div class="grid grid-cols-12 gap-6 flex-1 min-h-0 pb-4">
+      
+      <!-- Cập nhật V2: Cột 1 - Input Zone (~70%) -->
+      <div class="col-span-12 md:col-span-8 flex flex-col h-full">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex-1 overflow-hidden flex flex-col">
+          <div class="p-6 flex-1 overflow-y-auto">
+            <%= turbo_frame_tag "new_contact_form", class: "h-full w-full block" do %>
+              <%= render "contacts/form_call_center", contact: @contact %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cập nhật V2: Cột 2 - Context & History (~30%) -->
+      <div class="col-span-12 md:col-span-4 flex flex-col h-full">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex-1 overflow-hidden flex flex-col">
+          <div id="context_panel_content" class="flex flex-col flex-1 overflow-hidden h-full">
+            <!-- Context Header -->
+            <div class="px-6 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+               <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Lịch sử vừa nhập</span>
+               <span class="text-xs text-gray-400">10 contact mới nhất</span>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-0 relative bg-gray-50/30">
+               <div id="recent_contacts_list" class="divide-y divide-gray-100">
+                 <%= render partial: "dashboard/recent_contact", collection: @recent_contacts, as: :contact %>
+               </div>
+               <% if @recent_contacts.empty? %>
+                 <div id="recent_contacts_empty" class="p-12 text-center text-gray-400">
+                   <div class="inline-flex p-4 bg-gray-100 rounded-full mb-3">
+                      <i class="fa-solid fa-mug-hot text-xl text-gray-400"></i>
+                   </div>
+                   <p class="text-sm">Chưa có dữ liệu mới trong phiên này.</p>
+                 </div>
+               <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

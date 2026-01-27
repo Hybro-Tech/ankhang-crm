@@ -1,0 +1,63 @@
+<turbo-frame id="contact_preview_frame">
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+  <div class="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white">
+    <div class="flex items-center space-x-3">
+      <div class="flex-shrink-0 h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
+        <%= contact.name.first.upcase %>
+      </div>
+      <div>
+        <h3 class="text-base font-semibold text-gray-900"><%= contact.name %></h3>
+        <p class="text-xs text-gray-500"><%= contact.code %></p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 space-y-4">
+    <!-- Contact Info -->
+    <div class="space-y-3">
+      <div class="flex items-center text-sm">
+        <i class="fa-solid fa-phone text-gray-400 w-5"></i>
+        <a href="tel:<%= contact.phone %>" class="ml-2 text-brand-blue hover:underline font-medium"><%= contact.phone %></a>
+      </div>
+      <% if contact.email.present? %>
+        <div class="flex items-center text-sm">
+          <i class="fa-solid fa-envelope text-gray-400 w-5"></i>
+          <a href="mailto:<%= contact.email %>" class="ml-2 text-brand-blue hover:underline"><%= contact.email %></a>
+        </div>
+      <% end %>
+      <div class="flex items-center text-sm">
+        <i class="fa-solid fa-briefcase text-gray-400 w-5"></i>
+        <span class="ml-2 text-gray-700"><%= contact.service_type&.name || "Chưa xác định" %></span>
+      </div>
+      <div class="flex items-center text-sm">
+        <i class="fa-solid fa-clock text-gray-400 w-5"></i>
+        <span class="ml-2 text-gray-700">Tạo <%= time_ago_in_words(contact.created_at) %> trước</span>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <% if contact.notes.present? %>
+      <div class="pt-3 border-t border-gray-100">
+        <p class="text-xs text-gray-500 uppercase font-medium mb-1">Ghi chú</p>
+        <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg"><%= contact.notes %></p>
+      </div>
+    <% end %>
+
+    <!-- Quick Actions -->
+    <div class="pt-3 border-t border-gray-100 flex flex-col space-y-2">
+      <a href="tel:<%= contact.phone %>" 
+         class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-colors shadow-sm">
+        <i class="fa-solid fa-phone mr-2"></i>Gọi ngay
+      </a>
+      <%= link_to edit_contact_path(contact), 
+          class: "w-full inline-flex items-center justify-center px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors" do %>
+        <i class="fa-solid fa-pen mr-2"></i>Cập nhật thông tin
+      <% end %>
+      <%= link_to contact_path(contact), 
+          class: "w-full inline-flex items-center justify-center px-4 py-2 bg-white text-brand-blue text-sm font-medium rounded-lg border border-brand-blue hover:bg-blue-50 transition-colors" do %>
+        <i class="fa-solid fa-arrow-right mr-2"></i>Xem chi tiết
+      <% end %>
+    </div>
+  </div>
+</div>
+</turbo-frame>

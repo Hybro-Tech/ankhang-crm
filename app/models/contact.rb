@@ -135,6 +135,11 @@ class Contact < ApplicationRecord
     where("name LIKE ? OR phone LIKE ? OR code LIKE ?", sanitized, sanitized, sanitized)
   }
 
+  # Contacts that need information update (missing email, notes, or old updates)
+  scope :needs_info_update, lambda {
+    where("email IS NULL OR email = '' OR notes IS NULL OR notes = '' OR updated_at < ?", 7.days.ago)
+  }
+
   # ============================================================================
   # Class Methods
   # ============================================================================

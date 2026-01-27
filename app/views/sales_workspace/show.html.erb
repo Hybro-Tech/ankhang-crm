@@ -1,0 +1,188 @@
+<div class="min-h-screen bg-gray-50" data-controller="workspace-tabs">
+  <!-- Header -->
+  <div class="bg-white border-b border-gray-200 px-6 py-4 mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900">
+          Chào <%= current_user.name.split.first %>, 
+          <span class="font-normal text-gray-600">hôm nay có <%= @kpis[:new_contacts] + @kpis[:needs_update] + @kpis[:appointments_today] %> việc cần làm</span>
+        </h1>
+      </div>
+      <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-2 text-sm">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-brand-blue font-bold"><%= @kpis[:new_contacts] %></span>
+              <span class="text-gray-600">Khách mới</span>
+            </div>
+            <div class="flex items-center space-x-2 text-sm">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-orange-600 font-bold"><%= @kpis[:needs_update] %></span>
+              <span class="text-gray-600">Cần cập nhật</span>
+            </div>
+            <div class="flex items-center space-x-2 text-sm">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold"><%= @kpis[:appointments_today] %></span>
+              <span class="text-gray-600">Hẹn hôm nay</span>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Main Content: 70/30 Split -->
+  <div class="flex px-6 gap-6">
+    <!-- Left Panel: Work Area (70%) -->
+    <div class="w-full lg:w-[70%]">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <!-- Tabs -->
+        <div class="border-b border-gray-200">
+          <nav class="flex -mb-px" aria-label="Tabs">
+            <button type="button"
+                    class="workspace-tab group relative min-w-0 flex-1 overflow-hidden py-4 px-6 text-sm font-medium text-center border-b-2 focus:z-10 transition-colors"
+                    data-workspace-tabs-target="tab"
+                    data-tab="new_contacts"
+                    data-action="click->workspace-tabs#switchTab"
+                    aria-selected="true">
+              <span class="flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-user-plus text-brand-blue"></i>
+                <span>Khách mới (<%= @kpis[:new_contacts] %>)</span>
+              </span>
+            </button>
+            <button type="button"
+                    class="workspace-tab group relative min-w-0 flex-1 overflow-hidden py-4 px-6 text-sm font-medium text-center border-b-2 focus:z-10 transition-colors"
+                    data-workspace-tabs-target="tab"
+                    data-tab="needs_update"
+                    data-action="click->workspace-tabs#switchTab">
+              <span class="flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-pen-to-square text-orange-500"></i>
+                <span>Cần cập nhật (<%= @kpis[:needs_update] %>)</span>
+              </span>
+            </button>
+            <button type="button"
+                    class="workspace-tab group relative min-w-0 flex-1 overflow-hidden py-4 px-6 text-sm font-medium text-center border-b-2 focus:z-10 transition-colors"
+                    data-workspace-tabs-target="tab"
+                    data-tab="in_progress"
+                    data-action="click->workspace-tabs#switchTab">
+              <span class="flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-spinner text-green-500"></i>
+                <span>Đang chăm sóc (<%= @kpis[:in_progress] %>)</span>
+              </span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Tab Content (Turbo Frame) -->
+        <turbo-frame id="contact_list_frame" data-workspace-tabs-target="frame" src="/sales/workspace/tab_new_contacts">
+          <div class="p-8 text-center text-gray-400">
+            <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+            <p class="mt-2 text-sm">Đang tải...</p>
+          </div>
+        </turbo-frame>
+      </div>
+    </div>
+
+    <!-- Right Panel: Context Panel (30%) -->
+    <div class="hidden lg:block lg:w-[30%] space-y-6">
+      <!-- Appointments Today/Tomorrow -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h3 class="text-base font-semibold text-gray-900">
+            <i class="fa-solid fa-calendar-check text-brand-blue mr-2"></i>Lịch hẹn sắp tới
+          </h3>
+          <a href="#" class="text-xs text-brand-blue hover:underline">Xem tất cả</a>
+        </div>
+        <ul class="divide-y divide-gray-100 max-h-64 overflow-y-auto">
+          <% @appointments.each do |appointment| %>
+            <li class="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
+              <div class="flex items-start space-x-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-red-50 flex flex-col items-center justify-center text-brand-red border border-red-100">
+                  <span class="text-xs font-bold"><%= appointment.next_appointment.strftime("%d") %></span>
+                  <span class="text-[10px] uppercase"><%= appointment.next_appointment.strftime("%b") %></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate"><%= appointment.name %></p>
+                  <p class="text-xs text-gray-500"><%= appointment.next_appointment.strftime("%H:%M") %> - <%= appointment.service_type&.name %></p>
+                </div>
+              </div>
+            </li>
+          <% end %>
+          <% if @appointments.empty? %>
+            <li class="p-6 text-center text-sm text-gray-500">Không có lịch hẹn nào.</li>
+          <% end %>
+        </ul>
+      </div>
+
+      <!-- Today's Activities -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h3 class="text-base font-semibold text-gray-900">
+            <i class="fa-solid fa-clock-rotate-left text-green-500 mr-2"></i>Hoạt động hôm nay
+          </h3>
+          <span class="text-xs text-gray-500"><%= @today_activities.size %> hoạt động</span>
+        </div>
+        <ul class="divide-y divide-gray-100 max-h-80 overflow-y-auto">
+          <% @today_activities.each do |activity| %>
+            <li class="p-4 hover:bg-gray-50 transition-colors">
+              <div class="flex items-start space-x-3">
+                <div class="mt-0.5">
+                  <% icon = case activity.action
+                     when 'login' then 'fa-right-to-bracket text-blue-500'
+                     when 'contact.pick' then 'fa-hand-pointer text-brand-blue'
+                     when 'contact.create' then 'fa-user-plus text-green-500'
+                     when 'contact.update' then 'fa-pen text-orange-500'
+                     when 'contact.call' then 'fa-phone text-green-600'
+                     when 'contact.close' then 'fa-check-circle text-emerald-500'
+                     else 'fa-circle-dot text-gray-400'
+                     end
+                  %>
+                  <i class="fa-solid <%= icon %>"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm text-gray-900">
+                    <% if activity.action == 'contact.pick' %>
+                      Nhận khách hàng <strong><%= activity.subject&.name %></strong>
+                    <% elsif activity.action == 'contact.create' %>
+                      Tạo khách hàng <strong><%= activity.subject&.name %></strong>
+                    <% elsif activity.action == 'contact.update' %>
+                      Cập nhật <strong><%= activity.subject&.name %></strong>
+                    <% elsif activity.action == 'contact.call' %>
+                      Gọi điện cho <strong><%= activity.subject&.name %></strong>
+                    <% elsif activity.action == 'contact.close' %>
+                      Chốt đơn <strong><%= activity.subject&.name %></strong>
+                    <% else %>
+                      <%= activity.action.gsub('contact.', '').humanize %> <strong><%= activity.subject&.name %></strong>
+                    <% end %>
+                  </p>
+                  <p class="text-xs text-gray-400 mt-0.5"><%= activity.created_at.strftime("%H:%M") %></p>
+                </div>
+              </div>
+            </li>
+          <% end %>
+          <% if @today_activities.empty? %>
+            <li class="p-8 text-center">
+              <div class="text-gray-400">
+                <i class="fa-solid fa-coffee text-3xl mb-2"></i>
+                <p class="text-sm">Chưa có hoạt động nào hôm nay.</p>
+                <p class="text-xs mt-1">Bắt đầu bằng cách nhận một khách hàng mới!</p>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .workspace-tab {
+    color: #6b7280;
+    border-color: transparent;
+  }
+  .workspace-tab:hover {
+    color: #374151;
+    border-color: #d1d5db;
+  }
+  .workspace-tab[aria-selected="true"] {
+    color: #0B387A;
+    border-color: #0B387A;
+    background-color: #EFF6FF;
+  }
+</style>

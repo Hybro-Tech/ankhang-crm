@@ -33,6 +33,13 @@ Rails.application.routes.draw do
   end
   resources :service_types
 
+  # Sales Workspace (TASK-050 v2: Productivity-focused screen)
+  get "sales/workspace", to: "sales_workspace#show", as: :sales_workspace
+  get "sales/workspace/tab_new_contacts", to: "sales_workspace#tab_new_contacts"
+  get "sales/workspace/tab_needs_update", to: "sales_workspace#tab_needs_update"
+  get "sales/workspace/tab_in_progress", to: "sales_workspace#tab_in_progress"
+  get "sales/workspace/preview/:id", to: "sales_workspace#preview", as: :sales_workspace_preview
+
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo
 
