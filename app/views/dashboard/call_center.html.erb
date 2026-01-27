@@ -1,71 +1,50 @@
 <div class="min-h-screen bg-gray-50 flex flex-col">
-  <!-- Header -->
-  <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="p-2 bg-brand-blue/10 rounded-lg">
-          <i class="fa-solid fa-headset text-brand-blue text-xl"></i>
-        </div>
-        <div>
-          <h1 class="text-xl font-bold text-gray-900">Dashboard Tổng đài</h1>
-          <p class="text-xs text-gray-500">Xin chào, <%= current_user.name %></p>
-        </div>
-      </div>
-      <div>
-         <%= link_to contacts_path, class: "text-sm text-brand-blue font-medium hover:underline" do %>
-           Quản lý tất cả Contacts <i class="fa-solid fa-arrow-right ml-1"></i>
-         <% end %>
-      </div>
-    </div>
-  </header>
-
-  <main class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-8">
+  <main class="flex-1 p-0 w-full space-y-8">
     
-    <!-- Stats Section -->
-    <div id="call_center_stats" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <%= render "dashboard/call_center_stats", 
-          today: @contacts_today, 
-          week: @contacts_week, 
-          month: @contacts_month %>
+    <div class="flex items-center justify-between px-1">
+       <h1 class="text-xl font-bold text-gray-900">Nhập thông tin khách hàng</h1>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Inline Create Form -->
-      <div class="lg:col-span-2 space-y-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-            <h2 class="text-lg font-bold text-gray-800">
-              <i class="fa-solid fa-user-plus text-brand-orange mr-2"></i>Tạo Contact Mới
-            </h2>
-            <span class="px-2 py-1 bg-blue-100 text-brand-blue text-xs rounded font-medium">Fast Entry</span>
-          </div>
-          <div class="p-6">
-            <%= turbo_frame_tag "new_contact_form" do %>
-              <%= render "contacts/form", contact: @contact %>
+    <div class="grid grid-cols-12 gap-6 flex-1 min-h-0 pb-4">
+      
+      <!-- Cập nhật V2: Cột 1 - Input Zone (~70%) -->
+      <div class="col-span-12 md:col-span-8 flex flex-col h-full">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex-1 overflow-hidden flex flex-col">
+          <div class="p-6 flex-1 overflow-y-auto">
+            <%= turbo_frame_tag "new_contact_form", class: "h-full w-full block" do %>
+              <%= render "contacts/form_call_center", contact: @contact %>
             <% end %>
           </div>
         </div>
       </div>
 
-      <!-- Recent Added Contacts -->
-      <div class="lg:col-span-1">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col">
-          <div class="px-5 py-4 border-b border-gray-200 flex justify-between items-center">
-             <h3 class="font-bold text-gray-800">Vừa thêm gần đây</h3>
-             <span class="text-xs text-gray-500">10 contact mới nhất</span>
-          </div>
-          <div class="flex-1 overflow-y-auto max-h-[600px] p-0">
-            <div id="recent_contacts_list" class="divide-y divide-gray-100">
-              <%= render partial: "dashboard/recent_contact", collection: @recent_contacts, as: :contact %>
+      <!-- Cập nhật V2: Cột 2 - Context & History (~30%) -->
+      <div class="col-span-12 md:col-span-4 flex flex-col h-full">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex-1 overflow-hidden flex flex-col">
+          <div id="context_panel_content" class="flex flex-col flex-1 overflow-hidden h-full">
+            <!-- Context Header -->
+            <div class="px-6 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+               <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Lịch sử vừa nhập</span>
+               <span class="text-xs text-gray-400">10 contact mới nhất</span>
             </div>
-            <% if @recent_contacts.empty? %>
-              <div id="recent_contacts_empty" class="p-8 text-center text-gray-500 text-sm">
-                Chốt đơn đầu tiên trong ngày đi nào!
-              </div>
-            <% end %>
+            
+            <div class="flex-1 overflow-y-auto p-0 relative bg-gray-50/30">
+               <div id="recent_contacts_list" class="divide-y divide-gray-100">
+                 <%= render partial: "dashboard/recent_contact", collection: @recent_contacts, as: :contact %>
+               </div>
+               <% if @recent_contacts.empty? %>
+                 <div id="recent_contacts_empty" class="p-12 text-center text-gray-400">
+                   <div class="inline-flex p-4 bg-gray-100 rounded-full mb-3">
+                      <i class="fa-solid fa-mug-hot text-xl text-gray-400"></i>
+                   </div>
+                   <p class="text-sm">Chưa có dữ liệu mới trong phiên này.</p>
+                 </div>
+               <% end %>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
   </main>
 </div>

@@ -36,6 +36,15 @@ class ApplicationController < ActionController::Base
                                                current_password])
   end
 
+  def after_sign_in_path_for(resource)
+    # TASK-049: Redirect Call Center staff to their dashboard
+    if can?(:view_call_center, :dashboards)
+      dashboard_call_center_path
+    else
+      super
+    end
+  end
+
   private
 
   def layout_by_resource

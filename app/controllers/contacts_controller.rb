@@ -4,7 +4,7 @@
 # Manages customer contacts with role-based access control
 class ContactsController < ApplicationController
   before_action :authenticate_user!
-  load_and_authorize_resource except: %i[check_phone]
+  load_and_authorize_resource except: %i[check_phone check_identity recent]
   before_action :set_filter_options, only: :index
 
   # GET /contacts
@@ -96,6 +96,36 @@ class ContactsController < ApplicationController
     end
   end
 
+  # GET /contacts/check_identity?phone=... or ?zalo_id=...
+  # TASK-049: Context Awareness
+  def check_identity
+    @identity_value = params[:phone].presence || params[:zalo_id].presence
+    return unless @identity_value
+
+    @contact = if params[:phone].present?
+                 Contact.find_by_phone(params[:phone])
+               elsif params[:zalo_id].present?
+                 Contact.find_by(zalo_id: params[:zalo_id])
+               end
+
+    respond_to do |format|
+      format.turbo_stream
+    end
+  end
+  
+  # GET /contacts/recent
+  # TASK-049: Restore recent contacts list
+  def recent
+    @recent_contacts = current_user.created_contacts
+                                   .includes(:service_type, :assigned_user)
+                                   .order(created_at: :desc)
+                                   .limit(10)
+
+    respond_to do |format|
+      format.turbo_stream
+    end
+  end
+
   private
 
   def set_filter_options
@@ -120,7 +150,7 @@ class ContactsController < ApplicationController
 
   def contact_params
     params.expect(
-      contact: %i[name phone email zalo_link
+      contact: %i[name phone email zalo_link zalo_id zalo_qr
                   service_type_id source status
                   team_id assigned_user_id next_appointment notes]
     )

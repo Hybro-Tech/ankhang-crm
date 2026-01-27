@@ -229,8 +229,8 @@ Form tối ưu cho việc nhập nhanh thông tin khách hàng.
 | **Epic** | Dashboard |
 | **Story Points** | 3 |
 | **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | Completed |
 
 **User Story:**
 > Là Tổng đài, tôi muốn có màn hình tối ưu để nhập Contact nhanh và xem thống kê.

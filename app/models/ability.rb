@@ -20,6 +20,11 @@ class Ability
 
     # Apply user-level overrides (grant/deny)
     apply_user_overrides(user)
+
+    # Alias :view to :read (index, show) so standard controllers work
+    alias_action :view, to: :read
+    alias_action :edit, to: :update
+    alias_action :create, :read, :update, :destroy, to: :crud
   end
 
   private
@@ -42,20 +47,37 @@ class Ability
 
   def apply_permission(perm)
     subject, action = parse_permission_code(perm.code)
-    can action, subject
+    
+    # Map custom permission actions to standard Rails/CanCan actions
+    rails_action = map_action(action)
+    
+    can rails_action, subject
 
     # Also authorize the corresponding model class for load_and_authorize_resource
     model_class = subject_to_model_class(subject)
-    can action, model_class if model_class
+    if model_class
+      can rails_action, model_class 
+    end
   end
 
   def revoke_permission(perm)
     subject, action = parse_permission_code(perm.code)
-    cannot action, subject
+    rails_action = map_action(action)
+
+    cannot rails_action, subject
 
     # Also revoke for model class
     model_class = subject_to_model_class(subject)
-    cannot action, model_class if model_class
+    cannot rails_action, model_class if model_class
+  end
+
+  # Map DB permission actions to CanCan standard actions
+  def map_action(action)
+    case action
+    when :view then :read
+    when :edit then :update
+    else action
+    end
   end
 
   # Parse permission code "contacts.view" -> [:contacts, :view]

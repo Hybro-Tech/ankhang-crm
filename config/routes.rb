@@ -27,6 +27,8 @@ Rails.application.routes.draw do
     end
     collection do
       get :check_phone
+      get :check_identity
+      get :recent
     end
   end
   resources :service_types

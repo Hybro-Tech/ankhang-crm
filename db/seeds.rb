@@ -108,8 +108,12 @@ Rails.logger.debug "➡️ Assigning Permissions..."
 # Super Admin: All permissions
 roles["Super Admin"].permissions = Permission.all
 
-# Tổng Đài
-td_codes = %w[contacts.view contacts.create notifications.receive dashboards.view_call_center]
+# Tổng Đài - Full quyền Contact để nhập liệu và xử lý
+td_codes = %w[
+  contacts.view contacts.create contacts.edit contacts.pick 
+  contacts.update_status contacts.view_failed
+  notifications.receive dashboards.view_call_center
+]
 roles["Tổng Đài"].permissions = Permission.where(code: td_codes)
 
 # Sale (Phase 1: No deals - see Phase 2 notes)

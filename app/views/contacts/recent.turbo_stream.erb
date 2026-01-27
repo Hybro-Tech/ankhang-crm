@@ -1,0 +1,23 @@
+<%= turbo_stream.update "context_panel_content" do %>
+  <div id="context_panel_content" class="flex flex-col flex-1 overflow-hidden h-full">
+    <!-- Context Header -->
+    <div class="px-6 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Lịch sử vừa nhập</span>
+        <span class="text-xs text-gray-400">10 contact mới nhất</span>
+    </div>
+    
+    <div class="flex-1 overflow-y-auto p-0 relative bg-gray-50/30">
+        <div id="recent_contacts_list" class="divide-y divide-gray-100">
+          <%= render partial: "dashboard/recent_contact", collection: @recent_contacts, as: :contact %>
+        </div>
+        <% if @recent_contacts.empty? %>
+          <div id="recent_contacts_empty" class="p-12 text-center text-gray-400">
+            <div class="inline-flex p-4 bg-gray-100 rounded-full mb-3">
+              <i class="fa-solid fa-mug-hot text-xl text-gray-400"></i>
+            </div>
+            <p class="text-sm">Chưa có dữ liệu mới trong phiên này.</p>
+          </div>
+        <% end %>
+    </div>
+  </div>
+<% end %>

@@ -77,13 +77,21 @@ class Contact < ApplicationRecord
   # Future: Contact History (TASK-023 or later)
   # has_many :contact_histories, dependent: :destroy
 
+  # TASK-049: Zalo Integration
+  has_one_attached :zalo_qr
+
   # ============================================================================
   # Validations
   # ============================================================================
 
   validates :name, presence: true, length: { maximum: 100 }
-  validates :phone, presence: true, uniqueness: { message: "đã tồn tại trong hệ thống" },
-                    length: { minimum: 10, maximum: 20 }
+  
+  # TASK-049: Dynamic Identity (Phone OR Zalo)
+  validates :phone, presence: true, length: { minimum: 10, maximum: 20 }, unless: -> { zalo_id.present? }
+  validates :phone, uniqueness: { message: "đã tồn tại trong hệ thống" }, allow_blank: true
+  
+  validates :zalo_id, presence: true, unless: -> { phone.present? }
+  validates :zalo_id, uniqueness: { message: "Zalo ID này đã tồn tại" }, allow_blank: true
   validates :email, length: { maximum: 100 },
                     format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :zalo_link, length: { maximum: 255 }

@@ -1,0 +1,24 @@
+<!-- Vertical Stats (Compact) -->
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 hover:bg-gray-50 transition-colors">
+  <div class="flex items-center justify-between mb-1">
+    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Hôm nay</span>
+    <i class="fa-solid fa-calendar-day text-brand-blue opacity-50"></i>
+  </div>
+  <p class="text-2xl font-bold text-gray-800" id="stat_today"><%= today %></p>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 hover:bg-gray-50 transition-colors">
+  <div class="flex items-center justify-between mb-1">
+    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Tuần này</span>
+    <i class="fa-solid fa-calendar-week text-purple-500 opacity-50"></i>
+  </div>
+  <p class="text-2xl font-bold text-gray-800" id="stat_week"><%= week %></p>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 hover:bg-gray-50 transition-colors">
+  <div class="flex items-center justify-between mb-1">
+    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Tháng này</span>
+    <i class="fa-solid fa-calendar text-green-500 opacity-50"></i>
+  </div>
+  <p class="text-2xl font-bold text-gray-800" id="stat_month"><%= month %></p>
+</div>
