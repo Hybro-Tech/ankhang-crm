@@ -3,10 +3,13 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="workspace-tabs"
 export default class extends Controller {
   static targets = ["tab", "frame"]
+  static outlets = ["slide-over"]
 
   connect () {
     // Set initial active tab
-    this.setActiveTab(this.tabTargets[0])
+    if (this.hasTabTarget) {
+      this.setActiveTab(this.tabTargets[0])
+    }
   }
 
   switchTab (event) {
@@ -41,6 +44,11 @@ export default class extends Controller {
       const previewFrame = document.getElementById("contact_preview_frame")
       if (previewFrame) {
         previewFrame.src = previewUrl
+
+        // Open the slide-over if outlet is present
+        if (this.hasSlideOverOutlet) {
+          this.slideOverOutlet.open()
+        }
       }
     }
   }

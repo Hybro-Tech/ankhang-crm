@@ -1,4 +1,6 @@
-<div class="min-h-screen bg-gray-50" data-controller="workspace-tabs">
+<div class="min-h-screen bg-gray-50" 
+     data-controller="workspace-tabs"
+     data-workspace-tabs-slide-over-outlet="#main-slide-over">
   <!-- Header -->
   <div class="bg-white border-b border-gray-200 px-6 py-4 mb-6">
     <div class="flex items-center justify-between">
@@ -166,6 +168,61 @@
             </li>
           <% end %>
         </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide Over Drawer for Contact Details -->
+  <div id="main-slide-over" 
+       data-controller="slide-over"
+       data-slide-over-target="container"
+       class="relative z-50 hidden" 
+       aria-labelledby="slide-over-title" 
+       role="dialog" 
+       aria-modal="true">
+       
+    <!-- Backdrop - clickable to close -->
+    <div data-slide-over-target="backdrop" 
+         class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity opacity-0 cursor-pointer"
+         data-action="click->slide-over#close"></div>
+
+    <!-- Content wrapper - pointer-events-none so clicks pass through to backdrop -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+          
+          <!-- Panel - pointer-events-auto to capture panel clicks -->
+          <div data-slide-over-target="panel" 
+               class="pointer-events-auto w-screen max-w-2xl transform transition ease-in-out duration-500 translate-x-full bg-white shadow-xl flex flex-col h-full">
+            
+            <!-- Panel Header -->
+            <div class="px-4 py-6 bg-gray-50 sm:px-6 border-b border-gray-200">
+               <div class="flex items-start justify-between">
+                 <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">Chi tiết khách hàng</h2>
+                 <div class="ml-3 flex h-7 items-center">
+                   <button type="button" 
+                           class="relative rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                           data-action="click->slide-over#close">
+                     <span class="absolute -inset-2.5"></span>
+                     <span class="sr-only">Đóng</span>
+                     <i class="fa-solid fa-xmark text-xl"></i>
+                   </button>
+                 </div>
+               </div>
+            </div>
+
+            <!-- Panel Content: Full Contact Details -->
+            <div class="flex-1 overflow-y-auto bg-white">
+               <turbo-frame id="contact_preview_frame" class="block">
+                   <div class="h-96 flex flex-col items-center justify-center text-gray-400 space-y-4">
+                      <i class="fa-solid fa-spinner fa-spin text-3xl"></i>
+                      <p>Đang tải dữ liệu...</p>
+                   </div>
+               </turbo-frame>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   </div>
