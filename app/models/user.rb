@@ -56,6 +56,10 @@ class User < ApplicationRecord
   has_one :managed_team, class_name: "Team", foreign_key: :manager_id,
                          inverse_of: :manager, dependent: :nullify
 
+  # TASK-048: Saturday Schedule
+  has_many :saturday_schedule_users, dependent: :destroy
+  has_many :saturday_schedules, through: :saturday_schedule_users
+
   # TASK-011: Allow login with username or email
   # Override Devise's find_for_database_authentication
   def self.find_for_database_authentication(warden_conditions)

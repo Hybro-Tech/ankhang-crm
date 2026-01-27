@@ -101,8 +101,8 @@ Quản lý ngày nghỉ/lễ để hệ thống biết khi nào là ngoài giờ
 | **Epic** | Organization |
 | **Story Points** | 3 |
 | **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | Completed |
 
 **User Story:**
 > Là Admin, tôi muốn tạo danh sách nhân viên đi làm vào ngày Thứ 7 cụ thể.
@@ -111,16 +111,16 @@ Quản lý ngày nghỉ/lễ để hệ thống biết khi nào là ngoài giờ
 Mỗi Thứ 7, chỉ một số nhân viên đi làm. Admin cần tạo danh sách này trước.
 
 **Acceptance Criteria:**
-- [ ] `saturday_schedules` table: date, description
-- [ ] `saturday_schedule_users` join table: schedule_id, user_id
-- [ ] UI: Chọn ngày Thứ 7 → Checkbox list nhân viên
-- [ ] Validate: Chỉ cho chọn ngày Thứ 7
+- [x] `saturday_schedules` table: date, description
+- [x] `saturday_schedule_users` join table: schedule_id, user_id
+- [x] UI: Chọn ngày Thứ 7 → Checkbox list nhân viên
+- [x] Validate: Chỉ cho chọn ngày Thứ 7
 - [ ] Smart Routing sử dụng danh sách này
 
 **Test Cases:**
-- [ ] Create schedule cho Thứ 7 → success
-- [ ] Create schedule cho Thứ 2 → error
-- [ ] Check API trả về đúng danh sách nhân viên
+- [x] Create schedule cho Thứ 7 → success
+- [x] Create schedule cho Thứ 2 → error
+- [x] Check API trả về đúng danh sách nhân viên
 
 ---
 

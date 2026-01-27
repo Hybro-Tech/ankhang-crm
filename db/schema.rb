@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_26_153840) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_27_021445) do
   create_table "activity_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "action", limit: 50, null: false
@@ -64,6 +64,24 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_26_153840) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_roles_on_name", unique: true
+  end
+
+  create_table "saturday_schedule_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "saturday_schedule_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["saturday_schedule_id", "user_id"], name: "index_saturday_schedule_users_on_schedule_and_user", unique: true
+    t.index ["saturday_schedule_id"], name: "index_saturday_schedule_users_on_saturday_schedule_id"
+    t.index ["user_id"], name: "index_saturday_schedule_users_on_user_id"
+  end
+
+  create_table "saturday_schedules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_saturday_schedules_on_date", unique: true
   end
 
   create_table "solid_cache_entries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -272,6 +290,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_26_153840) do
   add_foreign_key "activity_logs", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
+  add_foreign_key "saturday_schedule_users", "saturday_schedules"
+  add_foreign_key "saturday_schedule_users", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

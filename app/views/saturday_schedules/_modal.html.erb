@@ -1,0 +1,117 @@
+
+<%= turbo_frame_tag "schedule_modal_frame" do %>
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" data-controller="modal" data-action="click->modal#closeBackground keydown.esc->modal#close">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-blue-50/30 rounded-t-xl shrink-0">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900 flex items-center">
+            <span class="mr-3 bg-brand-orange text-white text-sm px-3 py-1 rounded-full uppercase tracking-wide">Thứ 7</span>
+            <%= @saturday_schedule.date.strftime("Ngày %d/%m/%Y") %>
+          </h3>
+          <p class="text-gray-500 mt-1 flex items-center text-sm">
+            <i class="fa-regular fa-comment-dots mr-2 text-gray-400"></i>
+            <%= @saturday_schedule.description.presence || "Không có ghi chú" %>
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <% if can? :edit, @saturday_schedule %>
+            <%= link_to edit_saturday_schedule_path(@saturday_schedule), data: { turbo_frame: "_top" }, class: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center transition" do %>
+              <i class="fa-solid fa-pen mr-2 text-brand-blue"></i> Chỉnh sửa danh sách
+            <% end %>
+          <% end %>
+          <%= link_to saturday_schedules_path, class: "text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100" do %>
+            <i class="fa-solid fa-xmark text-2xl"></i>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50/50">
+        <div class="mb-6 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="bg-white px-4 py-3 rounded-lg border border-gray-200 shadow-sm flex items-center">
+              <div class="w-10 h-10 rounded-full bg-blue-100 text-brand-blue flex items-center justify-center text-xl mr-3">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500 font-medium uppercase">Tổng nhân sự</p>
+                <p class="text-2xl font-bold text-gray-900 leading-none"><%= @saturday_schedule.users.count %></p>
+              </div>
+            </div>
+            
+            <% # Team Stats Summary %>
+            <% team_counts = @saturday_schedule.users.joins(:teams).group("teams.name").count %>
+            <% if team_counts.any? %>
+              <div class="flex gap-2">
+                <% team_counts.each do |team_name, count| %>
+                  <div class="bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-sm">
+                    <p class="text-[10px] text-gray-400 uppercase font-bold"><%= team_name %></p>
+                    <p class="text-lg font-bold text-gray-800"><%= count %></p>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+
+        </div>
+
+        <% if @saturday_schedule.users.any? %>
+          <% # Group users by Team %>
+          <% users_by_team = @saturday_schedule.users.includes(:teams).group_by { |u| u.teams.first&.name || "Chưa phân Team" } %>
+          
+          <div class="space-y-8">
+            <% users_by_team.sort.each do |team_name, users| %>
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="px-4 py-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                  <h4 class="font-bold text-gray-800 flex items-center">
+                    <span class="w-2 h-6 bg-brand-blue rounded-r-full mr-3"></span>
+                    <%= team_name %>
+                    <span class="ml-2 bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full"><%= users.count %></span>
+                  </h4>
+                </div>
+                
+                <div class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <% users.each do |user| %>
+                    <div class="flex items-center p-3 rounded-lg border border-gray-100 hover:border-brand-blue/30 hover:bg-blue-50/10 transition group bg-white">
+                      <div class="relative">
+                         <%= image_tag "https://ui-avatars.com/api/?name=#{user.name}&background=random&color=fff", class: "w-10 h-10 rounded-full border-2 border-white shadow-sm" %>
+                         <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                      </div>
+                      <div class="ml-3 overflow-hidden">
+                        <p class="text-sm font-bold text-gray-900 truncate group-hover:text-brand-blue transition"><%= user.name %></p>
+                        <p class="text-xs text-gray-500 truncate"><%= user.email %></p>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="flex flex-col items-center justify-center h-64 text-gray-400 bg-white rounded-xl border border-gray-200 border-dashed">
+            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+              <i class="fa-solid fa-user-slash text-3xl text-gray-300"></i>
+            </div>
+            <p class="font-medium text-gray-500">Danh sách trống</p>
+            <p class="text-sm">Chưa có nhân viên nào được thêm vào lịch này.</p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Footer -->
+      <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-xl flex justify-between items-center shrink-0">
+        <p class="text-xs text-gray-400">
+          <i class="fa-solid fa-clock mr-1"></i> Cập nhật lần cuối: <%= @saturday_schedule.updated_at.strftime("%H:%M %d/%m/%Y") %>
+        </p>
+        <div class="flex gap-3">
+           <button class="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg text-sm font-medium transition flex items-center">
+             <i class="fa-solid fa-file-export mr-2"></i> Xuất Excel
+           </button>
+           <%= link_to "Đóng", saturday_schedules_path, class: "px-6 py-2 bg-brand-blue text-white hover:bg-blue-900 rounded-lg text-sm font-bold shadow-md transition" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

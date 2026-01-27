@@ -63,7 +63,11 @@ permissions_data = [
 
   # Holidays (TASK-047)
   { code: "holidays.manage", name: "Quản lý Ngày nghỉ", category: "Organization",
-    description: "Thêm/sửa/xóa ngày nghỉ lễ" }
+    description: "Thêm/sửa/xóa ngày nghỉ lễ" },
+
+  # Saturday Schedules (TASK-048)
+  { code: "saturday_schedules.manage", name: "Quản lý Lịch Thứ 7", category: "Organization",
+    description: "Tạo danh sách đi làm Thứ 7" }
 ]
 
 Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }

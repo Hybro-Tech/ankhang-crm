@@ -1,0 +1,110 @@
+<%= form_with(model: saturday_schedule, class: "space-y-6") do |f| %>
+  <% if saturday_schedule.errors.any? %>
+    <div class="bg-red-50 text-red-700 p-4 rounded-lg text-sm">
+      <h3 class="font-bold mb-2"><%= pluralize(saturday_schedule.errors.count, "lỗi") %> ngăn cản việc lưu dữ liệu:</h3>
+      <ul class="list-disc list-inside">
+        <% saturday_schedule.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Basic Info -->
+    <div class="space-y-4">
+      <h3 class="font-semibold text-gray-900 border-b pb-2">Thông tin chung</h3>
+      
+      <div>
+        <%= f.label :date, "Ngày làm việc (Thứ 7)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <!-- Using native date input, but could be enhanced with flatpickr later -->
+        <%= f.date_field :date, class: "w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-blue focus:border-brand-blue", 
+            onchange: "validateSaturday(this)" %>
+        <p class="text-xs text-gray-500 mt-1" id="date-helper">Chỉ được chọn ngày Thứ 7.</p>
+      </div>
+
+      <div>
+        <%= f.label :description, "Ghi chú / Mô tả", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_area :description, rows: 3, class: "w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-blue focus:border-brand-blue", placeholder: "Ví dụ: Trực tổng đài ca sáng..." %>
+      </div>
+    </div>
+
+    <!-- Staff Selection -->
+    <div class="space-y-4">
+      <h3 class="font-semibold text-gray-900 border-b pb-2 flex items-center justify-between">
+        <span>Danh sách nhân viên</span>
+        <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= @teams.sum { |t| t.users.count } %> nhân sự</span>
+      </h3>
+      
+      <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+        <% if @teams.any? %>
+          <div class="space-y-6">
+            <% @teams.each do |team| %>
+              <% if team.users.any? %>
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-bold text-gray-800 text-sm italic"><%= team.name %></h4>
+                    <button type="button" class="text-xs text-brand-blue hover:underline" onclick="toggleTeam('<%= team.id %>', true)">Chọn hết</button>
+                  </div>
+                  <div class="grid grid-cols-1 gap-2">
+                    <% team.users.each do |user| %>
+                      <label class="flex items-center p-2 bg-white border border-gray-100 rounded hover:border-brand-blue hover:bg-blue-50/30 cursor-pointer transition">
+                        <%= check_box_tag "saturday_schedule[user_ids][]", user.id, saturday_schedule.users.include?(user), class: "team-#{team.id} rounded text-brand-blue focus:ring-brand-blue mr-3 h-4 w-4" %>
+                        <div class="flex-1">
+                          <p class="text-sm font-medium text-gray-900"><%= user.name %></p>
+                          <p class="text-xs text-gray-400"><%= user.username %></p>
+                        </div>
+                      </label>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500 text-center py-4">Chưa có team/nhân viên nào trong hệ thống.</p>
+        <% end %>
+
+        <!-- Users with no team -->
+        <% # Ideally handle users with no team here too %>
+      </div>
+      <p class="text-xs text-gray-400 text-center">Chọn nhân viên sẽ đi làm vào ngày này.</p>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100 mt-6">
+    <%= link_to "Hủy", saturday_schedules_path, class: "px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition" %>
+    <%= f.button class: "bg-brand-blue text-white px-6 py-2 rounded-lg shadow hover:bg-blue-900 flex items-center justify-center min-w-[120px]" do %>
+      <i class="fa-solid fa-save mr-2"></i> Lưu Lịch
+    <% end %>
+  </div>
+<% end %>
+
+<script>
+  function validateSaturday(input) {
+    const date = new Date(input.value);
+    const day = date.getDay();
+    const helper = document.getElementById('date-helper');
+    const submitBtn = document.querySelector('button[type="submit"]');
+
+    if (day !== 6 && input.value !== "") { // 6 is Saturday
+      helper.innerText = "❌ Ngày bạn chọn không phải là Thứ 7!";
+      helper.classList.add("text-red-600");
+      input.classList.add("border-red-500", "focus:border-red-500", "focus:ring-red-500");
+    } else {
+      helper.innerText = "Chỉ được chọn ngày Thứ 7.";
+      helper.classList.remove("text-red-600");
+      input.classList.remove("border-red-500", "focus:border-red-500", "focus:ring-red-500");
+    }
+  }
+
+  function toggleTeam(teamId, checked) {
+    const checkboxes = document.querySelectorAll(`.team-${teamId}`);
+    // Simple toggle logic: if all checked, uncheck all. Otherwise check all.
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    
+    checkboxes.forEach(cb => {
+      cb.checked = !allChecked;
+    });
+  }
+</script>

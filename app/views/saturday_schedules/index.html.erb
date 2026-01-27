@@ -1,0 +1,123 @@
+<% content_for :title, "Quản lý Lịch làm việc Thứ 7" %>
+
+<!-- Header -->
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Lịch làm việc Thứ 7</h1>
+    <p class="text-sm text-gray-500">Quản lý danh sách nhân viên đi làm vào các ngày Thứ 7</p>
+  </div>
+  <% if can? :create, SaturdaySchedule %>
+    <%= link_to new_saturday_schedule_path, class: "bg-brand-blue text-white px-4 py-2 rounded-lg shadow hover:bg-blue-900 transition flex items-center" do %>
+      <i class="fa-solid fa-plus mr-2"></i> Tạo lịch mới
+    <% end %>
+  <% end %>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Left: Upcoming -->
+  <div class="lg:col-span-2 space-y-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-blue-50/50">
+        <h2 class="font-semibold text-gray-900 flex items-center">
+          <i class="fa-regular fa-calendar-check mr-2 text-brand-blue"></i>
+          Lịch sắp tới
+        </h2>
+      </div>
+
+      <% if @saturday_schedules.any? %>
+        <div class="divide-y divide-gray-100">
+          <% @saturday_schedules.each do |schedule| %>
+            <div class="p-4 hover:bg-gray-50 transition group">
+              <div class="flex items-start gap-4">
+                <!-- Date Box -->
+                <div class="bg-white border-2 border-brand-blue text-brand-blue rounded-lg px-3 py-2 text-center min-w-[60px] shadow-sm">
+                  <p class="text-xs font-bold uppercase">Thứ 7</p>
+                  <p class="text-xl font-bold leading-none mt-1"><%= schedule.date.day %></p>
+                  <p class="text-xs font-medium mt-1">T<%= schedule.date.month %></p>
+                </div>
+
+                <!-- Info -->
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-1">
+                    <h3 class="font-bold text-gray-900 text-lg">
+                      <%= link_to saturday_schedule_path(schedule), data: { turbo_frame: "schedule_modal_frame" }, class: "hover:text-brand-blue hover:underline decoration-brand-blue/30" do %>
+                        <%= schedule.date.strftime("Ngày %d/%m/%Y") %>
+                      <% end %>
+                    </h3>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
+                      <% if can? :edit, schedule %>
+                        <%= link_to edit_saturday_schedule_path(schedule), class: "text-gray-400 hover:text-brand-blue p-1" do %>
+                          <i class="fa-solid fa-pen"></i>
+                        <% end %>
+                      <% end %>
+                      <% if can? :destroy, schedule %>
+                        <%= button_to saturday_schedule_path(schedule), method: :delete, data: { turbo_confirm: "Xóa lịch làm việc này?" }, class: "text-gray-400 hover:text-red-600 p-1" do %>
+                          <i class="fa-solid fa-trash"></i>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                  
+                  <p class="text-sm text-gray-500 mb-3"><%= schedule.description.presence || "Không có ghi chú" %></p>
+
+                  <!-- Users Preview -->
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
+                      <i class="fa-solid fa-users mr-1"></i> <%= schedule.users.count %> nhân viên
+                    </span>
+                    <% schedule.users.limit(5).each do |user| %>
+                      <div class="relative group/avatar cursor-help">
+                         <div class="w-6 h-6 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] font-bold ring-2 ring-white">
+                           <%= user.name.chars.last %>
+                         </div>
+                         <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover/avatar:block whitespace-nowrap bg-gray-800 text-white text-xs px-2 py-1 rounded z-10">
+                           <%= user.name %>
+                         </div>
+                      </div>
+                    <% end %>
+                    <% if schedule.users.count > 5 %>
+                      <span class="text-xs text-gray-400 font-medium">+<%= schedule.users.count - 5 %></span>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="p-8 text-center text-gray-500">
+          <i class="fa-regular fa-calendar-xmark text-4xl text-gray-300 mb-3"></i>
+          <p>Chưa có lịch làm việc sắp tới.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Right: Past History -->
+  <div class="lg:col-span-1">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+      <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+        <h3 class="font-semibold text-gray-700 text-sm">Lịch sử gần đây</h3>
+      </div>
+      <% if @past_schedules.any? %>
+        <div class="divide-y divide-gray-100">
+          <% @past_schedules.each do |schedule| %>
+            <div class="px-4 py-3 hover:bg-gray-50 block">
+              <div class="flex items-center justify-between">
+                <%= link_to saturday_schedule_path(schedule), data: { turbo_frame: "schedule_modal_frame" }, class: "text-sm font-medium text-gray-900 hover:text-brand-blue hover:underline" do %>
+                  <%= schedule.date.strftime("%d/%m/%Y") %>
+                <% end %>
+                <span class="text-xs text-gray-500"><%= schedule.users.count %> NV</span>
+              </div>
+              <p class="text-xs text-gray-400 mt-1 truncate"><%= schedule.description || "-" %></p>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="p-4 text-center text-xs text-gray-400">Không có dữ liệu lịch sử.</div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= turbo_frame_tag 'schedule_modal_frame' %>

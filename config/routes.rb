@@ -13,9 +13,10 @@ Rails.application.routes.draw do
       post :clone
     end
   end
-  resources :users
   resources :teams
-  resources :holidays
+  resources :users, except: [:show]
+  resources :holidays, except: [:show]
+  resources :saturday_schedules
 
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo

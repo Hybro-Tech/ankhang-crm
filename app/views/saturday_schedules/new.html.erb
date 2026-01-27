@@ -1,0 +1,12 @@
+<% content_for :title, "Tạo Lịch làm việc Thứ 7" %>
+
+<div class="max-w-4xl mx-auto">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="mb-6 pb-4 border-b border-gray-100">
+      <h1 class="text-2xl font-bold text-gray-900">Thêm lịch làm việc Thứ 7</h1>
+      <p class="text-sm text-gray-500">Tạo danh sách nhân viên trực/làm việc vào ngày cuối tuần.</p>
+    </div>
+
+    <%= render "form", saturday_schedule: @saturday_schedule %>
+  </div>
+</div>
