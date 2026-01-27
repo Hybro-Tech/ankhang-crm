@@ -43,8 +43,8 @@ Rails.application.routes.draw do
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo
 
-  # Root path - temporarily set to demo for testing
-  root "demo#index"
+  # Root path - Dashboard with role-based view
+  root "dashboard#index"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

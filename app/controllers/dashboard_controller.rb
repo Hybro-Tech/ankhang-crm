@@ -4,22 +4,24 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    if current_user.has_role?("Call Center")
+    @dashboard_view = current_user.primary_dashboard_type
+
+    case @dashboard_view
+    when "call_center"
       load_call_center_stats
       load_call_center_recent_contacts
       prepare_inline_form
-      @dashboard_view = "call_center"
-    elsif current_user.has_role?("Sale")
+    when "sale"
       load_sale_stats
       load_sales_data
-      @dashboard_view = "sale"
+    when "cskh"
+      load_cskh_data
     else
       # Admin or fallback
       load_dashboard_stats
       load_recent_activities
       load_recent_contacts
       prepare_inline_form
-      @dashboard_view = "admin"
     end
   end
 
@@ -83,8 +85,8 @@ class DashboardController < ApplicationController
       total_contacts: current_user.assigned_contacts.count,
       new_leads: current_user.assigned_contacts.status_potential.count,
       won_deals_count: current_user.assigned_contacts.status_closed_new.count,
-      revenue: 0, 
-      conversion_rate: 0 
+      revenue: 0,
+      conversion_rate: 0
     }
 
     # Leaderboard (Mock for now to ensure UI renders)
@@ -101,14 +103,14 @@ class DashboardController < ApplicationController
   def load_sales_data
     # Upcoming Appointments
     @upcoming_appointments = current_user.assigned_contacts
-                                         .where("next_appointment >= ?", Time.current)
+                                         .where(next_appointment: Time.current..)
                                          .order(next_appointment: :asc)
                                          .limit(5)
 
     # Contacts to process (Assigned but not yet closed)
     # Priority: Potential > New
     @sales_contacts = current_user.assigned_contacts
-                                  .where(status: [:potential, :in_progress])
+                                  .where(status: %i[potential in_progress])
                                   .order(updated_at: :desc)
                                   .limit(10)
 
@@ -117,12 +119,28 @@ class DashboardController < ApplicationController
       { text: "KH2026-099 đã được gán cho bạn.", time: "5 phút trước", icon: "fa-user-plus", color: "text-brand-blue" },
       { text: "Lịch hẹn với KH2026-055 sắp đến.", time: "30 phút nữa", icon: "fa-clock", color: "text-orange-500" }
     ]
-    
+
     # Chart Data (Mock)
     @chart_data = {
       labels: %w[Th2 Th3 Th4 Th5 Th6 Th7 CN],
       contacts: [12, 19, 3, 5, 2, 3, 15],
       deals: [2, 3, 1, 4, 1, 2, 5]
+    }
+  end
+
+  # --- CSKH (Customer Care) ---
+  def load_cskh_data
+    # Failed contacts for customer care follow-up
+    @failed_contacts = Contact.status_failed
+                              .includes(:assigned_user, :service_type)
+                              .order(updated_at: :desc)
+                              .limit(20)
+
+    # Stats
+    @stats = {
+      failed_today: Contact.status_failed.where(updated_at: Time.zone.today.all_day).count,
+      pending_callback: Contact.status_failed.count,
+      resolved_this_week: 0 # Placeholder for future
     }
   end
 end

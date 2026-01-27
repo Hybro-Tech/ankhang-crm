@@ -41,27 +41,19 @@ module RolesHelper
   # Get category icon for permission matrix
   def category_icon_class(category)
     icons = {
-      "Contacts" => "fa-solid fa-users text-[#0B387A]",
-      "Teams" => "fa-solid fa-user-group text-indigo-600",
-      "Users" => "fa-solid fa-id-card text-red-600",
-      "Roles" => "fa-solid fa-user-shield text-orange-600",
-      "Reports" => "fa-solid fa-chart-pie text-gray-600",
-      "Logs" => "fa-solid fa-list-check text-gray-500"
+      "Khách hàng" => "fa-solid fa-users text-[#0B387A]",
+      "Nhân viên" => "fa-solid fa-id-card text-red-600",
+      "Đội nhóm" => "fa-solid fa-user-group text-indigo-600",
+      "Phân quyền" => "fa-solid fa-user-shield text-orange-600",
+      "Loại dịch vụ" => "fa-solid fa-briefcase text-green-600",
+      "Ngày nghỉ" => "fa-solid fa-calendar-xmark text-pink-600"
     }
     icons[category] || "fa-solid fa-folder text-gray-400"
   end
 
-  # Translate category name to Vietnamese
+  # Translate category name to Vietnamese (already in Vietnamese, just return)
   def category_name_vi(category)
-    translations = {
-      "Contacts" => "Khách hàng",
-      "Teams" => "Đội nhóm",
-      "Users" => "Nhân viên",
-      "Roles" => "Phân quyền",
-      "Reports" => "Báo cáo",
-      "Logs" => "Nhật ký"
-    }
-    translations[category] || category
+    category
   end
 
   # Find specific permission for a category and action type

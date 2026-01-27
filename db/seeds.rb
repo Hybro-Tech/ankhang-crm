@@ -2,78 +2,50 @@
 
 Rails.logger.debug "🌱 Seeding RBAC data..."
 
-# 1. Clean up only if no FK dependencies exist
-# NOTE: If running seed on fresh DB, uncomment these lines
-# Skip cleanup on existing data to avoid FK constraint errors
-# UserPermission.delete_all
-# RolePermission.delete_all
-# Permission.delete_all
-# Role.delete_all
+# 1. Clean up old permissions (safe to run - cleans up deprecated permissions)
+Rails.logger.debug "🗑️ Cleaning up old permission data..."
+RolePermission.delete_all
+UserPermission.delete_all
+Permission.delete_all
 
-# 2. Define Permissions (Phase 1 Only)
-# NOTE: See docs/planning/phase2_notes.md for Phase 2 permissions (Deals, Products, Coupons)
+# 2. Define Permissions - SIMPLIFIED CRUD-ONLY (6 modules × 4 actions = 24 permissions)
+# Special permissions can be added later as needed
 permissions_data = [
-  # Contacts
-  { code: "contacts.view", name: "Xem Contact", category: "Contacts",
-    description: "Xem danh sách và chi tiết contact" },
-  { code: "contacts.create", name: "Tạo Contact", category: "Contacts", description: "Tạo contact mới" },
-  { code: "contacts.pick", name: "Pick Contact", category: "Contacts", description: "Nhận contact từ kho" },
-  { code: "contacts.edit", name: "Sửa Contact", category: "Contacts", description: "Chỉnh sửa thông tin contact" },
-  { code: "contacts.update_status", name: "Cập nhật Status", category: "Contacts",
-    description: "Cập nhật trạng thái contact" },
-  { code: "contacts.view_failed", name: "Xem Contact Failed", category: "Contacts",
-    description: "Xem contact thất bại (cho CSKH)" },
+  # Khách hàng (Contacts)
+  { code: "contacts.view", name: "Xem", category: "Khách hàng", description: "Xem danh sách và chi tiết khách hàng" },
+  { code: "contacts.create", name: "Tạo", category: "Khách hàng", description: "Tạo khách hàng mới" },
+  { code: "contacts.edit", name: "Sửa", category: "Khách hàng", description: "Chỉnh sửa thông tin khách hàng" },
+  { code: "contacts.delete", name: "Xóa", category: "Khách hàng", description: "Xóa khách hàng" },
 
-  # Teams
-  { code: "teams.view", name: "Xem Team", category: "Teams", description: "Xem danh sách team" },
-  { code: "teams.manage", name: "Quản lý Team", category: "Teams", description: "Quản lý team (tạo/sửa/xóa)" },
+  # Nhân viên (Employees/Users)
+  { code: "employees.view", name: "Xem", category: "Nhân viên", description: "Xem danh sách nhân viên" },
+  { code: "employees.create", name: "Tạo", category: "Nhân viên", description: "Tạo nhân viên mới" },
+  { code: "employees.edit", name: "Sửa", category: "Nhân viên", description: "Chỉnh sửa thông tin nhân viên" },
+  { code: "employees.delete", name: "Xóa", category: "Nhân viên", description: "Xóa nhân viên" },
 
-  # Employees (User model)
-  { code: "employees.view", name: "Xem Nhân viên", category: "Employees", description: "Xem danh sách nhân viên" },
-  { code: "employees.create", name: "Tạo Nhân viên", category: "Employees", description: "Tạo nhân viên" },
-  { code: "employees.edit", name: "Sửa Nhân viên", category: "Employees", description: "Sửa nhân viên" },
-  { code: "employees.delete", name: "Xóa Nhân viên", category: "Employees", description: "Xóa nhân viên" },
-  { code: "employees.manage_roles", name: "Quản lý Roles", category: "Employees",
-    description: "Quản lý vai trò nhân viên" },
+  # Đội nhóm (Teams)
+  { code: "teams.view", name: "Xem", category: "Đội nhóm", description: "Xem danh sách đội nhóm" },
+  { code: "teams.create", name: "Tạo", category: "Đội nhóm", description: "Tạo đội nhóm mới" },
+  { code: "teams.edit", name: "Sửa", category: "Đội nhóm", description: "Chỉnh sửa đội nhóm" },
+  { code: "teams.delete", name: "Xóa", category: "Đội nhóm", description: "Xóa đội nhóm" },
 
-  # Roles & Permissions
-  { code: "roles.view", name: "Xem Role", category: "Roles", description: "Xem danh sách vai trò" },
-  { code: "roles.manage", name: "Quản lý Role", category: "Roles", description: "Quản lý vai trò" },
-  { code: "permissions.override", name: "Override Permission", category: "Roles", description: "Gán quyền riêng lẻ" },
+  # Phân quyền (Roles)
+  { code: "roles.view", name: "Xem", category: "Phân quyền", description: "Xem danh sách vai trò" },
+  { code: "roles.create", name: "Tạo", category: "Phân quyền", description: "Tạo vai trò mới" },
+  { code: "roles.edit", name: "Sửa", category: "Phân quyền", description: "Chỉnh sửa vai trò" },
+  { code: "roles.delete", name: "Xóa", category: "Phân quyền", description: "Xóa vai trò" },
 
-  # Notifications
-  { code: "notifications.view", name: "Xem Thông báo", category: "Notifications", description: "Xem thông báo" },
-  { code: "notifications.receive", name: "Nhận Thông báo", category: "Notifications", description: "Nhận thông báo" },
-  { code: "notifications.send", name: "Gửi Thông báo", category: "Notifications", description: "Gửi thông báo" },
-  { code: "notifications.manage_rules", name: "Quản lý Luật", category: "Notifications",
-    description: "Quản lý luật thông báo" },
+  # Loại dịch vụ (Service Types)
+  { code: "service_types.view", name: "Xem", category: "Loại dịch vụ", description: "Xem danh sách loại dịch vụ" },
+  { code: "service_types.create", name: "Tạo", category: "Loại dịch vụ", description: "Tạo loại dịch vụ mới" },
+  { code: "service_types.edit", name: "Sửa", category: "Loại dịch vụ", description: "Chỉnh sửa loại dịch vụ" },
+  { code: "service_types.delete", name: "Xóa", category: "Loại dịch vụ", description: "Xóa loại dịch vụ" },
 
-  # Zalo OA
-  { code: "zalo.send", name: "Gửi Zalo", category: "Zalo", description: "Gửi tin nhắn Zalo" },
-
-  # Logs
-  { code: "logs.view_own", name: "Xem Log cá nhân", category: "Logs", description: "Xem log cá nhân" },
-  { code: "logs.view_all", name: "Xem tất cả Log", category: "Logs", description: "Xem tất cả log" },
-
-  # Reports & Settings
-  { code: "reports.view", name: "Xem Báo cáo", category: "Reports", description: "Xem báo cáo" },
-  { code: "reports.export", name: "Xuất Báo cáo", category: "Reports", description: "Xuất báo cáo" },
-  { code: "settings.view", name: "Xem Cài đặt", category: "Settings", description: "Xem cài đặt" },
-  { code: "settings.manage", name: "Quản lý Cài đặt", category: "Settings", description: "Quản lý cài đặt" },
-
-  # Holidays (TASK-047)
-  { code: "holidays.manage", name: "Quản lý Ngày nghỉ", category: "Organization",
-    description: "Thêm/sửa/xóa ngày nghỉ lễ" },
-
-  # Saturday Schedules (TASK-048)
-  { code: "saturday_schedules.manage", name: "Quản lý Lịch Thứ 7", category: "Organization",
-    description: "Tạo danh sách đi làm Thứ 7" },
-
-  # Dashboards (TASK-049/050)
-  { code: "dashboards.view_call_center", name: "Dashboard Tổng đài", category: "Dashboards",
-    description: "Xem dashboard dành cho tổng đài" },
-  { code: "dashboards.view_sale", name: "Dashboard Sale", category: "Dashboards",
-    description: "Xem dashboard dành cho sale" }
+  # Ngày nghỉ (Holidays)
+  { code: "holidays.view", name: "Xem", category: "Ngày nghỉ", description: "Xem lịch nghỉ lễ" },
+  { code: "holidays.create", name: "Tạo", category: "Ngày nghỉ", description: "Thêm ngày nghỉ mới" },
+  { code: "holidays.edit", name: "Sửa", category: "Ngày nghỉ", description: "Chỉnh sửa ngày nghỉ" },
+  { code: "holidays.delete", name: "Xóa", category: "Ngày nghỉ", description: "Xóa ngày nghỉ" }
 ]
 
 Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }
@@ -85,49 +57,41 @@ permissions_data.each do |p|
   end
 end
 
-# 3. Create Roles
+# 3. Create Roles with dashboard_type
 Rails.logger.debug "➡️ Creating Roles..."
 roles_data = [
-  { name: "Super Admin", description: "Quản trị viên hệ thống", is_system: true },
-  { name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: false },
-  { name: "Sale", description: "Nhân viên kinh doanh", is_system: false },
-  { name: "CSKH", description: "Chăm sóc khách hàng", is_system: false }
+  { name: "Super Admin", description: "Quản trị viên hệ thống", is_system: true, dashboard_type: :admin },
+  { name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: false, dashboard_type: :call_center },
+  { name: "Sale", description: "Nhân viên kinh doanh", is_system: false, dashboard_type: :sale },
+  { name: "CSKH", description: "Chăm sóc khách hàng", is_system: false, dashboard_type: :cskh }
 ]
 
 roles = {}
 roles_data.each do |r|
-  roles[r[:name]] = Role.find_or_create_by!(name: r[:name]) do |role|
-    role.description = r[:description]
-    role.is_system = r[:is_system]
-  end
+  role = Role.find_or_initialize_by(name: r[:name])
+  role.description = r[:description]
+  role.is_system = r[:is_system]
+  role.dashboard_type = r[:dashboard_type]
+  role.save!
+  roles[r[:name]] = role
 end
 
 # 4. Assign Permissions
 Rails.logger.debug "➡️ Assigning Permissions..."
 
-# Super Admin: All permissions
+# Super Admin: All permissions (also has can :manage, :all in Ability)
 roles["Super Admin"].permissions = Permission.all
 
-# Tổng Đài - Full quyền Contact để nhập liệu và xử lý
-td_codes = %w[
-  contacts.view contacts.create contacts.edit contacts.pick
-  contacts.update_status contacts.view_failed
-  notifications.receive dashboards.view_call_center
-]
+# Tổng Đài - Contact CRUD for data entry
+td_codes = %w[contacts.view contacts.create contacts.edit]
 roles["Tổng Đài"].permissions = Permission.where(code: td_codes)
 
-# Sale (Phase 1: No deals - see Phase 2 notes)
-sale_codes = %w[
-  contacts.view contacts.pick contacts.edit contacts.update_status
-  notifications.receive logs.view_own dashboards.view_sale
-]
+# Sale - Contact access
+sale_codes = %w[contacts.view contacts.edit]
 roles["Sale"].permissions = Permission.where(code: sale_codes)
 
-# CSKH
-cskh_codes = %w[
-  contacts.view_failed contacts.edit contacts.update_status
-  zalo.send notifications.receive logs.view_own
-]
+# CSKH - Contact access for care
+cskh_codes = %w[contacts.view contacts.edit]
 roles["CSKH"].permissions = Permission.where(code: cskh_codes)
 
 # 5. Create Teams (TASK-009)

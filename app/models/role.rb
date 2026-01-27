@@ -27,6 +27,13 @@ class Role < ApplicationRecord
   before_update :check_system_role_for_update
   before_destroy :check_system_role_for_destroy
 
+  # Dashboard type determines which dashboard view users with this role see
+  # admin: Full admin dashboard with all stats
+  # call_center: Focused on contact input and today's stats
+  # sale: Pipeline, KPIs, and leaderboard
+  # cskh: Customer care focused view
+  enum :dashboard_type, { admin: 0, call_center: 1, sale: 2, cskh: 3 }
+
   def clone_with_permissions(new_name)
     new_role = dup
     new_role.name = new_name

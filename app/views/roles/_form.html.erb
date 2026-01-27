@@ -42,6 +42,19 @@
             class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none",
             placeholder: "Mô tả vai trò..." %>
       </div>
+      <div>
+        <%= f.label :dashboard_type, "Loại Dashboard", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.select :dashboard_type, 
+            options_for_select([
+              ["Admin (Tổng quan)", "admin"],
+              ["Tổng đài (Nhập liệu)", "call_center"],
+              ["Sale (Kinh doanh)", "sale"],
+              ["CSKH (Chăm sóc KH)", "cskh"]
+            ], role.dashboard_type || "admin"),
+            {},
+            class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none" %>
+        <p class="text-xs text-gray-500 mt-1">Chọn giao diện Dashboard hiển thị cho vai trò này</p>
+      </div>
     </div>
   </div>
 
@@ -62,7 +75,7 @@
               <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Tạo</th>
               <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Sửa</th>
               <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Xóa</th>
-              <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Pick</th>
+
               <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Tất cả</th>
             </tr>
           </thead>
@@ -76,7 +89,7 @@
                   </div>
                 </td>
                 
-                <% [:view, :create, :edit, :delete, :pick].each do |action| %>
+                <% [:view, :create, :edit, :delete].each do |action| %>
                   <td class="px-3 py-3 text-center">
                     <% if perm = find_permission_for(category, action, permissions) %>
                       <label class="inline-flex items-center justify-center cursor-pointer w-full h-full">

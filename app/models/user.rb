@@ -126,6 +126,12 @@ class User < ApplicationRecord
   def can_access?(permission_code)
     effective_permission_codes.include?(permission_code)
   end
+
+  # Get primary dashboard type from user's first role
+  # Defaults to "admin" if no role assigned
+  def primary_dashboard_type
+    roles.first&.dashboard_type || "admin"
+  end
 end
 
 #------------------------------------------------------------------------------

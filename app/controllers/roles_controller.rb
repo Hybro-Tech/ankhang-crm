@@ -81,7 +81,7 @@ class RolesController < ApplicationController
   end
 
   def role_params
-    params.expect(role: %i[name description])
+    params.expect(role: %i[name description dashboard_type])
   end
 
   def update_permissions
