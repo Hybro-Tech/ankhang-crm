@@ -26,8 +26,8 @@ RSpec.describe Contact, type: :model do
     end
 
     it "requires unique phone" do
-      create(:contact, phone: "0912345678", created_by_id: creator.id, service_type: service_type)
-      contact = build(:contact, phone: "0912345678")
+      create(:contact, phone: "0912121212", created_by_id: creator.id, service_type: service_type)
+      contact = build(:contact, phone: "0912121212")
       expect(contact).not_to be_valid
       expect(contact.errors[:phone]).to include("đã tồn tại trong hệ thống")
     end
@@ -157,8 +157,8 @@ RSpec.describe Contact, type: :model do
       end
 
       it "finds by phone" do
-        contact = create(:contact, phone: "0987654321", created_by_id: creator_user.id, service_type: st)
-        expect(described_class.search("0987654")).to include(contact)
+        contact = create(:contact, phone: "0966666666", created_by_id: creator_user.id, service_type: st)
+        expect(described_class.search("0966666")).to include(contact)
       end
 
       it "finds by code" do
@@ -171,8 +171,8 @@ RSpec.describe Contact, type: :model do
   describe "class methods" do
     describe ".phone_exists?" do
       it "returns true if phone exists" do
-        create(:contact, phone: "0912345678", created_by_id: creator.id, service_type: service_type)
-        expect(described_class.phone_exists?("0912345678")).to be true
+        create(:contact, phone: "0988888888", created_by_id: creator.id, service_type: service_type)
+        expect(described_class.phone_exists?("0988888888")).to be true
       end
 
       it "returns false if phone does not exist" do
@@ -182,9 +182,9 @@ RSpec.describe Contact, type: :model do
 
     describe ".find_by_phone" do
       it "finds contact by normalized phone" do
-        contact = create(:contact, phone: "0912345678", created_by_id: creator.id, service_type: service_type)
+        contact = create(:contact, phone: "0977777777", created_by_id: creator.id, service_type: service_type)
         # rubocop:disable Rails/DynamicFindBy
-        expect(described_class.find_by_phone("0912345678")).to eq(contact)
+        expect(described_class.find_by_phone("0977777777")).to eq(contact)
         # rubocop:enable Rails/DynamicFindBy
       end
     end

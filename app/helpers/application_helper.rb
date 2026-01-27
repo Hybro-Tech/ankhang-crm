@@ -8,13 +8,21 @@ module ApplicationHelper
     # TASK-015: Skip rendering if permission required but not granted
     return nil if permission.present? && !can_access?(permission)
 
-    active_class = if is_active || current_page?(path)
+    # Check active state:
+    # 1. Explicitly active
+    # 2. Exact match (current_page?)
+    # 3. Sub-path match (e.g. /contacts/new starts with /contacts/), ignoring root to avoid all-match
+    active = is_active || 
+             current_page?(path) || 
+             (path.to_s != root_path.to_s && request.path.start_with?("#{path}/"))
+
+    active_class = if active
                      "bg-white text-brand-blue rounded-lg shadow-md font-bold"
                    else
                      "text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium"
                    end
 
-    icon_class = if is_active || current_page?(path)
+    icon_class = if active
                    "text-brand-orange"
                  else
                    "text-blue-300 group-hover:text-white transition-colors"

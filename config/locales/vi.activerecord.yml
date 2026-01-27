@@ -5,3 +5,4 @@ vi:
         taken: "đã có trong danh sách"
         required: "không thể để trống"
         blank: "không thể để trống"
+        record_invalid: "Dữ liệu không hợp lệ: %{errors}"
