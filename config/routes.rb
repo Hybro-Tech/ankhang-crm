@@ -31,6 +31,8 @@ Rails.application.routes.draw do
       get :check_identity
       get :recent
     end
+    # TASK-023: Interactions for care history
+    resources :interactions, only: %i[create destroy]
   end
   resources :service_types
   resources :sources

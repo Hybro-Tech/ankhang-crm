@@ -109,6 +109,7 @@ class Ability
     service_types: "ServiceType",
     sources: "Source",
     saturday_schedules: "SaturdaySchedule",
+    interactions: "Interaction",
     dashboards: nil # Symbol-only, no model class
   }.freeze
 

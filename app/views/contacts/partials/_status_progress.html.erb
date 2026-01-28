@@ -1,0 +1,77 @@
+<%# TASK-023: Status progress bar based on wireframe contact_detail.html %>
+<% 
+  # Define steps with their statuses
+  steps = [
+    { key: "new_contact", label: "Mới", number: 1 },
+    { key: "potential", label: "Tiềm năng", number: 2 },
+    { key: "in_progress", label: "Đang tư vấn", number: 3 },
+    { key: "closed_new", label: "Đã chốt", number: 4 }
+  ]
+  
+  # Map current status to step index
+  current_status = contact.status
+  current_step_index = case current_status
+    when "new_contact" then 0
+    when "potential", "potential_old" then 1
+    when "in_progress" then 2
+    when "closed_new", "closed_old", "closed" then 3
+    when "failed" then -1 # Special handling
+    when "cskh_l1", "cskh_l2" then -2 # Special handling
+    else 0
+  end
+%>
+
+<div class="bg-white px-6 py-4 border-b border-gray-200">
+  <% if current_step_index >= 0 %>
+    <%# Normal flow progress %>
+    <div class="flex items-center justify-between w-full max-w-4xl mx-auto">
+      <% steps.each_with_index do |step, index| %>
+        <%# Step circle %>
+        <div class="flex items-center">
+          <% if index < current_step_index %>
+            <%# Completed step %>
+            <div class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full text-brand-blue font-bold">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="ml-2 text-sm font-medium text-brand-blue"><%= step[:label] %></div>
+          <% elsif index == current_step_index %>
+            <%# Current step %>
+            <div class="flex items-center justify-center w-8 h-8 bg-brand-blue text-white rounded-full font-bold shadow-lg ring-4 ring-blue-50">
+              <%= step[:number] %>
+            </div>
+            <div class="ml-2 text-sm font-bold text-brand-blue"><%= step[:label] %></div>
+          <% else %>
+            <%# Pending step %>
+            <div class="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-400 rounded-full font-bold">
+              <%= step[:number] %>
+            </div>
+            <div class="ml-2 text-sm font-medium text-gray-400"><%= step[:label] %></div>
+          <% end %>
+        </div>
+        
+        <%# Connector line (not after last step) %>
+        <% if index < steps.length - 1 %>
+          <div class="flex-1 h-1 mx-4 rounded <%= index < current_step_index ? 'bg-brand-blue' : 'bg-gray-200' %>"></div>
+        <% end %>
+      <% end %>
+    </div>
+  <% elsif current_step_index == -1 %>
+    <%# Failed status %>
+    <div class="flex items-center justify-center">
+      <div class="flex items-center px-4 py-2 bg-red-100 rounded-lg">
+        <i class="fa-solid fa-times-circle text-red-600 mr-2"></i>
+        <span class="text-red-700 font-medium">Thất bại</span>
+      </div>
+    </div>
+  <% else %>
+    <%# CSKH status %>
+    <div class="flex items-center justify-center">
+      <div class="flex items-center px-4 py-2 bg-purple-100 rounded-lg">
+        <i class="fa-solid fa-headset text-purple-600 mr-2"></i>
+        <span class="text-purple-700 font-medium">
+          <%= current_status == "cskh_l1" ? "CSKH Level 1" : "CSKH Level 2" %>
+        </span>
+      </div>
+    </div>
+  <% end %>
+</div>

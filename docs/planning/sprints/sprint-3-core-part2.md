@@ -75,7 +75,7 @@ Extensible rules engine, ban đầu hardcode nhưng sẵn sàng mở rộng.
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Sale, tôi muốn xem chi tiết và ghi lại lịch sử chăm sóc.

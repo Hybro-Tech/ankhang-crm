@@ -1,0 +1,48 @@
+<%# TASK-023: Form to add new interaction %>
+<%= form_with model: [contact, Interaction.new],
+    id: "interaction_form",
+    class: "mb-8",
+    data: { controller: "interaction-form" } do |f| %>
+  
+  <div class="space-y-3">
+    <%# Textarea %>
+    <%= f.text_area :content,
+        class: "w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-blue focus:border-transparent outline-none resize-none",
+        rows: 3,
+        placeholder: "Ghi chú cuộc gọi, lịch hẹn, hoặc ghi chú...",
+        required: true,
+        data: { interaction_form_target: "content" } %>
+    
+    <div class="flex justify-between items-center">
+      <%# Method buttons %>
+      <div class="flex space-x-1">
+        <% Interaction.interaction_methods.keys.each do |method| %>
+          <label class="cursor-pointer">
+            <%= f.radio_button :interaction_method, method,
+                class: "sr-only peer",
+                data: { interaction_form_target: "methodRadio" } %>
+            <span class="peer-checked:bg-brand-blue peer-checked:text-white p-2 rounded hover:bg-gray-100 text-gray-500 inline-flex items-center justify-center w-10 h-10 transition-colors"
+                  title="<%= I18n.t("interactions.methods.#{method}") %>">
+              <% case method %>
+              <% when "call" %>
+                <i class="fa-solid fa-phone"></i>
+              <% when "zalo" %>
+                <i class="fa-solid fa-comment"></i>
+              <% when "email" %>
+                <i class="fa-solid fa-envelope"></i>
+              <% when "meeting" %>
+                <i class="fa-solid fa-users"></i>
+              <% else %>
+                <i class="fa-solid fa-sticky-note"></i>
+              <% end %>
+            </span>
+          </label>
+        <% end %>
+      </div>
+      
+      <%# Submit button %>
+      <%= f.submit "Lưu Hoạt động",
+          class: "bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900 transition-colors cursor-pointer" %>
+    </div>
+  </div>
+<% end %>

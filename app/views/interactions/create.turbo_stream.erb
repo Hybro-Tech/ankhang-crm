@@ -1,0 +1,12 @@
+<%# TASK-023: Turbo stream for creating interaction %>
+<%= turbo_stream.prepend "interactions_list" do %>
+  <%= render partial: "interactions/interaction", locals: { interaction: @interaction } %>
+<% end %>
+
+<%# Remove "no interactions" message if present %>
+<%= turbo_stream.remove "no_interactions" %>
+
+<%# Clear the form textarea %>
+<%= turbo_stream.replace "interaction_form" do %>
+  <%= render partial: "interactions/form", locals: { contact: @contact } %>
+<% end %>

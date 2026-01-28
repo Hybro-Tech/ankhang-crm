@@ -66,8 +66,8 @@ class Contact < ApplicationRecord
   belongs_to :assigned_user, class_name: "User", optional: true, inverse_of: :assigned_contacts
   belongs_to :creator, class_name: "User", foreign_key: :created_by_id, inverse_of: :created_contacts
 
-  # Future: Contact History (TASK-023 or later)
-  # has_many :contact_histories, dependent: :destroy
+  # TASK-023: Care History / Interactions
+  has_many :interactions, dependent: :destroy
 
   # TASK-049: Zalo Integration
   has_one_attached :zalo_qr

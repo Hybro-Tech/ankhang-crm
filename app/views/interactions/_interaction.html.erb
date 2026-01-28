@@ -1,0 +1,44 @@
+<%# TASK-023: Single interaction item for timeline %>
+<li id="<%= dom_id(interaction) %>">
+  <div class="relative pb-8">
+    <%# Timeline connector line (hidden for last item) %>
+    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+    
+    <div class="relative flex space-x-3">
+      <%# Method icon %>
+      <div>
+        <span class="h-8 w-8 rounded-full <%= interaction.method_color_class %> flex items-center justify-center ring-8 ring-white">
+          <i class="<%= interaction.method_icon %> text-sm"></i>
+        </span>
+      </div>
+      
+      <%# Content %>
+      <div class="min-w-0 flex-1 pt-1.5">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <p class="text-sm text-gray-500">
+              <%= interaction.method_label %> bởi 
+              <span class="font-medium text-gray-900"><%= interaction.user.name %></span>
+            </p>
+            <p class="text-sm text-gray-900 mt-1 whitespace-pre-wrap"><%= interaction.content %></p>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <div class="text-right text-xs whitespace-nowrap text-gray-500">
+              <%= time_ago_in_words(interaction.created_at) %> trước
+            </div>
+            
+            <% if can?(:destroy, interaction) %>
+              <%= button_to contact_interaction_path(interaction.contact, interaction),
+                  method: :delete,
+                  form: { data: { turbo_confirm: "Bạn có chắc muốn xóa ghi chú này?" } },
+                  class: "text-gray-400 hover:text-red-500 p-1" do %>
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</li>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_28_032456) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_28_144822) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -97,6 +97,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_032456) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["date"], name: "index_holidays_on_date", unique: true
+  end
+
+  create_table "interactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "contact_id", null: false
+    t.bigint "user_id", null: false
+    t.text "content", null: false
+    t.integer "interaction_method", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_id", "created_at"], name: "index_interactions_on_contact_id_and_created_at"
+    t.index ["contact_id"], name: "index_interactions_on_contact_id"
+    t.index ["user_id"], name: "index_interactions_on_user_id"
   end
 
   create_table "permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -381,6 +393,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_032456) do
   add_foreign_key "contacts", "teams", on_delete: :nullify
   add_foreign_key "contacts", "users", column: "assigned_user_id", on_delete: :nullify
   add_foreign_key "contacts", "users", column: "created_by_id"
+  add_foreign_key "interactions", "contacts"
+  add_foreign_key "interactions", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "saturday_schedule_users", "saturday_schedules"

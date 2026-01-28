@@ -110,10 +110,17 @@
                   <i class="fa-solid fa-dollar-sign mr-2 animate-bounce"></i>NHẬN
                 <% end %>
               <% else %>
-                <!-- Standard Update Button -->
+                <%# Detail Button - Go to Contact Detail to add interactions %>
+                <%= link_to contact_path(contact), 
+                    data: { turbo_frame: "_top" },
+                    class: "inline-flex items-center px-3 py-1.5 bg-brand-blue text-white text-xs font-medium rounded-md hover:bg-blue-800 transition-colors shadow-sm" do %>
+                  <i class="fa-solid fa-eye mr-1.5"></i>Chi tiết
+                <% end %>
+                <%# Standard Update Button %>
                 <%= link_to edit_contact_path(contact), 
+                    data: { turbo_frame: "_top" },
                     class: "inline-flex items-center px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm" do %>
-                  <i class="fa-solid fa-pen mr-1.5 text-gray-500"></i>Cập nhật
+                  <i class="fa-solid fa-pen mr-1.5 text-gray-500"></i>Sửa
                 <% end %>
               <% end %>
             </div>

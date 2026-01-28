@@ -61,3 +61,15 @@ vi:
     destroy:
       success: "Loại nhu cầu đã được xóa."
       has_contacts: "Không thể xóa vì đang có khách hàng sử dụng."
+  # TASK-023: Interactions
+  interactions:
+    create:
+      success: "Ghi chú đã được thêm."
+    destroy:
+      success: "Ghi chú đã được xóa."
+    methods:
+      note: "Ghi chú"
+      call: "Cuộc gọi"
+      zalo: "Zalo"
+      email: "Email"
+      meeting: "Gặp mặt"

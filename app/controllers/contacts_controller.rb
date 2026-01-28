@@ -20,7 +20,9 @@ class ContactsController < ApplicationController
     end
   end
 
-  def show; end
+  def show
+    @interactions = @contact.interactions.includes(:user).recent
+  end
 
   def new
     @contact = Contact.new

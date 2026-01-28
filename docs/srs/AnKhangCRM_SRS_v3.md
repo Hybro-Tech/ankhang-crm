@@ -54,6 +54,7 @@ flowchart TD
 | Tạo Contact | ✅ | ✅ | ❌ | ❌ |
 | Nhận Contact (Pick) | ❌ | ❌ | ✅ | ❌ |
 | Cập nhật Contact | ✅ | ❌ | ✅ | ✅ |
+| Ghi lịch sử tương tác | ✅ | ❌ | ✅ | ✅ |
 | Tạo Deal | ❌ | ❌ | ✅ | ❌ |
 | Gửi ZNS | ❌ | ❌ | ❌ | ✅ |
 | Xem Dashboard/Báo cáo | ✅ | ❌ | ❌ | ❌ |
@@ -171,13 +172,26 @@ stateDiagram-v2
 - **Chốt Cũ:** KH từ tháng trước, chốt tháng này
 - **Tiềm năng Cũ:** Cronjob chạy đầu tháng, chuyển từ Tiềm năng
 
-### 5.3 Lịch sử Trao đổi
-| Trường | Mô tả |
-|--------|-------|
-| Ngày giờ | Thời điểm trao đổi |
-| Nội dung | Ghi chú cuộc gọi/tin nhắn |
-| Phương thức | Gọi điện / Zalo / Email / Gặp mặt / Khác |
-| Lịch hẹn tiếp | Datetime, hiển thị trên Dashboard (1 tuần tới) |
+### 5.3 Lịch sử Trao đổi (Interactions)
+
+> **Mô tả:** Ghi lại tất cả hoạt động tương tác với khách hàng để theo dõi quá trình chăm sóc.
+
+| Trường | Bắt buộc | Mô tả |
+|--------|:--------:|-------|
+| Ngày giờ | Tự động | Thời điểm tạo ghi chú |
+| Nội dung | ✅ | Ghi chú cuộc gọi/tin nhắn |
+| Phương thức | ✅ | Ghi chú / Gọi điện / Zalo / Email / Gặp mặt |
+| Người tạo | Tự động | User tạo ghi chú |
+
+**Quyền:**
+- Sale/CSKH có thể thêm ghi chú cho Contact mình phụ trách
+- Admin có thể thêm/xóa ghi chú cho tất cả Contact
+- Tổng đài không có quyền ghi lịch sử tương tác
+
+**UI:**
+- Hiển thị dạng Timeline trên trang Chi tiết Contact
+- Form thêm nhanh với icon chọn phương thức
+- Real-time update với Turbo Stream (không cần reload)
 
 ---
 
