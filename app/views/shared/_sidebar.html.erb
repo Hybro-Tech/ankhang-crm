@@ -10,37 +10,40 @@
 
   <%# Navigation Menu %>
   <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto sidebar-scroll">
-    <%# Dashboard %>
+    <%# Dashboard - Always visible %>
     <%= link_to root_path, class: "flex items-center px-4 py-3 #{current_page?(root_path) ? 'bg-white text-brand-blue rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
       <i class="fa-solid fa-chart-line w-6 <%= current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
       <span>Tổng quan</span>
     <% end %>
 
-    <%# Kinh doanh section - TASK-019 %>
-    <% if current_user.super_admin? %>
-      <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Kinh doanh</div>
-    <% end %>
+    <%# Sales Workspace - For Sales role %>
+    <%= sidebar_link "Nơi làm việc", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
+    <%= sidebar_link "Pipeline (Kanban)", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
 
+    <%# Call Center Statistics - For Tổng Đài role %>
+    <%= sidebar_link "Thống kê nhập liệu", call_center_stats_path, "fa-chart-simple", permission: "dashboards.view_call_center" %>
+
+    <%# Kinh doanh section %>
+    <%= sidebar_section "Kinh doanh", ["contacts.view", "service_types.view", "sources.view"] %>
     <%= sidebar_link "Khách hàng", contacts_path, "fa-address-book", permission: "contacts.view" %>
-    <%= sidebar_link "Loại nhu cầu", service_types_path, "fa-layer-group", permission: "settings.manage" %>
+    <%= sidebar_link "Loại nhu cầu", service_types_path, "fa-layer-group", permission: "service_types.view" %>
+    <%= sidebar_link "Nguồn khách hàng", sources_path, "fa-share-nodes", permission: "sources.view" %>
 
     <%# Tổ chức section %>
-    <% if current_user.super_admin? %>
-      <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Tổ chức</div>
-    <% end %>
-
+    <%= sidebar_section "Tổ chức", ["teams.view", "roles.view", "employees.view", "holidays.manage", "saturday_schedules.manage"] %>
     <%= sidebar_link "Đội nhóm", teams_path, "fa-user-group", permission: "teams.view" %>
     <%= sidebar_link "Phân quyền", roles_path, "fa-user-shield", permission: "roles.view" %>
     <%= sidebar_link "Nhân viên", users_path, "fa-id-card", permission: "employees.view" %>
     <%= sidebar_link "Lịch nghỉ lễ", holidays_path, "fa-calendar-days", permission: "holidays.manage" %>
     <%= sidebar_link "Lịch Thứ 7", saturday_schedules_path, "fa-calendar-check", permission: "saturday_schedules.manage" %>
 
-    <%# Hệ thống section (Hidden for Phase 1) %>
-    <%# Hệ thống section (Hidden for Phase 1) %>
+    <%# Hệ thống section - Admin only %>
+    <%= sidebar_section "Hệ thống", ["reports.view", "logs.view", "settings.view"] %>
+    <%= sidebar_link "Báo cáo", reports_path, "fa-chart-pie", permission: "reports.view" if defined?(reports_path) rescue nil %>
+    <%= sidebar_link "Nhật ký", logs_path, "fa-list-check", permission: "logs.view" if defined?(logs_path) rescue nil %>
   </nav>
 
   <%# Footer (Removed as requested) %>
-  <%# <div class="p-4 border-t border-blue-800 bg-blue-900/50">...</div> %>
 </aside>
 
 <%# Mobile overlay %>

@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
   get "dashboard/index"
   get "dashboard/call_center"
+  get "dashboard/call_center_stats", to: "dashboard#call_center_stats", as: :call_center_stats
   # TASK-014: Use custom controllers for auth logging
   devise_for :users, controllers: {
     sessions: "users/sessions",
@@ -32,6 +33,7 @@ Rails.application.routes.draw do
     end
   end
   resources :service_types
+  resources :sources
 
   # Sales Workspace (TASK-050 v2: Productivity-focused screen)
   get "sales/workspace", to: "sales_workspace#show", as: :sales_workspace
@@ -39,6 +41,8 @@ Rails.application.routes.draw do
   get "sales/workspace/tab_needs_update", to: "sales_workspace#tab_needs_update"
   get "sales/workspace/tab_in_progress", to: "sales_workspace#tab_in_progress"
   get "sales/workspace/preview/:id", to: "sales_workspace#preview", as: :sales_workspace_preview
+  get "sales/kanban", to: "sales_workspace#kanban", as: :sales_kanban
+  patch "sales/kanban/update_status/:id", to: "sales_workspace#update_status", as: :sales_kanban_update_status
 
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo

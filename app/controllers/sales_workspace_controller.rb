@@ -3,6 +3,8 @@
 # Sales Workspace Controller
 # Main working screen for Sales staff - optimized for productivity
 class SalesWorkspaceController < ApplicationController
+  include SalesKanbanConcern
+
   before_action :authenticate_user!
   before_action :authorize_sale_user
 
@@ -36,6 +38,8 @@ class SalesWorkspaceController < ApplicationController
     @contact = Contact.find(params[:id])
     render partial: "contact_preview", locals: { contact: @contact }
   end
+
+  # Kanban methods are in SalesKanbanConcern
 
   private
 

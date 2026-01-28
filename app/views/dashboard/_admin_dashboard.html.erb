@@ -1,0 +1,310 @@
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <%# Header %>
+  <div class="sm:flex sm:items-center sm:justify-between mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Tổng quan Quản trị</h1>
+      <p class="mt-1 text-sm text-gray-500">Tổng quan về hiệu quả kinh doanh toàn hệ thống.</p>
+    </div>
+    <div class="mt-4 sm:mt-0 flex space-x-3">
+      <span class="inline-flex rounded-md shadow-sm">
+        <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
+          <i class="fa-solid fa-calendar mr-2 text-gray-400"></i> Tháng này
+        </button>
+      </span>
+      <span class="inline-flex rounded-md shadow-sm">
+        <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-blue-900 focus:outline-none shadow-md" data-action="click->export#downloadReport">
+          <i class="fa-solid fa-download mr-2"></i> Xuất báo cáo
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <%# KPI Cards - 4 columns %>
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    <%# Total Contacts %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-blue-50 rounded-md p-3">
+            <i class="fa-solid fa-users text-brand-blue text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Tổng khách hàng</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(@kpi[:total_contacts]) %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Total Employees %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-orange-50 rounded-md p-3">
+            <i class="fa-solid fa-id-card text-brand-orange text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Tổng nhân viên</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(@kpi[:total_employees]) %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Won Deals %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-green-50 rounded-md p-3">
+            <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Đơn chốt tháng này</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @kpi[:won_deals_count] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Conversion Rate %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-purple-50 rounded-md p-3">
+            <i class="fa-solid fa-percent text-purple-600 text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Tỷ lệ chốt</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @kpi[:conversion_rate] %>%</div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Charts Section %>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <%# Main Chart - Trend %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 lg:col-span-2">
+      <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">Biểu đồ hiệu quả kinh doanh</h3>
+      <div class="relative h-72 w-full">
+        <canvas id="mainChart"></canvas>
+      </div>
+    </div>
+
+    <%# Pie Chart - Status Distribution %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6">
+      <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">Phân bố trạng thái</h3>
+      <div class="relative h-64 w-full flex justify-center">
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <%# Comparison Charts %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <%# Team Comparison %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6">
+      <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">📊 So sánh theo Team</h3>
+      <div class="relative h-64 w-full">
+        <canvas id="teamChart"></canvas>
+      </div>
+    </div>
+
+    <%# Sales Comparison %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6">
+      <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">👥 So sánh Sales</h3>
+      <div class="relative h-64 w-full">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <%# Bottom Section: Tables %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <%# Top Performers %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="text-lg leading-6 font-semibold text-gray-900">🏆 Top Nhân viên xuất sắc</h3>
+        <%= link_to "Xem tất cả", users_path, class: "text-sm text-brand-blue hover:text-blue-800 font-medium" %>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Họ tên</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Đơn hàng</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doanh thu</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @top_performers.each do |performer| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-8 w-8">
+                      <img class="h-8 w-8 rounded-full" src="<%= performer[:avatar] %>" alt="User Avatar">
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900"><%= performer[:name] %></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    <%= performer[:deals] %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= number_to_currency(performer[:revenue], unit: "₫", format: "%n %u", precision: 0) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <%# Recent Activities %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-100">
+        <h3 class="text-lg leading-6 font-semibold text-gray-900">🔔 Hoạt động hệ thống</h3>
+      </div>
+      <ul class="divide-y divide-gray-200">
+        <% @recent_activities.each do |activity| %>
+          <li class="p-4 hover:bg-gray-50 transition-colors">
+            <div class="flex space-x-3">
+              <div class="mt-1">
+                <i class="<%= activity[:icon] %> <%= activity[:color] %>"></i>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm text-gray-900"><%= activity[:text] %></p>
+                <p class="text-xs text-gray-400 mt-1"><%= activity[:time] %></p>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("turbo:load", function() {
+    // Main Chart (Line)
+    const ctxMain = document.getElementById('mainChart');
+    if (ctxMain) {
+      new Chart(ctxMain.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: <%= raw @chart_data[:labels].to_json %>,
+          datasets: [{
+            label: 'Khách hàng mới',
+            data: <%= raw @chart_data[:contacts].to_json %>,
+            borderColor: '#0B387A',
+            tension: 0.4,
+            fill: false
+          }, {
+            label: 'Chốt đơn',
+            data: <%= raw @chart_data[:deals].to_json %>,
+            borderColor: '#10B981',
+            tension: 0.4,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: {
+            y: { beginAtZero: true, grid: { borderDash: [2, 4] } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Pie Chart
+    const ctxPie = document.getElementById('pieChart');
+    if (ctxPie) {
+      new Chart(ctxPie.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Mới', 'Tiềm năng', 'Chốt', 'Thất bại'],
+          datasets: [{
+            data: [35, 40, 15, 10],
+            backgroundColor: ['#0B387A', '#FBBF24', '#10B981', '#EF4444'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } },
+          cutout: '60%'
+        }
+      });
+    }
+
+    // Team Comparison Chart
+    const ctxTeam = document.getElementById('teamChart');
+    if (ctxTeam) {
+      new Chart(ctxTeam.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: <%= raw @team_stats.map(&:name).to_json %>,
+          datasets: [{
+            label: 'Số khách hàng',
+            data: <%= raw @team_stats.map(&:contacts_count).to_json %>,
+            backgroundColor: ['#0B387A', '#F37021', '#10B981', '#FBBF24', '#8B5CF6']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+
+    // Sales Comparison Chart
+    const ctxSales = document.getElementById('salesChart');
+    if (ctxSales) {
+      new Chart(ctxSales.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: <%= raw @sales_stats.map(&:name).to_json %>,
+          datasets: [{
+            label: 'Khách được assign',
+            data: <%= raw @sales_stats.map(&:contacts_count).to_json %>,
+            backgroundColor: ['#0B387A', '#F37021', '#10B981', '#FBBF24', '#8B5CF6']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+  });
+</script>

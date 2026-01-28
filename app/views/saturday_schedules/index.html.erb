@@ -91,6 +91,9 @@
         </div>
       <% end %>
     </div>
+    <% if @saturday_schedules.respond_to?(:total_pages) %>
+      <%= render "shared/pagination", collection: @saturday_schedules, entry_name: "lịch làm việc" %>
+    <% end %>
   </div>
 
   <!-- Right: Past History -->

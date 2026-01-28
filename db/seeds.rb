@@ -41,11 +41,39 @@ permissions_data = [
   { code: "service_types.edit", name: "Sửa", category: "Loại dịch vụ", description: "Chỉnh sửa loại dịch vụ" },
   { code: "service_types.delete", name: "Xóa", category: "Loại dịch vụ", description: "Xóa loại dịch vụ" },
 
+  # Nguồn khách hàng (Sources)
+  { code: "sources.view", name: "Xem", category: "Nguồn khách hàng", description: "Xem danh sách nguồn khách hàng" },
+  { code: "sources.create", name: "Tạo", category: "Nguồn khách hàng", description: "Tạo nguồn khách hàng mới" },
+  { code: "sources.edit", name: "Sửa", category: "Nguồn khách hàng", description: "Chỉnh sửa nguồn khách hàng" },
+  { code: "sources.delete", name: "Xóa", category: "Nguồn khách hàng", description: "Xóa nguồn khách hàng" },
+
   # Ngày nghỉ (Holidays)
   { code: "holidays.view", name: "Xem", category: "Ngày nghỉ", description: "Xem lịch nghỉ lễ" },
   { code: "holidays.create", name: "Tạo", category: "Ngày nghỉ", description: "Thêm ngày nghỉ mới" },
   { code: "holidays.edit", name: "Sửa", category: "Ngày nghỉ", description: "Chỉnh sửa ngày nghỉ" },
-  { code: "holidays.delete", name: "Xóa", category: "Ngày nghỉ", description: "Xóa ngày nghỉ" }
+  { code: "holidays.delete", name: "Xóa", category: "Ngày nghỉ", description: "Xóa ngày nghỉ" },
+  { code: "holidays.manage", name: "Quản lý", category: "Ngày nghỉ", description: "Quản lý toàn bộ lịch nghỉ" },
+
+  # Lịch thứ 7 (Saturday Schedules)
+  { code: "saturday_schedules.view", name: "Xem", category: "Lịch Thứ 7", description: "Xem lịch làm việc thứ 7" },
+  { code: "saturday_schedules.create", name: "Tạo", category: "Lịch Thứ 7", description: "Tạo lịch làm việc thứ 7" },
+  { code: "saturday_schedules.edit", name: "Sửa", category: "Lịch Thứ 7", description: "Chỉnh sửa lịch thứ 7" },
+  { code: "saturday_schedules.delete", name: "Xóa", category: "Lịch Thứ 7", description: "Xóa lịch thứ 7" },
+  { code: "saturday_schedules.manage", name: "Quản lý", category: "Lịch Thứ 7",
+    description: "Quản lý toàn bộ lịch thứ 7" },
+
+  # Dashboard (Role-specific views)
+  { code: "dashboards.view_call_center", name: "Xem Tổng Đài", category: "Dashboard",
+    description: "Xem dashboard Tổng Đài" },
+  { code: "dashboards.view_sales", name: "Xem Sale", category: "Dashboard",
+    description: "Xem dashboard và workspace Sale" },
+  { code: "dashboards.view_cskh", name: "Xem CSKH", category: "Dashboard", description: "Xem dashboard CSKH" },
+  { code: "dashboards.view_admin", name: "Xem Admin", category: "Dashboard", description: "Xem dashboard Admin" },
+
+  # Reports & Logs (System)
+  { code: "reports.view", name: "Xem", category: "Báo cáo", description: "Xem báo cáo" },
+  { code: "reports.export", name: "Xuất", category: "Báo cáo", description: "Xuất báo cáo" },
+  { code: "logs.view", name: "Xem", category: "Nhật ký", description: "Xem nhật ký hoạt động" }
 ]
 
 Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }
@@ -82,16 +110,25 @@ Rails.logger.debug "➡️ Assigning Permissions..."
 # Super Admin: All permissions (also has can :manage, :all in Ability)
 roles["Super Admin"].permissions = Permission.all
 
-# Tổng Đài - Contact CRUD for data entry
-td_codes = %w[contacts.view contacts.create contacts.edit]
+# Tổng Đài - Contact CRUD for data entry + Call Center dashboard
+td_codes = %w[
+  contacts.view contacts.create contacts.edit
+  dashboards.view_call_center
+]
 roles["Tổng Đài"].permissions = Permission.where(code: td_codes)
 
-# Sale - Contact access
-sale_codes = %w[contacts.view contacts.edit]
+# Sale - Contact access + Sales dashboard/workspace
+sale_codes = %w[
+  contacts.view contacts.edit
+  dashboards.view_sales
+]
 roles["Sale"].permissions = Permission.where(code: sale_codes)
 
-# CSKH - Contact access for care
-cskh_codes = %w[contacts.view contacts.edit]
+# CSKH - Contact access for care + CSKH dashboard
+cskh_codes = %w[
+  contacts.view contacts.edit
+  dashboards.view_cskh
+]
 roles["CSKH"].permissions = Permission.where(code: cskh_codes)
 
 # 5. Create Teams (TASK-009)
@@ -134,7 +171,25 @@ service_types_data.each do |st|
   end
 end
 
-# 6. Create Test Users (TASK-015)
+# 7. Create Sources (Dynamic CRUD)
+Rails.logger.debug "➡️ Creating Sources (Nguồn khách hàng)..."
+sources_data = [
+  { name: "Ladi Zalo/Hotline", position: 0 },
+  { name: "Facebook", position: 1 },
+  { name: "Google", position: 2 },
+  { name: "Giới thiệu", position: 3 },
+  { name: "Khác", position: 4 }
+]
+
+sources_data.each do |s|
+  Source.find_or_create_by!(name: s[:name]) do |source|
+    source.position = s[:position]
+    source.active = true
+    source.description = "Nguồn mặc định"
+  end
+end
+
+# 8. Create Test Users (TASK-015)
 Rails.logger.debug "➡️ Creating Test Users..."
 
 # Clean up existing test users first

@@ -107,7 +107,9 @@ class Ability
     coupons: "Coupon",
     holidays: "Holiday",
     service_types: "ServiceType",
-    saturday_schedules: "SaturdaySchedule"
+    sources: "Source",
+    saturday_schedules: "SaturdaySchedule",
+    dashboards: nil # Symbol-only, no model class
   }.freeze
 
   def subject_to_model_class(subject)

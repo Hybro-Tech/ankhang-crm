@@ -196,5 +196,8 @@
         <% end %>
       </div>
     </div>
+    <% if @holidays.respond_to?(:total_pages) %>
+      <%= render "shared/pagination", collection: @holidays, entry_name: "ngày nghỉ" %>
+    <% end %>
   </div>
 </div>

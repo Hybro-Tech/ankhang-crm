@@ -1,0 +1,113 @@
+<div class="min-h-screen bg-gray-50 flex flex-col" data-controller="kanban">
+  <%# Header %>
+  <div class="sm:flex sm:items-center sm:justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Pipeline Kanban</h1>
+      <p class="mt-1 text-sm text-gray-500">Quản lý trạng thái khách hàng bằng drag & drop.</p>
+    </div>
+    <div class="mt-4 sm:mt-0 flex space-x-3">
+      <%= link_to sales_workspace_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" do %>
+        <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại
+      <% end %>
+    </div>
+  </div>
+
+  <%# Kanban Board %>
+  <div class="flex-1 overflow-x-auto pb-6">
+    <div class="flex gap-4 min-w-fit">
+      <% @kanban_columns.each do |status_key, column| %>
+        <div class="flex-shrink-0 w-80 bg-gray-100 rounded-xl p-4" 
+             data-status="<%= status_key %>"
+             data-kanban-target="column">
+          <%# Column Header %>
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+              <div class="w-8 h-8 rounded-lg bg-<%= column[:color] %>-100 flex items-center justify-center mr-3">
+                <i class="fa-solid <%= column[:icon] %> text-<%= column[:color] %>-600"></i>
+              </div>
+              <h3 class="font-semibold text-gray-900"><%= column[:title] %></h3>
+            </div>
+            <span class="px-2 py-1 text-xs font-medium bg-white rounded-full text-gray-600 shadow-sm">
+              <%= column[:contacts].size %>
+            </span>
+          </div>
+
+          <%# Cards Container %>
+          <div class="space-y-3 min-h-[200px]"
+               data-kanban-target="cardContainer"
+               data-status="<%= status_key %>">
+            <% column[:contacts].each do |contact| %>
+              <%= render "sales_workspace/kanban_card", contact: contact, column: column %>
+            <% end %>
+
+            <% if column[:contacts].empty? %>
+              <div class="p-4 text-center text-gray-400 border-2 border-dashed border-gray-300 rounded-lg">
+                <i class="fa-solid fa-inbox text-2xl mb-2"></i>
+                <p class="text-sm">Chưa có khách hàng</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%# Stimulus Controller for Drag & Drop %>
+<script>
+document.addEventListener("turbo:load", function() {
+  // Simple drag and drop implementation
+  const cards = document.querySelectorAll('[draggable="true"]');
+  const columns = document.querySelectorAll('[data-kanban-target="cardContainer"]');
+  
+  cards.forEach(card => {
+    card.addEventListener('dragstart', function(e) {
+      e.dataTransfer.setData('text/plain', e.target.dataset.contactId);
+      e.target.classList.add('opacity-50');
+    });
+    
+    card.addEventListener('dragend', function(e) {
+      e.target.classList.remove('opacity-50');
+    });
+  });
+  
+  columns.forEach(column => {
+    column.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      column.classList.add('bg-blue-50', 'border-2', 'border-dashed', 'border-blue-300');
+    });
+    
+    column.addEventListener('dragleave', function(e) {
+      column.classList.remove('bg-blue-50', 'border-2', 'border-dashed', 'border-blue-300');
+    });
+    
+    column.addEventListener('drop', function(e) {
+      e.preventDefault();
+      column.classList.remove('bg-blue-50', 'border-2', 'border-dashed', 'border-blue-300');
+      
+      const contactId = e.dataTransfer.getData('text/plain');
+      const newStatus = column.dataset.status;
+      const card = document.querySelector(`[data-contact-id="${contactId}"]`);
+      
+      if (card) {
+        // Move card visually
+        column.appendChild(card);
+        
+        // Update via Turbo
+        fetch(`/sales/kanban/update_status/${contactId}?status=${newStatus}`, {
+          method: 'PATCH',
+          headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'text/vnd.turbo-stream.html'
+          }
+        }).then(response => {
+          if (!response.ok) {
+            // Reload page on error
+            window.location.reload();
+          }
+        });
+      }
+    });
+  });
+});
+</script>

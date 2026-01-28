@@ -56,7 +56,7 @@ class HolidaysController < ApplicationController
                   base.where("MONTH(date) = ?", @selected_month)
                 else
                   base
-                end
+                end.page(params[:page]).per(params[:per_page] || 10)
   end
 
   def set_stats

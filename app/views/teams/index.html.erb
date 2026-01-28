@@ -77,6 +77,9 @@
       <% end %>
     </tbody>
   </table>
+  <% if @teams.respond_to?(:total_pages) %>
+    <%= render "shared/pagination", collection: @teams, entry_name: "đội nhóm" %>
+  <% end %>
 </div>
 
 <% if @teams.empty? %>

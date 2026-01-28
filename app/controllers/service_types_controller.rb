@@ -11,7 +11,7 @@ class ServiceTypesController < ApplicationController
     @service_types = ServiceType.includes(:team)
                                 .ordered
                                 .page(params[:page])
-                                .per(20)
+                                .per(params[:per_page] || 10)
   end
 
   def show; end

@@ -11,7 +11,8 @@ class ContactsController < ApplicationController
   # GET /contacts
   def index
     @contacts = apply_filters(base_contacts_query)
-    @contacts = @contacts.page(params[:page]).per(20)
+    per_page = params[:per_page].presence || 10
+    @contacts = @contacts.page(params[:page]).per(per_page)
 
     respond_to do |format|
       format.html
@@ -168,7 +169,7 @@ class ContactsController < ApplicationController
   def contact_params
     params.expect(
       contact: %i[name phone email zalo_link zalo_id zalo_qr
-                  service_type_id source status
+                  service_type_id source_id status
                   team_id assigned_user_id next_appointment notes]
     )
   end

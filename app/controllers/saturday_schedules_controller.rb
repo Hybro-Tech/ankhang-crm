@@ -5,7 +5,7 @@ class SaturdaySchedulesController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @saturday_schedules = SaturdaySchedule.upcoming
+    @saturday_schedules = SaturdaySchedule.upcoming.page(params[:page]).per(params[:per_page] || 10)
     @past_schedules = SaturdaySchedule.past.limit(5)
   end
 

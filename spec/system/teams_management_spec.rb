@@ -14,7 +14,7 @@ RSpec.describe "Teams Management", type: :system do
       create(:user, name: "Available Member", email: "member@test.com")
 
       visit teams_path
-      click_link "Tạo đội mới"
+      click_link "Tạo đội mới", match: :first
 
       fill_in "Tên Team", with: "New System Team"
       select "Bắc", from: "Vùng / Miền"

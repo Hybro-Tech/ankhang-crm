@@ -5,7 +5,7 @@ class TeamsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @teams = Team.includes(:manager, :users).all
+    @teams = Team.includes(:manager, :users).page(params[:page]).per(params[:per_page] || 10)
   end
 
   def show; end

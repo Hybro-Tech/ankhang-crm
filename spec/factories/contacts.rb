@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Khách hàng #{n}" }
     sequence(:phone) { |n| "09#{n.to_s.rjust(8, '0')}" }
     email { Faker::Internet.email }
-    source { :ladi_zalo_hotline }
+    association :source
     status { :new_contact }
 
     association :service_type
@@ -37,14 +37,6 @@ FactoryBot.define do
     trait :failed do
       assigned
       status { :failed }
-    end
-
-    trait :from_facebook do
-      source { :facebook }
-    end
-
-    trait :from_google do
-      source { :google }
     end
 
     trait :with_appointment do

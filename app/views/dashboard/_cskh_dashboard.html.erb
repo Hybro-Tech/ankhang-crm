@@ -1,0 +1,239 @@
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <%# Header %>
+  <div class="sm:flex sm:items-center sm:justify-between mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Trung tâm CSKH</h1>
+      <p class="mt-1 text-sm text-gray-500">Chăm sóc khách hàng và quản lý tin nhắn ZNS.</p>
+    </div>
+    <div class="mt-4 sm:mt-0 flex space-x-3">
+      <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none">
+        <i class="fa-solid fa-paper-plane mr-2"></i> Gửi ZNS nhanh
+      </button>
+    </div>
+  </div>
+
+  <%# KPI Cards %>
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    <%# Failed Today %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-red-50 rounded-md p-3">
+            <i class="fa-solid fa-triangle-exclamation text-brand-red text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Khách thất bại (Hôm nay)</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @stats[:failed_today] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Pending Recovery %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-orange-50 rounded-md p-3">
+            <i class="fa-solid fa-rotate-left text-brand-orange text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Cần chăm sóc lại</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @stats[:pending_recovery] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Closed Today %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-green-50 rounded-md p-3">
+            <i class="fa-solid fa-check-double text-green-600 text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Đơn chốt mới</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @stats[:closed_today] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Response Time %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-blue-50 rounded-md p-3">
+            <i class="fa-solid fa-clock text-brand-blue text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Tốc độ phản hồi</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @stats[:avg_response_time] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <%# Column 1: Recovery Queue (Failed Contacts) %>
+    <div class="lg:col-span-2 space-y-8">
+      <%# Recovery Queue %>
+      <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-red-50">
+          <h3 class="text-lg leading-6 font-semibold text-gray-900">
+            <i class="fa-solid fa-truck-medical text-brand-red mr-2"></i> Queue Cứu Khách (Failed)
+          </h3>
+          <%= link_to "Xem tất cả", "#", class: "text-sm text-brand-blue hover:text-blue-800" %>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách hàng</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sale phụ trách</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày thất bại</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @recovery_queue.each do |contact| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900"><%= contact.name %></div>
+                    <div class="text-xs text-gray-500"><%= contact.phone %></div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= contact.assigned_user&.name %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= time_ago_in_words(contact.updated_at) %> trước
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-brand-blue hover:text-blue-900 mr-2" title="Gọi ngay">
+                      <i class="fa-solid fa-phone"></i>
+                    </button>
+                    <button class="text-green-600 hover:text-green-900" title="Gửi ZNS">
+                      <i class="fa-solid fa-comment-dots"></i>
+                    </button>
+                  </td>
+                </tr>
+              <% end %>
+              <% if @recovery_queue.empty? %>
+                <tr>
+                  <td colspan="4" class="px-6 py-8 text-center text-gray-400">
+                    Không có khách hàng cần cứu ❤️
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <%# After Sales Queue %>
+      <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-green-50">
+          <h3 class="text-lg leading-6 font-semibold text-gray-900">
+            <i class="fa-solid fa-gift text-green-600 mr-2"></i> Chăm sóc sau bán
+          </h3>
+          <%= link_to "Xem tất cả", "#", class: "text-sm text-brand-blue hover:text-blue-800" %>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách hàng</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dịch vụ</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày chốt</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">CSKH</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @after_sales_queue.each do |contact| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900"><%= contact.name %></div>
+                    <div class="text-xs text-gray-500"><%= contact.phone %></div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= contact.service_type&.name %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= contact.updated_at.strftime("%d/%m") %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                      Pending
+                    </span>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <%# Column 2: ZNS & Tools %>
+    <div class="space-y-8">
+      <%# ZNS Templates %>
+      <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 bg-gray-50">
+          <h3 class="text-lg leading-6 font-semibold text-gray-900">Mẫu tin ZNS</h3>
+        </div>
+        <ul class="divide-y divide-gray-100">
+          <% @zns_templates.each do |template| %>
+            <li class="px-6 py-4 hover:bg-gray-50 flex justify-between items-center cursor-pointer group">
+              <div>
+                <p class="text-sm font-medium text-gray-900 group-hover:text-brand-blue"><%= template[:name] %></p>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  ID: <%= template[:id] %>
+                </span>
+              </div>
+              <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-gray-500"></i>
+            </li>
+          <% end %>
+          <li class="px-6 py-4 bg-gray-50 text-center">
+             <button class="text-sm text-brand-blue font-medium hover:underline">+ Tạo mẫu mới</button>
+          </li>
+        </ul>
+      </div>
+
+      <%# Quick Actions %>
+      <div class="bg-gradient-to-br from-brand-blue to-blue-800 rounded-xl shadow-md p-6 text-white">
+        <h3 class="text-lg font-bold mb-4">Công cụ hỗ trợ</h3>
+        <div class="space-y-3">
+          <button class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center transition-colors">
+            <i class="fa-solid fa-magnifying-glass w-6"></i>
+            <span>Tra cứu lịch sử cuộc gọi</span>
+          </button>
+          <button class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center transition-colors">
+            <i class="fa-solid fa-file-invoice w-6"></i>
+            <span>Tạo ticket hỗ trợ</span>
+          </button>
+          <button class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg flex items-center transition-colors">
+            <i class="fa-solid fa-book w-6"></i>
+            <span>Kịch bản CSKH</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

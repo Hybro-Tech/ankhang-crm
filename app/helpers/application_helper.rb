@@ -44,4 +44,25 @@ module ApplicationHelper
   def breadcrumb(&)
     content_for(:breadcrumb, &)
   end
+
+  # Sidebar section header helper
+  # Shows section header only if user has permission to view at least one item
+  # @param title [String] Section title
+  # @param permissions [Array<String>] List of permission codes for items in section
+  def sidebar_section(title, permissions = [])
+    # Super admin sees all sections
+    return render_section_header(title) if current_user&.super_admin?
+
+    # Check if user has at least one permission in the list
+    has_any_permission = permissions.any? { |perm| can_access?(perm) }
+    return nil unless has_any_permission
+
+    render_section_header(title)
+  end
+
+  private
+
+  def render_section_header(title)
+    content_tag(:div, title, class: "pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider")
+  end
 end

@@ -2,38 +2,9 @@
   <%= render "call_center_dashboard" %>
 <% elsif @dashboard_view == "sale" %>
   <%= render "sale_dashboard" %>
+<% elsif @dashboard_view == "cskh" %>
+  <%= render "cskh_dashboard" %>
 <% else %>
-  <!-- Admin / Generic Dashboard -->
-  <div class="min-h-screen bg-gray-50 p-6 flex flex-col space-y-8">
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-      <span class="px-3 py-1 bg-gray-200 text-gray-600 rounded-full text-sm font-medium">Admin View</span>
-    </div>
-
-    <!-- Generic Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h3 class="text-gray-500 text-sm font-medium uppercase">Tổng Contacts</h3>
-        <p class="text-3xl font-bold text-gray-900 mt-2"><%= @total_contacts %></p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h3 class="text-gray-500 text-sm font-medium uppercase">Mới hôm nay</h3>
-        <p class="text-3xl font-bold text-brand-blue mt-2"><%= @new_contacts_today %></p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h3 class="text-gray-500 text-sm font-medium uppercase">Tháng này</h3>
-        <p class="text-3xl font-bold text-green-600 mt-2"><%= @contacts_this_month %></p>
-      </div>
-    </div>
-    
-    <!-- Link to other dashboards for testing -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-      <h3 class="text-lg font-bold mb-4">Quick Links</h3>
-      <div class="flex space-x-4">
-        <%= link_to "Danh sách Contacts", contacts_path, class: "text-brand-blue hover:underline" %>
-        <%= link_to "Danh sách Teams", teams_path, class: "text-brand-blue hover:underline" %>
-        <%= link_to "Danh sách Users", users_path, class: "text-brand-blue hover:underline" %>
-      </div>
-    </div>
-  </div>
+  <%# Admin / Generic Dashboard %>
+  <%= render "admin_dashboard" %>
 <% end %>

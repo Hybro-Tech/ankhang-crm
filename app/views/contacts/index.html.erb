@@ -183,17 +183,9 @@
       </div>
       
       <%# Pagination %>
-      <% if @contacts.respond_to?(:total_pages) && @contacts.total_pages > 1 %>
-        <div class="px-6 py-4 border-t border-gray-200">
-          <%= paginate @contacts %>
-        </div>
+      <% if @contacts.respond_to?(:total_pages) %>
+        <%= render "shared/pagination", collection: @contacts, entry_name: "khách hàng" %>
       <% end %>
-      
-      <%# Count info %>
-      <div class="px-6 py-3 border-t border-gray-200 bg-gray-50 text-sm text-gray-500">
-        Hiển thị <%= @contacts.offset_value + 1 %>-<%= [@contacts.offset_value + @contacts.length, @contacts.total_count].min %> 
-        / <%= @contacts.total_count %> khách hàng
-      </div>
     </div>
   <% end %>
 </div>

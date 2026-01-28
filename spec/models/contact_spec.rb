@@ -69,15 +69,14 @@ RSpec.describe Contact, type: :model do
       contact = create(:contact)
       expect(contact.creator).to be_a(User)
     end
+
+    it "belongs to source" do
+      contact = create(:contact)
+      expect(contact.source).to be_a(Source)
+    end
   end
 
   describe "enums" do
-    it "defines source enum" do
-      expect(described_class.sources.keys).to match_array(
-        %w[ladi_zalo_hotline facebook google referral other]
-      )
-    end
-
     it "defines status enum" do
       expect(described_class.statuses.keys).to match_array(
         %w[new_contact potential in_progress potential_old closed_new
@@ -234,9 +233,10 @@ RSpec.describe Contact, type: :model do
     end
 
     describe "#source_label" do
-      it "returns translated source" do
-        contact = build(:contact, source: :facebook)
-        expect(contact.source_label).to eq("Facebook")
+      let(:source) { create(:source, name: "Facebook Test Label") }
+      it "returns source name" do
+        contact = build(:contact, source: source)
+        expect(contact.source_label).to eq("Facebook Test Label")
       end
     end
   end

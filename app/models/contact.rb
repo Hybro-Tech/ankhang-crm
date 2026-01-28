@@ -42,15 +42,6 @@ class Contact < ApplicationRecord
   # Enums (SRS v2 Section 5.2 & 5.3)
   # ============================================================================
 
-  # Nguồn khách hàng (SRS v2 Section 5.1)
-  enum :source, {
-    ladi_zalo_hotline: 0, # Ladi Zalo/Hotline
-    facebook: 1,          # FB
-    google: 2,            # Google
-    referral: 3,          # Giới thiệu
-    other: 4              # Khác
-  }, prefix: true
-
   # Trạng thái Contact (SRS v2 Section 5.3 - State Machine)
   enum :status, {
     new_contact: 0,       # Mới - Tổng đài vừa tạo
@@ -70,6 +61,7 @@ class Contact < ApplicationRecord
   # ============================================================================
 
   belongs_to :service_type
+  belongs_to :source
   belongs_to :team, optional: true
   belongs_to :assigned_user, class_name: "User", optional: true, inverse_of: :assigned_contacts
   belongs_to :creator, class_name: "User", foreign_key: :created_by_id, inverse_of: :created_contacts
@@ -96,9 +88,10 @@ class Contact < ApplicationRecord
                     format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :zalo_link, length: { maximum: 255 }
   validates :code, presence: true, uniqueness: true
-  
+
   # TASK-049: Strict Validation for Required Fields
   validates :service_type_id, presence: { message: "không thể để trống" }
+  # Validates presence of association
   validates :source, presence: { message: "không thể để trống" }
 
   # ============================================================================
@@ -119,7 +112,7 @@ class Contact < ApplicationRecord
   scope :assigned, -> { where.not(assigned_user_id: nil) }
   scope :by_status, ->(status) { where(status: status) }
   scope :by_team, ->(team_id) { where(team_id: team_id) }
-  scope :by_source, ->(source) { where(source: source) }
+  scope :by_source, ->(source_id) { where(source_id: source_id) }
   scope :by_service_type, ->(service_type_id) { where(service_type_id: service_type_id) }
   scope :by_assignee, ->(user_id) { where(assigned_user_id: user_id) }
   scope :by_creator, ->(user_id) { where(created_by_id: user_id) }
@@ -176,7 +169,7 @@ class Contact < ApplicationRecord
   end
 
   def source_label
-    I18n.t("contacts.source.#{source}", default: source.humanize)
+    source&.name || "N/A"
   end
 
   # Assignment helpers
@@ -230,11 +223,7 @@ class Contact < ApplicationRecord
 
   # Normalize phone: remove all non-digits
   def normalize_phone
-    if phone.blank?
-      self.phone = nil
-    else
-      self.phone = phone.gsub(/\D/, "")
-    end
+    self.phone = (phone.presence&.gsub(/\D/, ""))
   end
 
   # Normalize Zalo ID: treat blank as nil to avoid unique constraint violation

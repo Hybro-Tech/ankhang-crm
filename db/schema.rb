@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_28_021342) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_28_032456) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -63,7 +63,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_021342) do
     t.string "email", limit: 100
     t.string "zalo_link", comment: "Link profile Zalo"
     t.bigint "service_type_id", null: false, comment: "Loại nhu cầu - FK to service_types"
-    t.integer "source", default: 0, null: false, comment: "Enum: Nguồn khách hàng"
     t.integer "status", default: 0, null: false, comment: "Enum: Trạng thái contact"
     t.bigint "team_id", comment: "Team được phân (từ loại nhu cầu)"
     t.bigint "assigned_user_id", comment: "Sale được gán"
@@ -75,6 +74,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_021342) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "zalo_id"
+    t.bigint "source_id"
     t.index ["assigned_user_id", "status"], name: "index_contacts_on_assignee_and_status"
     t.index ["assigned_user_id"], name: "index_contacts_on_assigned_user_id"
     t.index ["code"], name: "index_contacts_on_code", unique: true
@@ -82,7 +82,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_021342) do
     t.index ["next_appointment"], name: "index_contacts_on_next_appointment"
     t.index ["phone"], name: "index_contacts_on_phone", unique: true
     t.index ["service_type_id"], name: "index_contacts_on_service_type_id"
-    t.index ["source"], name: "index_contacts_on_source"
+    t.index ["source_id"], name: "index_contacts_on_source_id"
     t.index ["status", "team_id"], name: "index_contacts_on_status_and_team"
     t.index ["status"], name: "index_contacts_on_status"
     t.index ["team_id", "created_at"], name: "index_contacts_on_team_and_created_at"
@@ -292,6 +292,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_021342) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "sources", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "active", default: true, null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_sources_on_name", unique: true
+  end
+
   create_table "team_members", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "team_id", null: false
@@ -367,6 +377,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_021342) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "activity_logs", "users"
   add_foreign_key "contacts", "service_types"
+  add_foreign_key "contacts", "sources"
   add_foreign_key "contacts", "teams", on_delete: :nullify
   add_foreign_key "contacts", "users", column: "assigned_user_id", on_delete: :nullify
   add_foreign_key "contacts", "users", column: "created_by_id"

@@ -1,0 +1,24 @@
+<%# Shared Pagination Partial %>
+<%# Locals: collection, entry_name (optional) %>
+<div class="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+  <div class="flex items-center gap-2 text-sm text-gray-600">
+    <span>Hiển thị</span>
+    <select name="per_page" 
+            class="border-gray-300 rounded-md text-sm focus:ring-brand-blue focus:border-brand-blue py-1.5 pl-3 pr-8"
+            onchange="const url = new URL(window.location.href); url.searchParams.set('per_page', this.value); url.searchParams.set('page', 1); window.location.href = url.toString();">
+      <% [10, 20, 50, 100].each do |count| %>
+        <option value="<%= count %>" <%= "selected" if (params[:per_page] || 10).to_i == count %>>
+          <%= count %>
+        </option>
+      <% end %>
+    </select>
+    <span>
+      <%= (collection.offset_value + 1) %>-<%= [collection.offset_value + collection.length, collection.total_count].min %> 
+      / <%= collection.total_count %> <%= local_assigns[:entry_name] || "bản ghi" %>
+    </span>
+  </div>
+
+  <div>
+    <%= paginate collection %>
+  </div>
+</div>

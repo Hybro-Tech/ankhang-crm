@@ -1,0 +1,258 @@
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <%# Header %>
+  <div class="sm:flex sm:items-center sm:justify-between mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Thống kê Tổng Đài</h1>
+      <p class="mt-1 text-sm text-gray-500">Hiệu quả nhập liệu của bạn.</p>
+    </div>
+    <div class="mt-4 sm:mt-0 flex space-x-3">
+      <%# Time Period Filter %>
+      <div class="inline-flex rounded-md shadow-sm">
+        <%= link_to "Hôm nay", call_center_stats_path(period: "today"), 
+            class: "px-4 py-2 text-sm font-medium #{@period == 'today' ? 'bg-brand-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} border border-gray-300 rounded-l-md" %>
+        <%= link_to "Tuần này", call_center_stats_path(period: "week"),
+            class: "px-4 py-2 text-sm font-medium #{@period == 'week' ? 'bg-brand-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} border-t border-b border-gray-300" %>
+        <%= link_to "Tháng này", call_center_stats_path(period: "month"),
+            class: "px-4 py-2 text-sm font-medium #{@period == 'month' ? 'bg-brand-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} border border-gray-300 rounded-r-md" %>
+      </div>
+      <%= link_to root_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" do %>
+        <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại
+      <% end %>
+    </div>
+  </div>
+
+  <%# KPI Cards %>
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    <%# Today %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-blue-50 rounded-md p-3">
+            <i class="fa-solid fa-calendar-day text-brand-blue text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Hôm nay</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @kpi[:today] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Week %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-orange-50 rounded-md p-3">
+            <i class="fa-solid fa-calendar-week text-brand-orange text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Tuần này</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @kpi[:week] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Month %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-green-50 rounded-md p-3">
+            <i class="fa-solid fa-calendar text-green-600 text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Tháng này</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @kpi[:month] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Total %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-purple-50 rounded-md p-3">
+            <i class="fa-solid fa-database text-purple-600 text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Tổng cộng</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900"><%= @kpi[:total] %></div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Progress Bar & Chart %>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <%# Progress Bar %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6">
+      <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">🎯 Target hôm nay</h3>
+      <div class="text-center mb-4">
+        <span class="text-4xl font-bold text-brand-blue"><%= @kpi[:today] %></span>
+        <span class="text-gray-500">/ <%= @kpi[:daily_target] %></span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+        <div class="bg-brand-blue h-4 rounded-full transition-all duration-500" style="width: <%= @kpi[:progress] %>%"></div>
+      </div>
+      <p class="text-sm text-gray-500 text-center mt-2">
+        <% if @kpi[:progress] >= 100 %>
+          <span class="text-green-600 font-semibold">🎉 Hoàn thành target!</span>
+        <% else %>
+          Còn <%= @kpi[:daily_target] - @kpi[:today] %> contact nữa
+        <% end %>
+      </p>
+    </div>
+
+    <%# Chart %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 lg:col-span-2">
+      <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">📈 Trend nhập liệu 7 ngày</h3>
+      <div class="relative h-64 w-full">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <%# Contacts Tables %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <%# Unassigned Contacts %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="text-lg leading-6 font-semibold text-gray-900">⏳ Chưa được assign</h3>
+        <span class="text-sm text-gray-500"><%= @unassigned_contacts.size %> contacts</span>
+      </div>
+      <div class="overflow-x-auto max-h-80">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách hàng</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nhu cầu</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày tạo</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @unassigned_contacts.each do |contact| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900"><%= contact.name %></div>
+                  <div class="text-xs text-gray-500"><%= contact.phone %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= contact.service_type&.name || "-" %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                  <%= contact.created_at.strftime("%d/%m %H:%M") %>
+                </td>
+              </tr>
+            <% end %>
+            <% if @unassigned_contacts.empty? %>
+              <tr>
+                <td colspan="3" class="px-6 py-8 text-center text-gray-400">
+                  Tất cả contacts đã được assign! 🎉
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <%# Recent Contacts %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="text-lg leading-6 font-semibold text-gray-900">📋 Danh sách (<%= @period == 'today' ? 'Hôm nay' : @period == 'week' ? 'Tuần này' : 'Tháng này' %>)</h3>
+        <span class="text-sm text-gray-500"><%= @contacts.total_count %> contacts</span>
+      </div>
+      <div class="overflow-x-auto max-h-80">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách hàng</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Assign</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @contacts.each do |contact| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900"><%= contact.name %></div>
+                  <div class="text-xs text-gray-500"><%= contact.code %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                    <%= contact.status_label %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= contact.assigned_user&.name || "Chưa assign" %>
+                </td>
+              </tr>
+            <% end %>
+            <% if @contacts.empty? %>
+              <tr>
+                <td colspan="3" class="px-6 py-8 text-center text-gray-400">
+                  Chưa có dữ liệu trong khoảng thời gian này.
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <% if @contacts.total_pages > 1 %>
+        <div class="px-6 py-4 border-t border-gray-100">
+          <%= paginate @contacts %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("turbo:load", function() {
+    const ctx = document.getElementById('trendChart');
+    if (ctx) {
+      new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: <%= raw @chart_data[:labels].to_json %>,
+          datasets: [{
+            label: 'Contacts nhập',
+            data: <%= raw @chart_data[:data].to_json %>,
+            borderColor: '#0B387A',
+            backgroundColor: 'rgba(11, 56, 122, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { borderDash: [2, 4] } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+  });
+</script>
