@@ -7,23 +7,17 @@
 <%= turbo_stream.remove "recent_contacts_empty" %>
 
 <%# 3. Reset Form %>
+<%# 3. Reset Form - Use form_call_center for Dashboard %>
 <%= turbo_stream.replace "new_contact_form" do %>
-  <%= turbo_frame_tag "new_contact_form" do %>
-    <% 
-      # Fresh contact for the form
-      @contact = Contact.new 
-      @service_types = ServiceType.for_dropdown
-    %>
-    <%= render "contacts/form", contact: @contact %>
-  <% end %>
+  <% 
+    # Fresh contact for the form
+    @contact = Contact.new 
+    @service_types = ServiceType.for_dropdown
+  %>
+  <%= render "contacts/form_call_center", contact: @contact %>
 <% end %>
 
 <%# 4. Update Flash Messages %>
 <%= turbo_stream.update "flash-messages" do %>
   <%= render "shared/flash_messages" %>
 <% end %>
-
-<%# 5. Update Call Center Stats %>
-<%= turbo_stream.update "stat_today", current_user.created_contacts.where(created_at: Time.zone.today.all_day).count %>
-<%= turbo_stream.update "stat_week", current_user.created_contacts.where(created_at: Time.zone.now.beginning_of_week..).count %>
-<%= turbo_stream.update "stat_month", current_user.created_contacts.where(created_at: Time.zone.now.beginning_of_month..).count %>

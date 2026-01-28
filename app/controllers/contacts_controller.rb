@@ -42,7 +42,12 @@ class ContactsController < ApplicationController
       end
     else
       @service_types = ServiceType.for_dropdown
-      render :new, status: :unprocessable_content
+      # TASK-049: Handle validation errors for Call Center Dashboard (Inline Form)
+      if request.headers["Turbo-Frame"] == "new_contact_form"
+        render partial: "contacts/form_call_center", locals: { contact: @contact }, status: :unprocessable_content
+      else
+        render :new, status: :unprocessable_content
+      end
     end
   end
 

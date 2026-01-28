@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_27_154756) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_28_021342) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -59,7 +59,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_27_154756) do
   create_table "contacts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "code", limit: 20, null: false, comment: "Auto-generated: KH2026-XXX"
     t.string "name", limit: 100, null: false, comment: "Tên KH (thường là tên Zalo)"
-    t.string "phone", limit: 20, null: false, comment: "SĐT - Unique"
+    t.string "phone", limit: 20, comment: "SĐT - Unique"
     t.string "email", limit: 100
     t.string "zalo_link", comment: "Link profile Zalo"
     t.bigint "service_type_id", null: false, comment: "Loại nhu cầu - FK to service_types"

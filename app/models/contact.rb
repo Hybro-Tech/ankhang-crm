@@ -96,6 +96,10 @@ class Contact < ApplicationRecord
                     format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :zalo_link, length: { maximum: 255 }
   validates :code, presence: true, uniqueness: true
+  
+  # TASK-049: Strict Validation for Required Fields
+  validates :service_type_id, presence: { message: "không thể để trống" }
+  validates :source, presence: { message: "không thể để trống" }
 
   # ============================================================================
   # Callbacks
@@ -103,6 +107,7 @@ class Contact < ApplicationRecord
 
   before_validation :generate_code, on: :create
   before_validation :normalize_phone
+  before_validation :normalize_zalo_id
   before_save :set_team_from_service_type, if: :service_type_id_changed?
   after_save :set_assigned_at, if: :saved_change_to_assigned_user_id?
 
@@ -225,9 +230,16 @@ class Contact < ApplicationRecord
 
   # Normalize phone: remove all non-digits
   def normalize_phone
-    return if phone.blank?
+    if phone.blank?
+      self.phone = nil
+    else
+      self.phone = phone.gsub(/\D/, "")
+    end
+  end
 
-    self.phone = phone.gsub(/\D/, "")
+  # Normalize Zalo ID: treat blank as nil to avoid unique constraint violation
+  def normalize_zalo_id
+    self.zalo_id = nil if zalo_id.blank?
   end
 
   # Auto-assign team from service_type

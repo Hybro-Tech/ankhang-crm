@@ -6,3 +6,15 @@ vi:
         required: "không thể để trống"
         blank: "không thể để trống"
         record_invalid: "Dữ liệu không hợp lệ: %{errors}"
+        too_short: "quá ngắn (tối thiểu %{count} ký tự)"
+        too_long: "quá dài (tối đa %{count} ký tự)"
+      models:
+        contact:
+          attributes:
+            phone:
+              too_short: "không đúng định dạng (thiếu số)"
+              invalid: "không đúng định dạng"
+            service_type_id:
+              blank: "không thể để trống"
+            source:
+              blank: "không thể để trống"
