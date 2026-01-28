@@ -53,6 +53,7 @@ vi:
     assign:
       success: "Bạn đã nhận khách hàng thành công."
       already_assigned: "Khách hàng đã được gán cho người khác."
+    status_updated: "Đã chuyển trạng thái thành công."
   service_types:
     create:
       success: "Loại nhu cầu đã được tạo thành công."

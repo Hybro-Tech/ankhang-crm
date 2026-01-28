@@ -38,6 +38,8 @@
 # TASK-019: Contact model - Main customer entity per SRS v2 Section 5
 # rubocop:disable Metrics/ClassLength
 class Contact < ApplicationRecord
+  # TASK-051: State Machine for status transitions
+  include StatusMachine
   # ============================================================================
   # Enums (SRS v2 Section 5.2 & 5.3)
   # ============================================================================

@@ -5,7 +5,8 @@
 # rubocop:disable Metrics/ClassLength
 class ContactsController < ApplicationController
   before_action :authenticate_user!
-  load_and_authorize_resource except: %i[check_phone check_identity recent]
+  load_and_authorize_resource except: %i[check_phone check_identity recent update_status]
+  before_action :set_contact, only: [:update_status]
   before_action :set_filter_options, only: :index
 
   # GET /contacts
@@ -157,12 +158,41 @@ class ContactsController < ApplicationController
     end
   end
 
+  # POST /contacts/:id/update_status
+  # TASK-051: State Machine - Change contact status
+  def update_status
+    authorize! :edit, @contact
+    new_status = params[:new_status]&.to_sym
+
+    if new_status.blank?
+      respond_with_error("Vui lòng chọn trạng thái mới")
+      return
+    end
+
+    begin
+      @contact.transition_to!(new_status, user: current_user, reason: params[:reason])
+      @old_status = @contact.status_was
+      @new_status = new_status
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to @contact, notice: t("contacts.status_updated") }
+      end
+    rescue StatusMachine::InvalidTransitionError => e
+      respond_with_error(e.message)
+    end
+  end
+
   private
 
   def set_filter_options
     @teams = Team.order(:name)
     @service_types_filter = ServiceType.active.ordered
     @statuses = Contact.statuses.keys
+  end
+
+  def set_contact
+    @contact = Contact.find(params[:id])
   end
 
   def base_contacts_query
@@ -195,6 +225,19 @@ class ContactsController < ApplicationController
                   service_type_id source_id status
                   team_id assigned_user_id next_appointment notes]
     )
+  end
+
+  def respond_with_error(message)
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "status_changer",
+          partial: "contacts/partials/status_changer",
+          locals: { contact: @contact, error: message }
+        )
+      end
+      format.html { redirect_to @contact, alert: message }
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength

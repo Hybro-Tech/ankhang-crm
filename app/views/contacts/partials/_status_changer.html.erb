@@ -1,0 +1,56 @@
+<%# TASK-051: Status Changer Dropdown %>
+<%# Renders dropdown to change contact status with only valid transitions %>
+
+<% transitions = contact.available_transitions %>
+
+<div id="status_changer" class="relative" data-controller="dropdown">
+  <% if transitions.any? %>
+    <%# Current status badge + dropdown trigger %>
+    <button type="button" 
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium text-sm transition-all hover:shadow-md cursor-pointer <%= contact.status_color %>"
+            data-action="click->dropdown#toggle"
+            data-dropdown-target="trigger">
+      <span><%= contact.status_label %></span>
+      <i class="fa-solid fa-chevron-down text-xs"></i>
+    </button>
+
+    <%# Dropdown menu %>
+    <div class="hidden absolute z-50 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1"
+         data-dropdown-target="menu">
+      <div class="px-3 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+        Chuyển sang
+      </div>
+      <% transitions.each do |t| %>
+        <%= button_to update_status_contact_path(contact), 
+            method: :post,
+            params: { new_status: t[:value] },
+            form: { 
+              data: { 
+                turbo_confirm: "Chuyển trạng thái từ '#{contact.status_label}' sang '#{t[:label]}'?",
+                turbo_frame: "_top"
+              } 
+            },
+            class: "w-full text-left px-3 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 transition-colors" do %>
+          <span class="inline-block w-2 h-2 rounded-full <%= t[:color].gsub('text-', 'bg-').gsub('-700', '-500').gsub('-100', '') %>"></span>
+          <%= t[:label] %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if defined?(error) && error.present? %>
+      <div class="absolute top-full mt-1 left-0 bg-red-50 text-red-700 text-xs px-2 py-1 rounded shadow">
+        <%= error %>
+      </div>
+    <% end %>
+  <% else %>
+    <%# End state - no transitions available %>
+    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium text-sm <%= contact.status_color %>">
+      <span><%= contact.status_label %></span>
+      <% if contact.closed_state? %>
+        <i class="fa-solid fa-check text-xs"></i>
+      <% elsif contact.failed_state? %>
+        <i class="fa-solid fa-times text-xs"></i>
+      <% end %>
+    </span>
+  <% end %>
+</div>
