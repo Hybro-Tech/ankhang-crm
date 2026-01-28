@@ -59,6 +59,7 @@ class SalesWorkspaceController < ApplicationController
     }
   end
 
+  # rubocop:disable Metrics/MethodLength
   def load_tab_data(tab)
     user_teams = current_user.teams.pluck(:id)
 
@@ -87,6 +88,7 @@ class SalesWorkspaceController < ApplicationController
 
     @current_tab = tab
   end
+  # rubocop:enable Metrics/MethodLength
 
   def load_context_panel
     # Appointments for today and tomorrow

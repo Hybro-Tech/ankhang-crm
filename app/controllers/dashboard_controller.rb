@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class DashboardController < ApplicationController
+  include DashboardMockData
+
   before_action :authenticate_user!
 
   def index
@@ -19,7 +21,7 @@ class DashboardController < ApplicationController
     else
       # Admin or fallback
       load_dashboard_stats
-      load_recent_activities
+      @recent_activities = mock_recent_activities
       load_recent_contacts
       prepare_inline_form
     end
@@ -41,15 +43,6 @@ class DashboardController < ApplicationController
     @new_contacts_today = Contact.where(created_at: Time.zone.today.all_day).count
     @contacts_this_month = Contact.where(created_at: Time.zone.now.beginning_of_month..).count
     @contacts_growth = 12 # Mock
-  end
-
-  def load_recent_activities
-    @recent_activities = [
-      { icon: "fa-user-plus", color: "text-brand-blue", bg: "bg-blue-100", title: "Khách hàng mới",
-        desc: "KH2026-099 đã được tạo.", time: "5 phút trước" },
-      { icon: "fa-check-circle", color: "text-green-600", bg: "bg-green-100", title: "Chốt đơn thành công",
-        desc: "HD-2026-001 - 15,000,000 ₫", time: "1 giờ trước" }
-    ]
   end
 
   def load_recent_contacts
@@ -88,16 +81,7 @@ class DashboardController < ApplicationController
       revenue: 0,
       conversion_rate: 0
     }
-
-    # Leaderboard (Mock for now to ensure UI renders)
-    @top_performers = User.where(status: :active).limit(5).map do |user|
-      {
-        name: user.name,
-        deals: rand(1..20),
-        revenue: rand(10..500) * 1_000_000,
-        avatar: "https://ui-avatars.com/api/?name=#{URI.encode_www_form_component(user.name)}&background=random"
-      }
-    end.sort_by { |u| -u[:deals] }
+    @top_performers = mock_top_performers
   end
 
   def load_sales_data
@@ -114,18 +98,8 @@ class DashboardController < ApplicationController
                                   .order(updated_at: :desc)
                                   .limit(10)
 
-    # Recent Activities (Mock)
-    @recent_activities = [
-      { text: "KH2026-099 đã được gán cho bạn.", time: "5 phút trước", icon: "fa-user-plus", color: "text-brand-blue" },
-      { text: "Lịch hẹn với KH2026-055 sắp đến.", time: "30 phút nữa", icon: "fa-clock", color: "text-orange-500" }
-    ]
-
-    # Chart Data (Mock)
-    @chart_data = {
-      labels: %w[Th2 Th3 Th4 Th5 Th6 Th7 CN],
-      contacts: [12, 19, 3, 5, 2, 3, 15],
-      deals: [2, 3, 1, 4, 1, 2, 5]
-    }
+    @recent_activities = mock_sale_activities
+    @chart_data = mock_chart_data
   end
 
   # --- CSKH (Customer Care) ---

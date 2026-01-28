@@ -61,6 +61,7 @@ class ContactsController < ApplicationController
   end
 
   # POST /contacts/:id/pick - TASK-020: Pick unassigned contact
+  # rubocop:disable Metrics/AbcSize
   def pick
     authorize! :pick, @contact
 
@@ -84,6 +85,7 @@ class ContactsController < ApplicationController
         format.turbo_stream { flash.now[:alert] = t("contacts.assign.already_assigned") }
       end
     end
+    # rubocop:enable Metrics/AbcSize
   end
 
   # GET /contacts/check_phone?phone=xxx - TASK-021: Real-time phone check

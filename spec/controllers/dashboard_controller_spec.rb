@@ -1,17 +1,22 @@
-require 'rails_helper'
+# frozen_string_literal: true
+
+require "rails_helper"
 
 RSpec.describe DashboardController, type: :controller do
   include Devise::Test::ControllerHelpers
 
   # Create Roles (find or create to avoid duplicates if seeded)
-  let(:role_admin) { Role.find_by(name: 'Admin') || FactoryBot.create(:role, name: 'Admin') }
-  let(:role_sale) { Role.find_by(name: 'Sale') || FactoryBot.create(:role, name: 'Sale') }
-  let(:role_call_center) { Role.find_by(name: 'Call Center') || FactoryBot.create(:role, name: 'Call Center') }
+  # Create Roles (find or create to avoid duplicates if seeded)
+  let(:role_admin) { Role.find_by(name: "Admin") || FactoryBot.create(:role, name: "Admin", dashboard_type: :admin) }
+  let(:role_sale) { Role.find_by(name: "Sale") || FactoryBot.create(:role, name: "Sale", dashboard_type: :sale) }
+  let(:role_call_center) do
+    Role.find_by(name: "Call Center") || FactoryBot.create(:role, name: "Call Center", dashboard_type: :call_center)
+  end
 
   # Create Users
-  let(:admin_user) { FactoryBot.create(:user, roles: [role_admin], username: 'admin_test') }
-  let(:sale_user) { FactoryBot.create(:user, roles: [role_sale], username: 'sale_test') }
-  let(:call_center_user) { FactoryBot.create(:user, roles: [role_call_center], username: 'cc_test') }
+  let(:admin_user) { FactoryBot.create(:user, roles: [role_admin], username: "admin_test") }
+  let(:sale_user) { FactoryBot.create(:user, roles: [role_sale], username: "sale_test") }
+  let(:call_center_user) { FactoryBot.create(:user, roles: [role_call_center], username: "cc_test") }
 
   describe "GET #index" do
     context "when not logged in" do
@@ -22,7 +27,7 @@ RSpec.describe DashboardController, type: :controller do
     end
 
     context "when logged in as Call Center" do
-      before do 
+      before do
         sign_in call_center_user
         # Mock permission if needed, but assuming index is open to auth users
       end
