@@ -17,7 +17,7 @@ module ApplicationHelper
              (path.to_s != root_path.to_s && request.path.start_with?("#{path}/"))
 
     active_class = if active
-                     "bg-white text-brand-blue rounded-lg shadow-md font-bold"
+                     "bg-white text-[#0B387A] rounded-lg shadow-md font-bold"
                    else
                      "text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium"
                    end
@@ -64,5 +64,22 @@ module ApplicationHelper
 
   def render_section_header(title)
     content_tag(:div, title, class: "pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider")
+  end
+
+  # Concise time formatter for lists
+  # Today: "14:30"
+  # This year: "28/01 08:30"
+  # Old: "28/01/25"
+  def format_short_time(datetime)
+    return "" unless datetime
+
+    now = Time.current
+    if datetime.to_date == now.to_date
+      "Hôm nay #{datetime.strftime('%H:%M')}"
+    elsif datetime.year == now.year
+      datetime.strftime("%d/%m")
+    else
+      datetime.strftime("%d/%m/%y")
+    end
   end
 end

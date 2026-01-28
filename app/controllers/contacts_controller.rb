@@ -67,7 +67,7 @@ class ContactsController < ApplicationController
   end
 
   # POST /contacts/:id/pick - TASK-020: Pick unassigned contact
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def pick
     authorize! :pick, @contact
 
@@ -83,15 +83,19 @@ class ContactsController < ApplicationController
 
       respond_to do |format|
         format.html { redirect_to @contact, notice: t("contacts.assign.success") }
-        format.turbo_stream { flash.now[:notice] = t("contacts.assign.success") }
+        # TASK-Refine: Redirect to contact detail for immediate work
+        format.turbo_stream { redirect_to @contact, notice: t("contacts.assign.success"), status: :see_other }
       end
     else
       respond_to do |format|
         format.html { redirect_to contacts_path, alert: t("contacts.assign.already_assigned") }
-        format.turbo_stream { flash.now[:alert] = t("contacts.assign.already_assigned") }
+        # TASK-Refine: Redirect back on failure
+        format.turbo_stream do
+          redirect_to contacts_path, alert: t("contacts.assign.already_assigned"), status: :see_other
+        end
       end
     end
-    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
   end
 
   # GET /contacts/check_phone?phone=xxx - TASK-021: Real-time phone check
@@ -168,6 +172,9 @@ class ContactsController < ApplicationController
     # TASK-Refine: Filter by creator if user is Call Center (Tổng Đài)
     # TASK-Refine: Filter by creator if user is Call Center (Tổng Đài)
     query = query.where(created_by_id: current_user.id) if current_user.call_center_staff?
+
+    # TASK-Refine: Filter by assigned user if user is Sale
+    query = query.where(assigned_user_id: current_user.id) if current_user.sale_staff?
 
     query
   end

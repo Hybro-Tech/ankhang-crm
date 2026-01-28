@@ -37,8 +37,10 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    # TASK-049: Redirect Call Center staff to their dashboard
-    if can?(:view_call_center, :dashboards)
+    if can?(:view_sales, :dashboards)
+      sales_workspace_path
+    elsif can?(:view_call_center, :dashboards)
+      # TASK-049: Redirect Call Center staff to their dashboard
       dashboard_call_center_path
     else
       super

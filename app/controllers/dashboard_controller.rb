@@ -7,8 +7,38 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @dashboard_view = current_user.primary_dashboard_type
+    # TASK-Refine: Sale staff accessing root ('/') should be redirected to Workspace
+    # They can still view Overview at 'dashboard/index'
+    handle_sale_redirect and return if performed?
 
+    @dashboard_view = current_user.primary_dashboard_type
+    load_dashboard_data
+  end
+
+  def call_center
+    authorize! :view_call_center, :dashboards
+    @dashboard_view = "call_center"
+    load_dashboard_data
+    render :index
+  end
+
+  def call_center_stats
+    authorize! :view_call_center, :dashboards
+    @period = params[:period] || "month"
+    load_call_center_kpi
+    load_call_center_chart_data
+    load_call_center_contacts_list
+  end
+
+  private
+
+  def handle_sale_redirect
+    return unless current_user.sale_staff? && request.path == root_path
+
+    redirect_to sales_workspace_path
+  end
+
+  def load_dashboard_data
     case @dashboard_view
     when "call_center"
       load_call_center_stats
@@ -27,25 +57,6 @@ class DashboardController < ApplicationController
       prepare_inline_form
     end
   end
-
-  def call_center
-    authorize! :view_call_center, :dashboards
-    @dashboard_view = "call_center"
-    load_call_center_stats
-    load_call_center_recent_contacts
-    prepare_inline_form
-    render :index
-  end
-
-  def call_center_stats
-    authorize! :view_call_center, :dashboards
-    @period = params[:period] || "month"
-    load_call_center_kpi
-    load_call_center_chart_data
-    load_call_center_contacts_list
-  end
-
-  private
 
   # --- Admin / Generic ---
   def load_dashboard_stats

@@ -100,17 +100,19 @@ roles_data.each do |r|
   # Ensure we can update system roles during seeding
   role.description = r[:description]
   role.dashboard_type = r[:dashboard_type]
-  
+
   if role.new_record?
     role.is_system = r[:is_system]
     role.save!
   else
     # Bypass before_update callback for system roles
+    # rubocop:disable Rails/SkipsModelValidations
     role.update_columns(
       description: r[:description],
       is_system: r[:is_system],
       dashboard_type: Role.dashboard_types[r[:dashboard_type]]
     )
+    # rubocop:enable Rails/SkipsModelValidations
   end
   roles[r[:name]] = role
 end

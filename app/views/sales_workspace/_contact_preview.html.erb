@@ -65,7 +65,7 @@
         <div class="bg-gray-50 rounded-lg p-4">
           <p class="text-xs text-gray-500 uppercase font-medium mb-1">Nguồn khách</p>
           <p class="text-sm text-gray-700 flex items-center">
-            <i class="fa-solid fa-share-nodes text-gray-400 mr-2"></i><%= contact.source || "Không xác định" %>
+            <i class="fa-solid fa-share-nodes text-gray-400 mr-2"></i><%= contact.source&.name || "Không xác định" %>
           </p>
         </div>
       </div>

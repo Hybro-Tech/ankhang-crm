@@ -334,8 +334,8 @@ RSpec.describe Ability, type: :model do
       expect(ability.can?(:create, :contacts)).to be false
     end
 
-    it "CANNOT pick contacts" do
-      expect(ability.can?(:pick, :contacts)).to be false
+    it "CAN pick contacts (via edit permission alias)" do
+      expect(ability.can?(:pick, :contacts)).to be true
     end
 
     it "CAN edit contacts" do

@@ -19,10 +19,10 @@ RSpec.describe Contact, type: :model do
       expect(contact.errors[:name]).to be_present
     end
 
-    it "requires phone" do
-      contact = build(:contact, phone: nil)
+    it "requires at least one contact method (phone, zalo_id, or zalo_qr)" do
+      contact = build(:contact, phone: nil, zalo_id: nil)
       expect(contact).not_to be_valid
-      expect(contact.errors[:phone]).to be_present
+      expect(contact.errors[:base]).to be_present
     end
 
     it "requires unique phone" do

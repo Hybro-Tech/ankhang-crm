@@ -3,21 +3,23 @@
   <%# Logo %>
   <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
     <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
-    <%= link_to root_path, class: "font-bold text-xl tracking-wide text-white hover:text-gray-200" do %>
+    <%= link_to (current_user.sale_staff? ? sales_workspace_path : root_path), class: "font-bold text-xl tracking-wide text-white hover:text-gray-200" do %>
       AnKhangCRM
     <% end %>
   </div>
 
   <%# Navigation Menu %>
   <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto sidebar-scroll">
+    <%# Sales Workspace - For Sales role %>
+    <%= sidebar_link "Workspace", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
+
     <%# Dashboard - Always visible %>
-    <%= link_to root_path, class: "flex items-center px-4 py-3 #{current_page?(root_path) ? 'bg-white text-brand-blue rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
-      <i class="fa-solid fa-chart-line w-6 <%= current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
-      <span>Tổng đài</span>
+    <%# TASK-Refine: Link explicitly to dashboard_index_path to avoid root redirect for Sales %>
+    <%= link_to dashboard_index_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_index_path) || (current_user.call_center_staff? && current_page?(root_path)) || (!current_user.sale_staff? && current_page?(root_path)) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
+      <i class="fa-solid fa-chart-line w-6 <%= current_page?(dashboard_index_path) || (current_user.call_center_staff? && current_page?(root_path)) || (!current_user.sale_staff? && current_page?(root_path)) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
+      <span>Tổng quan</span>
     <% end %>
 
-    <%# Sales Workspace - For Sales role %>
-    <%= sidebar_link "Nơi làm việc", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
     <%= sidebar_link "Pipeline (Kanban)", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
 
     <%# Call Center Statistics - For Tổng Đài role %>

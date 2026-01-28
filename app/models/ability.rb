@@ -23,7 +23,7 @@ class Ability
 
     # Alias :view to :read (index, show) so standard controllers work
     alias_action :view, to: :read
-    alias_action :edit, to: :update
+    alias_action :edit, :pick, to: :update
     alias_action :create, :read, :update, :destroy, to: :crud
   end
 
