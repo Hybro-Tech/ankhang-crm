@@ -38,7 +38,36 @@ export default class extends Controller {
     const paramName = this.typeValue === "phone" ? "phone" : "zalo_id"
     const url = `/contacts/check_identity?${paramName}=${encodeURIComponent(value)}`
 
-    // Use Rails Request.js to fetch Turbo Stream
+    // Use Rails Request.js to fetch Turbo Stream (Context Panel)
     get(url, { responseKind: "turbo-stream" })
+
+    // Fetch JSON for Input Validation (Visual Feedback)
+    fetch(url, { headers: { "Accept": "application/json" } })
+      .then(response => response.json())
+      .then(data => {
+        this.updateInputValidation(data.exists)
+      })
+      .catch(error => console.error("Identity lookup error:", error))
+  }
+
+  updateInputValidation (exists) {
+    // Remove all validation classes first
+    const input = this.element
+    const redClasses = ["border-red-500", "focus:border-red-500", "focus:ring-red-500", "text-red-600"]
+    const greenClasses = ["border-green-500", "focus:border-green-500", "focus:ring-green-500", "text-green-600"]
+    const defaultClasses = ["border-gray-300", "focus:border-brand-blue", "focus:ring-brand-blue", "text-gray-900"]
+
+    input.classList.remove(...redClasses, ...greenClasses, ...defaultClasses)
+
+    if (exists) {
+      input.classList.add(...redClasses)
+      // Show local warning if any
+      const warning = input.parentElement.parentElement.querySelector('#phone_duplicate_warning')
+      if (warning) warning.classList.remove('hidden')
+    } else {
+      input.classList.add(...greenClasses)
+      const warning = input.parentElement.parentElement.querySelector('#phone_duplicate_warning')
+      if (warning) warning.classList.add('hidden')
+    }
   }
 }

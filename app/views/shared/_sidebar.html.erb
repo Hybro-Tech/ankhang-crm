@@ -13,7 +13,7 @@
     <%# Dashboard - Always visible %>
     <%= link_to root_path, class: "flex items-center px-4 py-3 #{current_page?(root_path) ? 'bg-white text-brand-blue rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
       <i class="fa-solid fa-chart-line w-6 <%= current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
-      <span>Tổng quan</span>
+      <span>Tổng đài</span>
     <% end %>
 
     <%# Sales Workspace - For Sales role %>

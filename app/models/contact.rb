@@ -79,10 +79,12 @@ class Contact < ApplicationRecord
   validates :name, presence: true, length: { maximum: 100 }
 
   # TASK-049: Dynamic Identity (Phone OR Zalo)
-  validates :phone, presence: true, length: { minimum: 10, maximum: 20 }, unless: -> { zalo_id.present? }
+  # TASK-049: Dynamic Identity (Phone OR Zalo ID OR Zalo QR)
+  validate :must_have_contact_info
+
+  validates :phone, length: { minimum: 10, maximum: 20 }, allow_blank: true
   validates :phone, uniqueness: { message: "đã tồn tại trong hệ thống" }, allow_blank: true
 
-  validates :zalo_id, presence: true, unless: -> { phone.present? }
   validates :zalo_id, uniqueness: { message: "Zalo ID này đã tồn tại" }, allow_blank: true
   validates :email, length: { maximum: 100 },
                     format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
@@ -244,6 +246,16 @@ class Contact < ApplicationRecord
 
     # Using update instead of update_column to follow Rails validations
     update(assigned_at: Time.current)
+  end
+
+  # Check validation: Must have at least one contact info
+  def must_have_contact_info
+    if phone.blank? && zalo_id.blank? && !zalo_qr.attached?
+      errors.add(:base, "Phải nhập ít nhất một thông tin: SĐT, Zalo ID hoặc Zalo QR")
+    end
+
+    nil unless zalo_id.blank? && !zalo_qr.attached? && phone.blank?
+    # Redundant check but keeps logic clear for individual fields if needed later
   end
 end
 # rubocop:enable Metrics/ClassLength

@@ -132,6 +132,19 @@ class User < ApplicationRecord
   def primary_dashboard_type
     roles.first&.dashboard_type || "admin"
   end
+
+  # TASK-Refine: Robust Role Checks (Enum-based)
+  def call_center_staff?
+    roles.exists?(dashboard_type: :call_center)
+  end
+
+  def sale_staff?
+    roles.exists?(dashboard_type: :sale)
+  end
+
+  def cskh_staff?
+    roles.exists?(dashboard_type: :cskh)
+  end
 end
 
 #------------------------------------------------------------------------------

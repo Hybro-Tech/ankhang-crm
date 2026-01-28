@@ -62,8 +62,8 @@ export default class extends Controller {
         ${contactId ? `<a href="/contacts/${contactId}" class="underline hover:no-underline">Xem</a>` : ''}
       </div>
     `
-    this.phoneTarget.classList.add("border-red-500", "ring-red-500")
-    this.phoneTarget.classList.remove("border-gray-300", "border-green-500")
+    this.phoneTarget.classList.add("border-red-500", "focus:border-red-500", "focus:ring-red-500", "text-red-600")
+    this.phoneTarget.classList.remove("border-gray-300", "border-green-500", "focus:border-brand-blue", "focus:ring-brand-blue", "focus:border-green-500", "focus:ring-green-500", "text-gray-900", "text-green-600")
   }
 
   showSuccess (message) {
@@ -75,15 +75,16 @@ export default class extends Controller {
         <span>${message}</span>
       </div>
     `
-    this.phoneTarget.classList.add("border-green-500")
-    this.phoneTarget.classList.remove("border-gray-300", "border-red-500")
+    this.phoneTarget.classList.add("border-green-500", "focus:border-green-500", "focus:ring-green-500", "text-green-600")
+    this.phoneTarget.classList.remove("border-gray-300", "border-red-500", "focus:border-brand-blue", "focus:ring-brand-blue", "focus:border-red-500", "focus:ring-red-500", "text-red-600", "text-gray-900")
   }
 
   clearFeedback () {
     if (!this.hasFeedbackTarget) return
 
     this.feedbackTarget.innerHTML = ""
-    this.phoneTarget.classList.remove("border-red-500", "border-green-500")
-    this.phoneTarget.classList.add("border-gray-300")
+    this.feedbackTarget.innerHTML = ""
+    this.phoneTarget.classList.remove("border-red-500", "border-green-500", "focus:border-red-500", "focus:ring-red-500", "focus:border-green-500", "focus:ring-green-500", "text-red-600", "text-green-600")
+    this.phoneTarget.classList.add("border-gray-300", "focus:border-brand-blue", "focus:ring-brand-blue", "text-gray-900")
   }
 }

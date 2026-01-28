@@ -128,6 +128,13 @@ class ContactsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream
+      format.json do
+        render json: {
+          exists: @contact.present?,
+          contact: @contact&.as_json(only: %i[id name code status]),
+          message: @contact ? "Đã tồn tại trong hệ thống" : "Có thể thêm mới"
+        }
+      end
     end
   end
 
@@ -153,9 +160,16 @@ class ContactsController < ApplicationController
   end
 
   def base_contacts_query
-    @contacts
-      .includes(:service_type, :team, :assigned_user, :creator)
-      .order(Arel.sql("assigned_user_id IS NOT NULL, created_at DESC"))
+    query = @contacts.includes(:service_type, :team, :assigned_user, :creator)
+
+    # TASK-Refine: Sort by newest first
+    query = query.order(created_at: :desc)
+
+    # TASK-Refine: Filter by creator if user is Call Center (Tổng Đài)
+    # TASK-Refine: Filter by creator if user is Call Center (Tổng Đài)
+    query = query.where(created_by_id: current_user.id) if current_user.call_center_staff?
+
+    query
   end
 
   def apply_filters(query)

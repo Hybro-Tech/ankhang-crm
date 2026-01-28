@@ -89,18 +89,29 @@ end
 Rails.logger.debug "➡️ Creating Roles..."
 roles_data = [
   { name: "Super Admin", description: "Quản trị viên hệ thống", is_system: true, dashboard_type: :admin },
-  { name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: false, dashboard_type: :call_center },
-  { name: "Sale", description: "Nhân viên kinh doanh", is_system: false, dashboard_type: :sale },
-  { name: "CSKH", description: "Chăm sóc khách hàng", is_system: false, dashboard_type: :cskh }
+  { name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: true, dashboard_type: :call_center },
+  { name: "Sale", description: "Nhân viên kinh doanh", is_system: true, dashboard_type: :sale },
+  { name: "CSKH", description: "Chăm sóc khách hàng", is_system: true, dashboard_type: :cskh }
 ]
 
 roles = {}
 roles_data.each do |r|
   role = Role.find_or_initialize_by(name: r[:name])
+  # Ensure we can update system roles during seeding
   role.description = r[:description]
-  role.is_system = r[:is_system]
   role.dashboard_type = r[:dashboard_type]
-  role.save!
+  
+  if role.new_record?
+    role.is_system = r[:is_system]
+    role.save!
+  else
+    # Bypass before_update callback for system roles
+    role.update_columns(
+      description: r[:description],
+      is_system: r[:is_system],
+      dashboard_type: Role.dashboard_types[r[:dashboard_type]]
+    )
+  end
   roles[r[:name]] = role
 end
 
