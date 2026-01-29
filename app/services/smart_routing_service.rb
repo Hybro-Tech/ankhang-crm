@@ -14,7 +14,7 @@ class SmartRoutingService
   # Called by background job
   # Now reads visibility_expand_minutes from each contact's service_type
   def self.expand_all_pending
-    Contact.where(status: "new")
+    Contact.status_new_contact
            .where(assigned_user_id: nil)
            .where.not(visible_to_user_ids: nil)
            .includes(:service_type)
@@ -120,7 +120,7 @@ class SmartRoutingService
   def should_apply_routing?
     # Only apply during working hours
     Setting.within_working_hours? &&
-      @contact.status == "new" &&
+      @contact.status_new_contact? &&
       @contact.assigned_user_id.nil?
   end
 
