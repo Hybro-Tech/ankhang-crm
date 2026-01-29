@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_29_040214) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_29_065604) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -114,6 +114,37 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_040214) do
     t.index ["user_id"], name: "index_interactions_on_user_id"
   end
 
+  create_table "notifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.text "body"
+    t.string "icon"
+    t.string "icon_color"
+    t.string "category", default: "system", null: false
+    t.string "notification_type"
+    t.integer "priority", default: 0
+    t.string "notifiable_type"
+    t.bigint "notifiable_id"
+    t.string "action_url"
+    t.string "action_text"
+    t.json "metadata"
+    t.boolean "read", default: false
+    t.datetime "read_at"
+    t.boolean "seen", default: false
+    t.datetime "seen_at"
+    t.boolean "push_sent", default: false
+    t.datetime "push_sent_at"
+    t.boolean "email_sent", default: false
+    t.datetime "email_sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_notifications_on_created_at"
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["user_id", "category", "created_at"], name: "idx_notifications_user_category"
+    t.index ["user_id", "read", "created_at"], name: "idx_notifications_user_unread"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "description"
     t.datetime "created_at", null: false
@@ -174,6 +205,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_040214) do
     t.integer "max_pick_per_day", default: 20, null: false
     t.integer "pick_cooldown_minutes", default: 5, null: false
     t.integer "visibility_expand_minutes", default: 2, null: false
+    t.boolean "use_smart_routing", default: true, null: false
     t.index ["active"], name: "index_service_types_on_active"
     t.index ["name"], name: "index_service_types_on_name", unique: true
     t.index ["team_id"], name: "index_service_types_on_team_id"
@@ -411,6 +443,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_040214) do
   add_foreign_key "contacts", "users", column: "created_by_id"
   add_foreign_key "interactions", "contacts"
   add_foreign_key "interactions", "users"
+  add_foreign_key "notifications", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "saturday_schedule_users", "saturday_schedules"

@@ -57,6 +57,21 @@
         <i class="fa-solid fa-sliders text-brand-blue"></i>
         Quy tắc nhận khách & Smart Routing
       </h3>
+      
+      <%# Random người nhận checkbox %>
+      <div class="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div class="flex items-start gap-3">
+          <%= f.check_box :use_smart_routing, class: "h-5 w-5 mt-0.5 text-brand-blue focus:ring-brand-blue border-gray-300 rounded" %>
+          <div>
+            <%= f.label :use_smart_routing, "Random người nhận (Smart Routing)", class: "text-sm font-medium text-gray-900" %>
+            <p class="text-xs text-gray-600 mt-1">
+              <strong>Bật:</strong> Random 1 Sale → nếu không nhận sau X phút → random thêm người khác
+              <br>
+              <strong>Tắt:</strong> Gửi thông báo cho tất cả Sale trong team ngay lập tức
+            </p>
+          </div>
+        </div>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <%# Max picks per day %>
         <div>

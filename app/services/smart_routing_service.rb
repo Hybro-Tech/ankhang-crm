@@ -48,6 +48,12 @@ class SmartRoutingService
   # Set initial visibility when contact is created
   # rubocop:disable Naming/PredicateMethod
   def apply_initial_visibility
+    # Check if service type has smart routing disabled → Pool mode → notify all sales
+    unless use_smart_routing?
+      notify_all_sales_in_team
+      return false
+    end
+
     # Outside working hours → Pool mode → notify all sales
     unless should_apply_routing?
       notify_all_sales_in_team
@@ -145,6 +151,11 @@ class SmartRoutingService
         .first
   end
 
+  # Check if service type has smart routing enabled
+  def use_smart_routing?
+    @contact.service_type&.use_smart_routing != false
+  end
+
   # TASK-057: Send notification to user when contact becomes visible to them
   def notify_user_about_contact(user)
     NotificationService.notify(
@@ -160,7 +171,7 @@ class SmartRoutingService
     Rails.logger.error("Failed to notify user #{user.id} about contact #{@contact.id}: #{e.message}")
   end
 
-  # TASK-057: Pool mode - notify all sales in team (excluding already notified)
+  # TASK-057: Pool mode - make contact visible to ALL sales in team and notify them
   def notify_all_sales_in_team
     team = @contact.service_type&.team
     return unless team
@@ -168,14 +179,23 @@ class SmartRoutingService
     sale_role = Role.find_by(code: "sale")
     return unless sale_role
 
+    # Get all sales in team
+    all_sales = team.users
+                    .joins(:user_roles)
+                    .where(user_roles: { role_id: sale_role.id })
+
+    all_sale_ids = all_sales.pluck(:id)
+    return if all_sale_ids.empty?
+
     # Get already notified user IDs (from previous visibility)
     already_notified = @contact.visible_to_user_ids || []
 
-    # Notify remaining sales
-    team.users
-        .joins(:user_roles)
-        .where(user_roles: { role_id: sale_role.id })
-        .where.not(id: already_notified)
-        .find_each { |user| notify_user_about_contact(user) }
+    # Set visibility to ALL sales (Pool mode = everyone can pick)
+    @contact.update!(visible_to_user_ids: all_sale_ids)
+
+    # Notify only those who haven't been notified yet
+    all_sales.where.not(id: already_notified).find_each do |user|
+      notify_user_about_contact(user)
+    end
   end
 end

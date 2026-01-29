@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   resources :contacts do
     member do
       post :pick
-      post :update_status  # TASK-051: State Machine
+      post :update_status # TASK-051: State Machine
     end
     collection do
       get :check_phone

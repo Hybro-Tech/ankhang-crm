@@ -66,6 +66,6 @@ class ServiceTypesController < ApplicationController
 
   def service_type_params
     params.expect(service_type: %i[name description team_id active position max_pick_per_day pick_cooldown_minutes
-                                   visibility_expand_minutes])
+                                   visibility_expand_minutes use_smart_routing])
   end
 end

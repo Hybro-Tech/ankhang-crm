@@ -54,7 +54,7 @@ class SalesWorkspaceController < ApplicationController
     user_teams = current_user.teams.pluck(:id)
 
     @kpis = {
-      new_contacts: Contact.status_new_contact.where(team_id: user_teams).count,
+      new_contacts: Contact.status_new_contact.where(team_id: user_teams).visible_to(current_user).count,
       needs_update: current_user.assigned_contacts.needs_info_update.count,
       in_progress: current_user.assigned_contacts.where(status: %i[potential in_progress]).count,
       appointments_today: current_user.assigned_contacts
@@ -69,9 +69,10 @@ class SalesWorkspaceController < ApplicationController
 
     @contacts = case tab
                 when :new_contacts
-                  # Contacts in user's teams that are unassigned (new)
+                  # Contacts in user's teams that are unassigned (new) and visible to this user
                   Contact.status_new_contact
                          .where(team_id: user_teams)
+                         .visible_to(current_user)
                          .order(created_at: :desc)
                          .limit(20)
                 when :needs_update
