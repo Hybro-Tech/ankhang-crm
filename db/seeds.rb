@@ -73,7 +73,10 @@ permissions_data = [
   # Reports & Logs (System)
   { code: "reports.view", name: "Xem", category: "Báo cáo", description: "Xem báo cáo" },
   { code: "reports.export", name: "Xuất", category: "Báo cáo", description: "Xuất báo cáo" },
-  { code: "logs.view", name: "Xem", category: "Nhật ký", description: "Xem nhật ký hoạt động" }
+  { code: "logs.view", name: "Xem", category: "Nhật ký", description: "Xem nhật ký hoạt động" },
+
+  # Cài đặt hệ thống (Settings)
+  { code: "settings.manage", name: "Quản lý", category: "Cài đặt", description: "Quản lý cài đặt hệ thống (giờ làm việc, Smart Routing)" }
 ]
 
 Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }

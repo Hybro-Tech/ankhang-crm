@@ -49,8 +49,18 @@ class Setting < ApplicationRecord
       get("saturday_hours_end", "11:30")
     end
 
+    # Timezone setting (default: Hanoi for Vietnam)
+    def timezone
+      get("timezone", "Hanoi")
+    end
+
     # Check if current time is within working hours
-    def within_working_hours?(time = Time.current)
+    # Uses timezone from settings for calculation
+    def within_working_hours?(time = nil)
+      # Get time in the configured timezone
+      tz = ActiveSupport::TimeZone[timezone] || ActiveSupport::TimeZone["Hanoi"]
+      time ||= Time.current.in_time_zone(tz)
+
       return false if Holiday.exists?(date: time.to_date)
 
       day = time.wday
@@ -74,12 +84,20 @@ class Setting < ApplicationRecord
     end
   end
 
-  # Default settings with descriptions
   DEFAULTS = {
     "working_hours_start" => { value: "08:00", description: "Giờ bắt đầu làm việc (T2-T6)" },
     "working_hours_end" => { value: "17:30", description: "Giờ kết thúc làm việc (T2-T6)" },
-    "saturday_hours_end" => { value: "11:30", description: "Giờ kết thúc làm việc Thứ 7" }
+    "saturday_hours_end" => { value: "11:30", description: "Giờ kết thúc làm việc Thứ 7" },
+    "timezone" => { value: "Hanoi", description: "Múi giờ hệ thống" }
   }.freeze
+
+  # Available timezones for dropdown
+  AVAILABLE_TIMEZONES = [
+    ["Việt Nam (GMT+7)", "Hanoi"],
+    ["Singapore (GMT+8)", "Singapore"],
+    ["Tokyo (GMT+9)", "Asia/Tokyo"],
+    ["UTC (GMT+0)", "UTC"]
+  ].freeze
 
   # Seed default settings
   def self.seed_defaults!

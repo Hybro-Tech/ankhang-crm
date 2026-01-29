@@ -31,7 +31,8 @@ module App
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
+    # TASK-053: Set timezone to Vietnam for working hours calculation
+    config.time_zone = "Hanoi"
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
