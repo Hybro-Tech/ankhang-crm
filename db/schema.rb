@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_28_144822) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_29_020539) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -167,6 +167,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_28_144822) do
     t.integer "position", default: 0, null: false, comment: "For ordering in dropdowns"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "max_pick_per_day", default: 20, null: false
+    t.integer "pick_cooldown_minutes", default: 5, null: false
     t.index ["active"], name: "index_service_types_on_active"
     t.index ["name"], name: "index_service_types_on_name", unique: true
     t.index ["team_id"], name: "index_service_types_on_team_id"

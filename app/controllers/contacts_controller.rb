@@ -69,12 +69,41 @@ class ContactsController < ApplicationController
     redirect_to contacts_path, notice: t(".success")
   end
 
-  # POST /contacts/:id/pick - TASK-020: Pick unassigned contact
+  # POST /contacts/:id/pick - TASK-022: Pick Mechanism with Eligibility Check
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def pick
     authorize! :pick, @contact
 
-    if @contact.assign_to!(current_user)
+    # TASK-022: Check eligibility before picking
+    eligibility = PickEligibilityService.check(current_user, @contact)
+
+    unless eligibility.eligible
+      respond_to do |format|
+        format.html { redirect_back_or_to(contacts_path, alert: eligibility.reason) }
+        format.turbo_stream do
+          flash.now[:alert] = eligibility.reason
+          render turbo_stream: turbo_stream.replace("flash-messages", partial: "shared/flash_messages")
+        end
+      end
+      return
+    end
+
+    # TASK-022: Use database lock to prevent race condition
+    @contact.with_lock do
+      # Double check - contact could have been picked while waiting for lock
+      unless @contact.pickable?
+        respond_to do |format|
+          format.html { redirect_to contacts_path, alert: t("contacts.assign.already_assigned") }
+          format.turbo_stream do
+            flash.now[:alert] = t("contacts.assign.already_assigned")
+            render turbo_stream: turbo_stream.replace("flash-messages", partial: "shared/flash_messages")
+          end
+        end
+        return
+      end
+
+      @contact.assign_to!(current_user)
+
       # Log activity for Sales Workspace
       ActivityLog.create(
         user: current_user,
@@ -83,23 +112,14 @@ class ContactsController < ApplicationController
         ip_address: request.remote_ip,
         user_agent: request.user_agent
       )
-
-      respond_to do |format|
-        format.html { redirect_to @contact, notice: t("contacts.assign.success") }
-        # TASK-Refine: Redirect to contact detail for immediate work
-        format.turbo_stream { redirect_to @contact, notice: t("contacts.assign.success"), status: :see_other }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to contacts_path, alert: t("contacts.assign.already_assigned") }
-        # TASK-Refine: Redirect back on failure
-        format.turbo_stream do
-          redirect_to contacts_path, alert: t("contacts.assign.already_assigned"), status: :see_other
-        end
-      end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+    respond_to do |format|
+      format.html { redirect_to @contact, notice: t("contacts.assign.success") }
+      format.turbo_stream { redirect_to @contact, notice: t("contacts.assign.success"), status: :see_other }
+    end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # GET /contacts/check_phone?phone=xxx - TASK-021: Real-time phone check
   def check_phone

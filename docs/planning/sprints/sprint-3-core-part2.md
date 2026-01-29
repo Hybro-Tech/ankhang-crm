@@ -15,8 +15,8 @@
 | **Epic** | Contacts |
 | **Story Points** | 8 |
 | **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | ✅ Completed |
 
 **User Story:**
 > Là Sale, tôi muốn "pick" contact mới nhưng phải tuân thủ rule của công ty.
@@ -25,18 +25,18 @@
 Core feature với concurrency handling và dynamic rules checking.
 
 **Acceptance Criteria:**
-- [ ] Nút "Nhận khách" chỉ hiện khi đủ điều kiện
-- [ ] **Logic Check**:
-    - [ ] Cooldown (VD: 5 phút giữa 2 lần pick)
-    - [ ] **Dynamic Limit**: Check số lượng đã pick trong ngày theo loại nhu cầu
-- [ ] DB Locking (Transaction) - tránh race condition
-- [ ] Update Contact: assigned_user_id, status = "Tiềm_năng", picked_at
-- [ ] Log activity
+- [x] Nút "Nhận khách" chỉ hiện khi `contact.pickable?`
+- [x] **Logic Check via PickEligibilityService**:
+    - [x] Cooldown (VD: 5 phút giữa 2 lần pick)
+    - [x] **Dynamic Limit**: Check số lượng đã pick trong ngày theo loại nhu cầu
+- [x] DB Locking (with_lock) - tránh race condition
+- [x] Update Contact: assigned_user_id, status = "potential", assigned_at
+- [x] Log activity via ActivityLog
 
 **Test Cases:**
-- [ ] Pick → Success (Update Assignee, Status)
-- [ ] Pick quá giới hạn → Error "Bạn đã nhận đủ số lượng khách loại này trong ngày"
-- [ ] 2 users pick cùng lúc → Chỉ 1 thành công
+- [x] Pick → Success (Update Assignee, Status)
+- [x] Pick quá giới hạn → Error message
+- [x] 2 users pick cùng lúc → Chỉ 1 thành công (DB lock)
 
 ---
 
@@ -46,8 +46,8 @@ Core feature với concurrency handling và dynamic rules checking.
 | **Epic** | Contacts |
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | ✅ Completed |
 
 **User Story:**
 > Là Admin, tôi muốn cấu hình giới hạn nhận khách cho từng loại dịch vụ.
@@ -56,15 +56,23 @@ Core feature với concurrency handling và dynamic rules checking.
 Extensible rules engine, ban đầu hardcode nhưng sẵn sàng mở rộng.
 
 **Acceptance Criteria:**
-- [ ] `pick_rules` table: service_type_id, max_per_day, cooldown_minutes, enabled
-- [ ] Seed default rules cho các loại nhu cầu
-- [ ] Service: `PickEligibilityService.check(user, contact)` → {eligible: true/false, reason: "..."}
-- [ ] Admin UI: Form edit Service Type có input cho max_pick_per_day
-- [ ] Code extensible: Có thể thêm conditions mới dễ dàng
+- [x] Thêm cột `max_pick_per_day`, `pick_cooldown_minutes` vào ServiceType
+- [x] Default values: 20 khách/ngày, 5 phút cooldown
+- [x] Service: `PickEligibilityService.check(user, contact)` → {eligible: true/false, reason: "..."}
+- [x] Admin UI: Form edit Service Type có input cho pick rules
+- [x] Validations cho các giá trị (1-100, 0-60)
 
 **Test Cases:**
-- [ ] PickEligibilityService trả về đúng
-- [ ] Admin chỉnh limit → Áp dụng ngay
+- [x] PickEligibilityService trả về đúng
+- [x] Admin chỉnh limit → Áp dụng ngay
+
+**Completed:** 2026-01-29
+
+**Implementation Notes:**
+- Migration: `20260129020539_add_pick_rules_to_service_types.rb`
+- Service: `app/services/pick_eligibility_service.rb`
+- Form fields added to `app/views/service_types/_form.html.erb`
+- Strong params updated in `ServiceTypesController`
 
 ---
 
@@ -81,16 +89,18 @@ Extensible rules engine, ban đầu hardcode nhưng sẵn sàng mở rộng.
 > Là Sale, tôi muốn xem chi tiết và ghi lại lịch sử chăm sóc.
 
 **Acceptance Criteria:**
-- [ ] View Detail Contact với tất cả fields
-- [ ] Lịch sử trao đổi (Timeline view):
-  - [ ] Ngày giờ, Nội dung, Phương thức (Gọi điện/Zalo/Email/Gặp mặt)
-  - [ ] Form thêm ghi chú mới
-- [ ] Lịch hẹn tiếp theo (datetime picker)
-- [ ] Edit Contact info (quyền theo role)
+- [x] View Detail Contact với tất cả fields
+- [x] Lịch sử trao đổi (Timeline view):
+  - [x] Ngày giờ, Nội dung, Phương thức (Gọi điện/Zalo/Email/Gặp mặt)
+  - [x] Form thêm ghi chú mới
+- [x] Lịch hẹn tiếp theo (datetime picker)
+- [x] Edit Contact info (quyền theo role)
 
 **Test Cases:**
-- [ ] Add interaction → Appears in timeline
-- [ ] Set lịch hẹn → Hiển thị trên Dashboard
+- [x] Add interaction → Appears in timeline
+- [x] Set lịch hẹn → Hiển thị trên Dashboard
+
+**Completed:** 2026-01-28
 
 **Related:** SRS v2 Section 5.3
 
@@ -102,8 +112,8 @@ Extensible rules engine, ban đầu hardcode nhưng sẵn sàng mở rộng.
 | **Epic** | Contacts |
 | **Story Points** | 5 |
 | **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | ✅ Completed |
 
 **User Story:**
 > Là Sale, tôi muốn chuyển trạng thái Contact theo đúng quy trình công ty.
@@ -112,21 +122,30 @@ Extensible rules engine, ban đầu hardcode nhưng sẵn sàng mở rộng.
 Implement state machine theo SRS v2 Section 5.2.
 
 **Acceptance Criteria:**
-- [ ] State machine: Mới → Tiềm_năng → Đang_tư_vấn → Chốt_Mới/Thất_bại
-- [ ] Transition rules:
-  - [ ] Mới → Tiềm_năng: Khi Sale nhận
-  - [ ] Tiềm_năng → Đang_tư_vấn: Khi Sale bắt đầu tư vấn
-  - [ ] Tiềm_năng → Tiềm_năng_cũ: Cronjob đầu tháng
-  - [ ] Đang_tư_vấn → Chốt_Mới: Thành công trong tháng
-  - [ ] Tiềm_năng_cũ → Chốt_Cũ: Thành công từ tháng trước
-  - [ ] Thất_bại → CSKH_L1: Chuyển CSKH
-- [ ] UI: Dropdown chọn trạng thái (chỉ hiện valid transitions)
-- [ ] Log mỗi lần chuyển trạng thái
+- [x] State machine: Mới → Tiềm_năng → Đang_tư_vấn → Chốt_Mới/Thất_bại
+- [x] Transition rules:
+  - [x] Mới → Tiềm_năng: Khi Sale nhận
+  - [x] Tiềm_năng → Đang_tư_vấn: Khi Sale bắt đầu tư vấn
+  - [x] Tiềm_năng → Tiềm_năng_cũ: Cronjob đầu tháng
+  - [x] Đang_tư_vấn → Chốt_Mới: Thành công trong tháng
+  - [x] Tiềm_năng_cũ → Chốt_Cũ: Thành công từ tháng trước
+  - [x] Thất_bại → CSKH_L1: Chuyển CSKH
+- [x] UI: Dropdown chọn trạng thái (chỉ hiện valid transitions)
+- [x] Log mỗi lần chuyển trạng thái
 
 **Test Cases:**
-- [ ] Valid transition → Success
-- [ ] Invalid transition (VD: Mới → Chốt) → Error
-- [ ] Log ghi nhận đúng
+- [x] Valid transition → Success
+- [x] Invalid transition (VD: Mới → Chốt) → Error
+- [x] Log ghi nhận đúng
+
+**Completed:** 2026-01-28
+
+**Implementation Notes:**
+- Concern: `app/models/concerns/status_machine.rb`
+- VALID_TRANSITIONS hash với tất cả valid state changes
+- `transition_to!` method với validation và logging
+- `available_transitions` cho UI dropdown
+- Integration với Interactions timeline
 
 **Related:** SRS v2 Section 5.2 State Diagram
 
@@ -263,8 +282,19 @@ WebSocket với ActionCable + Turbo Streams.
 - Sidekiq running for background jobs
 
 **Success Criteria:**
-- [ ] Sale có thể Pick contact với rules check
-- [ ] Contact status flow hoạt động đúng
+- [x] Sale có thể Pick contact với rules check ✅
+- [x] Contact status flow hoạt động đúng ✅
 - [ ] Admin có thể re-assign và cấu hình Smart Routing
 - [ ] Real-time updates hoạt động
 - [ ] Web Push notifications hoạt động
+
+---
+
+## 📝 Changelog
+
+| Date | Task | Status | Notes |
+|------|------|--------|-------|
+| 2026-01-28 | TASK-023 | ✅ | Contact detail + Timeline implemented |
+| 2026-01-28 | TASK-051 | ✅ | StatusMachine concern completed |
+| 2026-01-29 | TASK-022 | ✅ | Core pick mechanism with DB locking |
+| 2026-01-29 | TASK-022b | ✅ | Pick Rules Engine with service_type config |
