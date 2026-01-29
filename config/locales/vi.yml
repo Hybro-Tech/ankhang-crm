@@ -74,3 +74,10 @@ vi:
       zalo: "Zalo"
       email: "Email"
       meeting: "Gặp mặt"
+  # Custom Confirm Dialog
+  confirm_dialog:
+    title: "Xác nhận"
+    confirm: "Xác nhận"
+    cancel: "Hủy"
+    delete_title: "Xác nhận xóa"
+    delete_confirm: "Xóa"

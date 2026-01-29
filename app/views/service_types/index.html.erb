@@ -57,7 +57,7 @@
                       <i class="fa-solid fa-pen-to-square"></i>
                     <% end %>
                     <% if st.contacts.empty? %>
-                      <%= link_to st, method: :delete, data: { confirm: "Bạn có chắc muốn xóa?" }, class: "text-red-600 hover:text-red-900" do %>
+                      <%= button_to service_type_path(st), method: :delete, data: { turbo_confirm: "Bạn có chắc muốn xóa loại nhu cầu '#{st.name}'?" }, class: "text-red-600 hover:text-red-900", form: { class: "inline" } do %>
                         <i class="fa-solid fa-trash"></i>
                       <% end %>
                     <% end %>

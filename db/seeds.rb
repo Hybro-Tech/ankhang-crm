@@ -88,10 +88,10 @@ end
 # 3. Create Roles with dashboard_type
 Rails.logger.debug "➡️ Creating Roles..."
 roles_data = [
-  { name: "Super Admin", description: "Quản trị viên hệ thống", is_system: true, dashboard_type: :admin },
-  { name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: true, dashboard_type: :call_center },
-  { name: "Sale", description: "Nhân viên kinh doanh", is_system: true, dashboard_type: :sale },
-  { name: "CSKH", description: "Chăm sóc khách hàng", is_system: true, dashboard_type: :cskh }
+  { code: "super_admin", name: "Super Admin", description: "Quản trị viên hệ thống", is_system: true, dashboard_type: :admin },
+  { code: "call_center", name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: true, dashboard_type: :call_center },
+  { code: "sale", name: "Sale", description: "Nhân viên kinh doanh", is_system: true, dashboard_type: :sale },
+  { code: "cskh", name: "CSKH", description: "Chăm sóc khách hàng", is_system: true, dashboard_type: :cskh }
 ]
 
 roles = {}
@@ -100,6 +100,7 @@ roles_data.each do |r|
   # Ensure we can update system roles during seeding
   role.description = r[:description]
   role.dashboard_type = r[:dashboard_type]
+  role.code = r[:code]
 
   if role.new_record?
     role.is_system = r[:is_system]
@@ -108,6 +109,7 @@ roles_data.each do |r|
     # Bypass before_update callback for system roles
     # rubocop:disable Rails/SkipsModelValidations
     role.update_columns(
+      code: r[:code],
       description: r[:description],
       is_system: r[:is_system],
       dashboard_type: Role.dashboard_types[r[:dashboard_type]]
