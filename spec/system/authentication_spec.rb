@@ -3,10 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Authentication", type: :system do
-  let!(:user) do
-    create(:user, email: "auth_test_#{SecureRandom.hex(4)}@example.com", password: "password123",
-                  username: "testuser_#{SecureRandom.hex(4)}")
-  end
+  # Use super_admin trait to ensure user has proper role for redirect after login
+  let!(:user) { create(:user, :super_admin) }
 
   describe "Login" do
     it "allows user to sign in with email" do

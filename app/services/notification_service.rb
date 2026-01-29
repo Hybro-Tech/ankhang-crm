@@ -2,9 +2,11 @@
 
 # TASK-057: Service to create notifications
 # Centralized notification creation with smart defaults
+# rubocop:disable Metrics/ParameterLists
 class NotificationService
   class << self
     # Create a single notification
+    # rubocop:disable Metrics/CyclomaticComplexity
     def notify(user:, type:, notifiable: nil, title: nil, body: nil, metadata: {}, action_url: nil)
       config = Notification::NOTIFICATION_TYPES[type] || {}
 
@@ -19,6 +21,7 @@ class NotificationService
         metadata: metadata || {}
       )
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Create notifications for multiple users
     def notify_many(users:, type:, notifiable: nil, title: nil, body: nil, metadata: {})
@@ -45,7 +48,7 @@ class NotificationService
         # Pool mode: all sales in team can see
         return if contact.team.blank?
 
-        sales = contact.team.users.joins(:roles).where(roles: { code: "sale" })
+        sales = contact.team.users.joins(:roles).where(roles: { code: Role::SALE })
       else
         # Smart Routing: only visible users
         sales = User.where(id: visible_user_ids)
@@ -114,3 +117,4 @@ class NotificationService
     end
   end
 end
+# rubocop:enable Metrics/ParameterLists

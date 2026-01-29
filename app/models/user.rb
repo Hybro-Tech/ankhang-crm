@@ -108,7 +108,7 @@ class User < ApplicationRecord
 
   # Check if user is Super Admin
   def super_admin?
-    has_role_code?("super_admin")
+    has_role_code?(Role::SUPER_ADMIN)
   end
 
   # Get all effective permission codes (roles + overrides)
@@ -135,10 +135,10 @@ class User < ApplicationRecord
     effective_permission_codes.include?(permission_code)
   end
 
-  # Get primary dashboard type from user's first role
+  # Get primary dashboard type from user's first role (ordered by id for determinism)
   # Defaults to "admin" if no role assigned
   def primary_dashboard_type
-    roles.first&.dashboard_type || "admin"
+    roles.order(:id).first&.dashboard_type || "admin"
   end
 
   # TASK-Refine: Robust Role Checks (Enum-based)

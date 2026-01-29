@@ -7,6 +7,7 @@ class NotificationsController < ApplicationController
 
   # GET /notifications
   def index
+    authorize! :view, :notifications
     @notifications = current_user.notifications.recent.page(params[:page]).per(20)
     @unread_count = current_user.notifications.unread.count
   end
@@ -17,7 +18,9 @@ class NotificationsController < ApplicationController
     @unread_count = current_user.notifications.unread.count
 
     # Mark all as seen when dropdown opens
+    # rubocop:disable Rails/SkipsModelValidations -- Bulk update for performance
     current_user.notifications.unseen.update_all(seen: true, seen_at: Time.current)
+    # rubocop:enable Rails/SkipsModelValidations
 
     render partial: "notifications/dropdown", locals: {
       notifications: @notifications,
@@ -39,7 +42,9 @@ class NotificationsController < ApplicationController
 
   # POST /notifications/mark_all_as_read
   def mark_all_as_read
+    # rubocop:disable Rails/SkipsModelValidations -- Bulk update for performance
     current_user.notifications.unread.update_all(read: true, read_at: Time.current)
+    # rubocop:enable Rails/SkipsModelValidations
 
     respond_to do |format|
       format.html { redirect_to notifications_path, notice: "Đã đánh dấu tất cả đã đọc" }

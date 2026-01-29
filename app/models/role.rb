@@ -16,6 +16,8 @@
 #  index_roles_on_name  (name) UNIQUE
 #
 class Role < ApplicationRecord
+  include RoleCodes
+
   has_many :user_roles, dependent: :destroy
   has_many :users, through: :user_roles
 

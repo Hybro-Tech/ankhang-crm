@@ -11,8 +11,11 @@ module AuthorizationHelper
   end
 
   # Sidebar menu visibility helper
-  # Returns true if no permission required OR user has permission
+  # Returns true if user is logged in AND (no permission required OR user has permission)
   def show_menu_item?(permission_code = nil)
+    return false unless current_user
+
+    # If no specific permission required, logged-in user can see
     return true if permission_code.blank?
 
     can_access?(permission_code)

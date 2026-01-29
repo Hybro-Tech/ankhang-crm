@@ -76,7 +76,8 @@ permissions_data = [
   { code: "logs.view", name: "Xem", category: "Nhật ký", description: "Xem nhật ký hoạt động" },
 
   # Cài đặt hệ thống (Settings)
-  { code: "settings.manage", name: "Quản lý", category: "Cài đặt", description: "Quản lý cài đặt hệ thống (giờ làm việc, Smart Routing)" }
+  { code: "settings.manage", name: "Quản lý", category: "Cài đặt",
+    description: "Quản lý cài đặt hệ thống (giờ làm việc, Smart Routing)" }
 ]
 
 Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }
@@ -91,8 +92,10 @@ end
 # 3. Create Roles with dashboard_type
 Rails.logger.debug "➡️ Creating Roles..."
 roles_data = [
-  { code: "super_admin", name: "Super Admin", description: "Quản trị viên hệ thống", is_system: true, dashboard_type: :admin },
-  { code: "call_center", name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: true, dashboard_type: :call_center },
+  { code: "super_admin", name: "Super Admin", description: "Quản trị viên hệ thống", is_system: true,
+    dashboard_type: :admin },
+  { code: "call_center", name: "Tổng Đài", description: "Nhân viên trực tổng đài", is_system: true,
+    dashboard_type: :call_center },
   { code: "sale", name: "Sale", description: "Nhân viên kinh doanh", is_system: true, dashboard_type: :sale },
   { code: "cskh", name: "CSKH", description: "Chăm sóc khách hàng", is_system: true, dashboard_type: :cskh }
 ]

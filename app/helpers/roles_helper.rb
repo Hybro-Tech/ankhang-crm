@@ -2,10 +2,10 @@
 
 # Helper methods for Roles views
 module RolesHelper
-  # Get icon background color class based on role code
+  # Get icon background color class based on dashboard_type (enum-based, not hardcoded code)
   def role_icon_bg_class(role)
-    case role.code
-    when "super_admin"
+    case role.dashboard_type
+    when "admin"
       "bg-red-100 text-red-600"
     when "sale"
       "bg-green-100 text-green-600"
@@ -24,10 +24,10 @@ module RolesHelper
     end
   end
 
-  # Get icon class based on role code
+  # Get icon class based on dashboard_type (enum-based, not hardcoded code)
   def role_icon_class(role)
-    case role.code
-    when "super_admin"
+    case role.dashboard_type
+    when "admin"
       "fa-solid fa-shield-halved"
     when "sale"
       "fa-solid fa-headset"

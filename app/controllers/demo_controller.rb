@@ -2,6 +2,8 @@
 
 # Demo controller for testing base UI layout
 class DemoController < ApplicationController
+  before_action :authenticate_user!
+
   # Demo page to showcase base UI components
   def index
     flash.now[:notice] = I18n.t("demo.success") if params[:flash] == "success"

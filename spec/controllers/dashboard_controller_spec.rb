@@ -27,8 +27,13 @@ RSpec.describe DashboardController, type: :controller do
 
     context "when logged in as Call Center" do
       before do
+        # Grant permission for call center dashboard
+        permission = Permission.find_or_create_by!(code: "dashboards.view_call_center") do |p|
+          p.name = "View Call Center Dashboard"
+          p.category = "Dashboard"
+        end
+        role_call_center.permissions << permission unless role_call_center.permissions.include?(permission)
         sign_in call_center_user
-        # Mock permission if needed, but assuming index is open to auth users
       end
 
       it "renders call_center dashboard view" do
@@ -85,6 +90,12 @@ RSpec.describe DashboardController, type: :controller do
 
     context "when logged in as Admin" do
       before do
+        # Grant permission for admin dashboard
+        permission = Permission.find_or_create_by!(code: "dashboards.view_admin") do |p|
+          p.name = "View Admin Dashboard"
+          p.category = "Dashboard"
+        end
+        role_admin.permissions << permission unless role_admin.permissions.include?(permission)
         sign_in admin_user
       end
 

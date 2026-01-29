@@ -7,6 +7,9 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
 
   def index
+    # Authorize based on user's primary dashboard type
+    authorize_dashboard_access!
+
     # TASK-Refine: Sale staff accessing root ('/') should be redirected to Workspace
     # They can still view Overview at 'dashboard/index'
     handle_sale_redirect and return if performed?
@@ -36,6 +39,22 @@ class DashboardController < ApplicationController
     return unless current_user.sale_staff? && request.path == root_path
 
     redirect_to sales_workspace_path
+  end
+
+  # Authorize dashboard access based on user's primary dashboard type
+  # Maps dashboard_type to corresponding permission: view_call_center, view_sales, etc.
+  DASHBOARD_PERMISSIONS = {
+    "admin" => :view_admin,
+    "call_center" => :view_call_center,
+    "sale" => :view_sales,
+    "cskh" => :view_cskh
+  }.freeze
+
+  def authorize_dashboard_access!
+    dashboard_type = current_user.primary_dashboard_type
+    action = DASHBOARD_PERMISSIONS[dashboard_type] || :view_admin
+
+    authorize! action, :dashboards
   end
 
   def load_dashboard_data

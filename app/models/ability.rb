@@ -46,7 +46,10 @@ class Ability
   end
 
   def apply_permission(perm)
-    subject, action = parse_permission_code(perm.code)
+    parsed = parse_permission_code(perm.code)
+    return unless parsed
+
+    subject, action = parsed
 
     # Map custom permission actions to standard Rails/CanCan actions
     rails_action = map_action(action)
@@ -61,7 +64,10 @@ class Ability
   end
 
   def revoke_permission(perm)
-    subject, action = parse_permission_code(perm.code)
+    parsed = parse_permission_code(perm.code)
+    return unless parsed
+
+    subject, action = parsed
     rails_action = map_action(action)
 
     cannot rails_action, subject
@@ -82,8 +88,14 @@ class Ability
 
   # Parse permission code "contacts.view" -> [:contacts, :view]
   # Parse "contacts.update_status" -> [:contacts, :update_status]
+  # Returns nil if format is invalid (missing dot separator)
   def parse_permission_code(code)
-    parts = code.split(".", 2)
+    return nil if code.blank?
+
+    parts = code.to_s.split(".", 2)
+    return nil unless parts.size == 2
+    return nil if parts.any?(&:blank?)
+
     subject = parts[0].to_sym
     action = parts[1].to_sym
     [subject, action]

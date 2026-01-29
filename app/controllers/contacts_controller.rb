@@ -123,6 +123,7 @@ class ContactsController < ApplicationController
 
   # GET /contacts/check_phone?phone=xxx - TASK-021: Real-time phone check
   def check_phone
+    authorize! :create, Contact
     phone = Contact.normalize_phone_number(params[:phone])
 
     if phone.length < 10
@@ -144,30 +145,22 @@ class ContactsController < ApplicationController
   # GET /contacts/check_identity?phone=... or ?zalo_id=...
   # TASK-049: Context Awareness
   def check_identity
+    authorize! :create, Contact
     @identity_value = params[:phone].presence || params[:zalo_id].presence
     return unless @identity_value
 
-    @contact = if params[:phone].present?
-                 Contact.find_by(phone: params[:phone])
-               elsif params[:zalo_id].present?
-                 Contact.find_by(zalo_id: params[:zalo_id])
-               end
+    @contact = find_contact_by_identity
 
     respond_to do |format|
       format.turbo_stream
-      format.json do
-        render json: {
-          exists: @contact.present?,
-          contact: @contact&.as_json(only: %i[id name code status]),
-          message: @contact ? "Đã tồn tại trong hệ thống" : "Có thể thêm mới"
-        }
-      end
+      format.json { render json: identity_check_response }
     end
   end
 
   # GET /contacts/recent
   # TASK-049: Restore recent contacts list
   def recent
+    authorize! :read, Contact
     @recent_contacts = current_user.created_contacts
                                    .includes(:service_type, :assigned_user)
                                    .order(created_at: :desc)
@@ -258,6 +251,21 @@ class ContactsController < ApplicationController
       end
       format.html { redirect_to @contact, alert: message }
     end
+  end
+
+  def find_contact_by_identity
+    return Contact.find_by(phone: params[:phone]) if params[:phone].present?
+    return Contact.find_by(zalo_id: params[:zalo_id]) if params[:zalo_id].present?
+
+    nil
+  end
+
+  def identity_check_response
+    {
+      exists: @contact.present?,
+      contact: @contact&.as_json(only: %i[id name code status]),
+      message: @contact ? "Đã tồn tại trong hệ thống" : "Có thể thêm mới"
+    }
   end
 end
 # rubocop:enable Metrics/ClassLength

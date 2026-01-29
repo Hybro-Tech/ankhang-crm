@@ -2,6 +2,7 @@
 
 # TASK-053: Smart Routing Service
 # Handles progressive visibility for new contacts during working hours
+# rubocop:disable Metrics/ClassLength
 class SmartRoutingService
   # Initialize visibility when contact is created
   # @param contact [Contact] The newly created contact
@@ -140,7 +141,7 @@ class SmartRoutingService
 
   def random_sale_from_team(team, exclude_ids: [])
     # Get users in team with Sale role
-    sale_role = Role.find_by(code: "sale")
+    sale_role = Role.find_by(code: Role::SALE)
     return nil unless sale_role
 
     team.users
@@ -176,7 +177,7 @@ class SmartRoutingService
     team = @contact.service_type&.team
     return unless team
 
-    sale_role = Role.find_by(code: "sale")
+    sale_role = Role.find_by(code: Role::SALE)
     return unless sale_role
 
     # Get all sales in team
@@ -199,3 +200,4 @@ class SmartRoutingService
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

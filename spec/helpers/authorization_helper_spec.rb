@@ -70,6 +70,21 @@ RSpec.describe AuthorizationHelper, type: :helper do
     it "returns false when user lacks permission" do
       expect(helper.show_menu_item?("reports.view")).to be false
     end
+
+    context "when user is not signed in" do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it "returns false even without permission_code" do
+        expect(helper.show_menu_item?).to be false
+      end
+
+      it "returns false with blank permission_code" do
+        expect(helper.show_menu_item?(nil)).to be false
+        expect(helper.show_menu_item?("")).to be false
+      end
+    end
   end
 
   describe "#has_role?" do
