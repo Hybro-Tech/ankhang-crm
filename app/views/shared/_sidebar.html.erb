@@ -40,7 +40,8 @@
     <%= sidebar_link "Lịch Thứ 7", saturday_schedules_path, "fa-calendar-check", permission: "saturday_schedules.manage" %>
 
     <%# Hệ thống section - Admin only %>
-    <%= sidebar_section "Hệ thống", ["reports.view", "logs.view", "settings.view"] %>
+    <%= sidebar_section "Hệ thống", ["reports.view", "logs.view", "settings.manage"] %>
+    <%= sidebar_link "Cài đặt", admin_settings_path, "fa-gear", permission: "settings.manage" %>
     <%= sidebar_link "Báo cáo", reports_path, "fa-chart-pie", permission: "reports.view" if defined?(reports_path) rescue nil %>
     <%= sidebar_link "Nhật ký", logs_path, "fa-list-check", permission: "logs.view" if defined?(logs_path) rescue nil %>
   </nav>

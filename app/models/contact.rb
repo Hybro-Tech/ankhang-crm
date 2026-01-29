@@ -40,6 +40,7 @@
 class Contact < ApplicationRecord
   # TASK-051: State Machine for status transitions
   include StatusMachine
+
   # ============================================================================
   # Enums (SRS v2 Section 5.2 & 5.3)
   # ============================================================================
@@ -106,6 +107,7 @@ class Contact < ApplicationRecord
   before_validation :normalize_phone
   before_validation :normalize_zalo_id
   before_save :set_team_from_service_type, if: :service_type_id_changed?
+  after_create :initialize_smart_routing
   after_save :set_assigned_at, if: :saved_change_to_assigned_user_id?
 
   # ============================================================================
@@ -127,6 +129,14 @@ class Contact < ApplicationRecord
   scope :prioritized, lambda {
     # Unassigned first, then by created_at desc
     order(Arel.sql("assigned_user_id IS NOT NULL, created_at DESC"))
+  }
+
+  # TASK-053: Smart Routing - Visible to specific users during working hours
+  scope :visible_to, lambda { |user|
+    # Pool pick mode (no restriction) or assigned contacts
+    where(visible_to_user_ids: nil)
+      .or(where("JSON_CONTAINS(visible_to_user_ids, ?)", user.id.to_s))
+      .or(where(assigned_user_id: user.id))
   }
 
   # Search scope
@@ -197,7 +207,9 @@ class Contact < ApplicationRecord
     update!(
       assigned_user_id: user.id,
       assigned_at: Time.current,
-      status: :potential
+      status: :potential,
+      visible_to_user_ids: nil,
+      last_expanded_at: nil
     )
   end
 
@@ -258,6 +270,11 @@ class Contact < ApplicationRecord
 
     nil unless zalo_id.blank? && !zalo_qr.attached? && phone.blank?
     # Redundant check but keeps logic clear for individual fields if needed later
+  end
+
+  # TASK-053: Initialize Smart Routing visibility on create
+  def initialize_smart_routing
+    SmartRoutingService.initialize_visibility(self)
   end
 end
 # rubocop:enable Metrics/ClassLength

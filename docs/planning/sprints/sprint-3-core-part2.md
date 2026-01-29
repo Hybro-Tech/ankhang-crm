@@ -268,23 +268,168 @@ WebSocket với ActionCable + Turbo Streams.
 
 ---
 
+### TASK-054: Solid Queue Scheduled Jobs (Smart Routing)
+| Field | Value |
+|-------|-------|
+| **Epic** | Smart Routing |
+| **Story Points** | 5 |
+| **Priority** | 🟡 High |
+| **Assignee** | |
+| **Status** | Backlog |
+
+**User Story:**
+> Là System, tôi muốn contacts tự động mở rộng visibility sau đúng X phút.
+
+**Description:**
+Setup Solid Queue (Rails 8 built-in) cho scheduled jobs với độ chính xác cao.
+
+**Acceptance Criteria:**
+- [ ] Setup Solid Queue với config polling 0.1s
+- [ ] Khi contact tạo → Schedule `SmartRoutingExpandJob` sau X phút
+- [ ] Job chạy → Expand visibility → Schedule tiếp nếu chưa pick
+- [ ] Job tự dừng khi contact đã được assigned
+
+**Technical Details:**
+```ruby
+# Khi contact được tạo (trong giờ làm việc)
+SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(contact.id)
+
+# Trong job
+def perform(contact_id)
+  contact = Contact.find(contact_id)
+  return if contact.assigned_user_id.present?  # Đã pick
+  
+  SmartRoutingService.new(contact).expand_visibility
+  
+  # Schedule tiếp
+  interval = contact.service_type&.visibility_expand_minutes || 2
+  SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(contact_id)
+end
+```
+
+**Test Cases:**
+- [ ] Contact tạo lúc 10:00 với interval 2 phút → Job chạy lúc 10:02
+- [ ] Job chính xác ±1 giây
+- [ ] Contact được pick → Job chain dừng
+
+---
+
+### TASK-055: WebSocket Realtime Updates (Turbo Streams)
+| Field | Value |
+|-------|-------|
+| **Epic** | Notifications |
+| **Story Points** | 5 |
+| **Priority** | 🟡 High |
+| **Assignee** | |
+| **Status** | Backlog |
+
+**User Story:**
+> Là Sale, tôi muốn thấy contacts mới xuất hiện trên màn hình tức thì.
+
+**Description:**
+Implement ActionCable + Turbo Streams cho real-time updates.
+
+**Acceptance Criteria:**
+- [ ] ActionCable setup với Redis adapter
+- [ ] User-specific channels: `user_#{id}_contacts`
+- [ ] Broadcast từ model callbacks hoặc jobs:
+  - [ ] Contact visible → Append to list
+  - [ ] Contact picked → Remove/update row
+  - [ ] Visibility expanded → Append for new users
+- [ ] Connection status indicator (UI)
+
+**Technical Details:**
+```ruby
+# Từ SmartRoutingExpandJob
+Turbo::StreamsChannel.broadcast_append_to(
+  "user_#{sale.id}_contacts",
+  target: "contacts_list",
+  partial: "contacts/contact_row",
+  locals: { contact: contact }
+)
+```
+
+**Test Cases:**
+- [ ] Contact mới → Xuất hiện real-time (không reload)
+- [ ] 2 browsers mở → Cả 2 cập nhật
+- [ ] Disconnect → Auto reconnect
+
+---
+
+### TASK-056: Web Push Service Worker & Subscriptions
+| Field | Value |
+|-------|-------|
+| **Epic** | Notifications |
+| **Story Points** | 5 |
+| **Priority** | 🟡 High |
+| **Assignee** | |
+| **Status** | Backlog |
+
+**User Story:**
+> Là Sale, tôi muốn nhận thông báo đẩy từ browser khi có khách mới.
+
+**Description:**
+Implement Web Push API với Service Worker.
+
+**Acceptance Criteria:**
+- [ ] `webpush` gem hoặc `web-push` gem
+- [ ] VAPID keys generation & storage
+- [ ] Service Worker: `serviceworker.js`
+- [ ] Permission request flow (UI)
+- [ ] PushSubscription model (user_id, endpoint, keys)
+- [ ] API: Subscribe/Unsubscribe endpoints
+
+**Technical Details:**
+```ruby
+# Model
+class PushSubscription < ApplicationRecord
+  belongs_to :user
+  encrypts :auth_key, :p256dh_key
+end
+
+# Gửi từ job
+Webpush.payload_send(
+  message: JSON.generate({ title: "Khách mới", body: contact.full_name }),
+  endpoint: subscription.endpoint,
+  p256dh: subscription.p256dh_key,
+  auth: subscription.auth_key,
+  vapid: { subject: "mailto:admin@ankhang.vn", ... }
+)
+```
+
+**Test Cases:**
+- [ ] User grant permission → Subscription saved
+- [ ] Browser closed → Push vẫn nhận được
+- [ ] Click notification → Redirect to contact
+
+---
+
 ## 📊 Sprint 3 Summary
 
 | Priority | Count |
 |----------|-------|
 | 🔴 Critical | 3 |
-| 🟡 High | 5 |
+| 🟡 High | 8 |
 
-**Total Story Points:** ~41
+**Total Story Points:** ~56
+
+**New Tasks Added (2026-01-29):**
+| Task | Description | Story Points |
+|------|-------------|--------------|
+| TASK-054 | Solid Queue Scheduled Jobs | 5 |
+| TASK-055 | WebSocket Realtime Updates | 5 |
+| TASK-056 | Web Push Service Worker | 5 |
 
 **Dependencies:**
 - Sprint 2 completed (Contact model, Dashboard UI working)
-- Sidekiq running for background jobs
+- Solid Queue hoặc Sidekiq running for background jobs
+- Redis for ActionCable
 
 **Success Criteria:**
 - [x] Sale có thể Pick contact với rules check ✅
 - [x] Contact status flow hoạt động đúng ✅
-- [ ] Admin có thể re-assign và cấu hình Smart Routing
+- [x] Admin có thể cấu hình Smart Routing ✅
+- [ ] Scheduled jobs chính xác đến giây
 - [ ] Real-time updates hoạt động
 - [ ] Web Push notifications hoạt động
 
@@ -298,3 +443,7 @@ WebSocket với ActionCable + Turbo Streams.
 | 2026-01-28 | TASK-051 | ✅ | StatusMachine concern completed |
 | 2026-01-29 | TASK-022 | ✅ | Core pick mechanism with DB locking |
 | 2026-01-29 | TASK-022b | ✅ | Pick Rules Engine with service_type config |
+| 2026-01-29 | TASK-053 | ✅ | Smart Routing Config (Admin Settings + ServiceType) |
+| 2026-01-29 | TASK-054 | 📋 Created | Solid Queue scheduled jobs spec |
+| 2026-01-29 | TASK-055 | 📋 Created | WebSocket realtime updates spec |
+| 2026-01-29 | TASK-056 | 📋 Created | Web Push Service Worker spec |

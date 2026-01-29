@@ -38,6 +38,11 @@ Rails.application.routes.draw do
   resources :service_types
   resources :sources
 
+  # TASK-053: Admin Settings
+  namespace :admin do
+    resource :settings, only: %i[show update]
+  end
+
   # Sales Workspace (TASK-050 v2: Productivity-focused screen)
   get "sales/workspace", to: "sales_workspace#show", as: :sales_workspace
   get "sales/workspace/tab_new_contacts", to: "sales_workspace#tab_new_contacts"

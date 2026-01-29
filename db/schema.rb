@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_29_020539) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_29_040214) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -75,10 +75,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_020539) do
     t.datetime "updated_at", null: false
     t.string "zalo_id"
     t.bigint "source_id"
+    t.json "visible_to_user_ids"
+    t.datetime "last_expanded_at"
     t.index ["assigned_user_id", "status"], name: "index_contacts_on_assignee_and_status"
     t.index ["assigned_user_id"], name: "index_contacts_on_assigned_user_id"
     t.index ["code"], name: "index_contacts_on_code", unique: true
     t.index ["created_by_id"], name: "index_contacts_on_created_by_id"
+    t.index ["last_expanded_at"], name: "index_contacts_on_last_expanded_at"
     t.index ["next_appointment"], name: "index_contacts_on_next_appointment"
     t.index ["phone"], name: "index_contacts_on_phone", unique: true
     t.index ["service_type_id"], name: "index_contacts_on_service_type_id"
@@ -169,9 +172,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_020539) do
     t.datetime "updated_at", null: false
     t.integer "max_pick_per_day", default: 20, null: false
     t.integer "pick_cooldown_minutes", default: 5, null: false
+    t.integer "visibility_expand_minutes", default: 2, null: false
     t.index ["active"], name: "index_service_types_on_active"
     t.index ["name"], name: "index_service_types_on_name", unique: true
     t.index ["team_id"], name: "index_service_types_on_team_id"
+  end
+
+  create_table "settings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "key"
+    t.text "value"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_settings_on_key", unique: true
   end
 
   create_table "solid_cache_entries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
