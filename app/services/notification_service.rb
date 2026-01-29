@@ -45,7 +45,7 @@ class NotificationService
         # Pool mode: all sales in team can see
         return if contact.team.blank?
 
-        sales = contact.team.users.joins(:roles).where(roles: { name: "Sale" })
+        sales = contact.team.users.joins(:roles).where(roles: { code: "sale" })
       else
         # Smart Routing: only visible users
         sales = User.where(id: visible_user_ids)
@@ -96,11 +96,11 @@ class NotificationService
 
       case type
       when "contact_created"
-        "#{notifiable.full_name} - #{notifiable.service_type&.name}"
+        "#{notifiable.name} - #{notifiable.service_type&.name}"
       when "contact_picked"
-        "#{notifiable.full_name} đã được nhận"
+        "#{notifiable.name} đã được nhận"
       when "contact_assigned"
-        "Bạn được gán khách: #{notifiable.full_name}"
+        "Bạn được gán khách: #{notifiable.name}"
       end
     end
 

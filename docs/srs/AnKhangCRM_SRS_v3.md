@@ -362,27 +362,92 @@ flowchart TD
 
 ## 8. Module: Notification
 
+### 8.1 Kiến trúc
+
 ```mermaid
 sequenceDiagram
     participant TĐ as Tổng đài
     participant SYS as Hệ thống
     participant SALE as Sale
-    participant SLACK as Slack
+    participant DB as Database
 
     TĐ->>SYS: Tạo Contact
     SYS->>SYS: Smart Routing
-    SYS->>SALE: 🔔 Web Push + WebSocket
+    SYS->>DB: Tạo Notification cho Sale (visible)
+    SYS->>SALE: 🔔 In-app notification
     
-    alt Sale phản hồi
-        SALE->>SYS: Nhận/Từ chối
-    else Timeout
-        SYS->>SLACK: Fallback
-        SYS->>SYS: Chọn Sale khác
+    alt Sale không pick
+        SYS->>SYS: Expand visibility (sau X phút)
+        SYS->>DB: Tạo Notification cho Sale mới
+        SYS->>SALE: 🔔 In-app notification
+    end
+    
+    alt Không còn Sale → Pool mode
+        SYS->>DB: Tạo Notification cho tất cả Sales
     end
 ```
 
-**Kênh:** Web Push (ưu tiên) → WebSocket → Slack
-**Vị trí:** Góc phải màn hình Web
+### 8.2 Database Schema
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `user_id` | FK | User nhận notification |
+| `title` | string | Tiêu đề |
+| `body` | text | Nội dung |
+| `icon` | string | Icon (FontAwesome) |
+| `category` | enum | contact, deal, system, team |
+| `notification_type` | string | contact_created, contact_picked... |
+| `notifiable_type/id` | polymorphic | Đối tượng liên quan |
+| `action_url` | string | URL redirect khi click |
+| `read` | boolean | Đã đọc |
+| `read_at` | datetime | Thời điểm đọc |
+| `seen` | boolean | Đã nhìn thấy |
+| `metadata` | JSON | Dữ liệu bổ sung |
+
+### 8.3 Notification Types
+
+| Type | Khi nào | Icon | Màu |
+|------|---------|------|-----|
+| `contact_created` | Contact mới visible cho Sale | fa-user-plus | blue |
+| `contact_picked` | Sale nhận contact | fa-check-circle | green |
+| `contact_assigned` | Admin gán contact | fa-user-tag | purple |
+| `reassign_requested` | Yêu cầu chuyển giao | fa-exchange-alt | yellow |
+| `reassign_approved` | Phê duyệt chuyển giao | fa-check | green |
+| `reassign_rejected` | Từ chối chuyển giao | fa-times | red |
+
+### 8.4 UI Components
+
+**Header Bell Icon:**
+- Badge đỏ hiển thị số notification chưa đọc (max 9+)
+- Dropdown hiển thị 10 notifications gần nhất
+- Nút "Đánh dấu đã đọc" (luôn hiển thị)
+- Link "Xem thêm X thông báo" nếu có nhiều hơn 10
+- Link "Xem tất cả" → trang `/notifications`
+
+**Notification Item:**
+- Chưa đọc: `bg-blue-50` + chấm xanh indicator
+- Đã đọc: background trắng
+- Click → đánh dấu đã đọc → redirect tới `action_url`
+
+**Full Page `/notifications`:**
+- Danh sách đầy đủ với pagination
+- Nút "Đánh dấu tất cả đã đọc"
+
+### 8.5 Trigger Flow
+
+| Sự kiện | Ai nhận | Service |
+|---------|---------|---------|
+| Contact tạo (trong giờ) | 1 Sale đầu tiên từ Smart Routing | `SmartRoutingService.apply_initial_visibility` |
+| Expand visibility | Sale mới được thêm vào visibility | `SmartRoutingService.expand_visibility` |
+| Contact tạo (ngoài giờ) | Tất cả Sales trong team | Pool mode |
+| Switch to Pool | Các Sales chưa được notify | `SmartRoutingService.switch_to_pool_pick` |
+
+### 8.6 Roadmap
+
+- [x] **MVP**: In-app notifications (TASK-057)
+- [ ] **Real-time**: WebSocket/Turbo Streams (TASK-055)
+- [ ] **Web Push**: Service Worker + VAPID (TASK-056)
+- [ ] **Rules Engine**: Configurable triggers (TASK-029)
 
 ---
 

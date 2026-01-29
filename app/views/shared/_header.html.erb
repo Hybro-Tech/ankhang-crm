@@ -38,13 +38,11 @@
       <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
         <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
           <span class="font-bold text-gray-700">Thông báo</span>
-          <% if unread_count > 0 %>
-            <%= link_to mark_all_as_read_notifications_path, 
-                        method: :post, 
-                        data: { turbo_method: :post },
-                        class: "text-xs text-brand-blue cursor-pointer hover:underline" do %>
-              Đánh dấu đã đọc
-            <% end %>
+          <%= link_to mark_all_as_read_notifications_path, 
+                      method: :post, 
+                      data: { turbo_method: :post },
+                      class: "text-xs text-brand-blue cursor-pointer hover:underline" do %>
+            Đánh dấu đã đọc
           <% end %>
         </div>
         <div class="max-h-80 overflow-y-auto">

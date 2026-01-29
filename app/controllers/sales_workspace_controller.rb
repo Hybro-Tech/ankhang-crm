@@ -44,8 +44,8 @@ class SalesWorkspaceController < ApplicationController
   private
 
   def authorize_sale_user
-    # Allow Sale and Admin roles
-    return if current_user.has_role?("Sale") || current_user.has_role?("Super Admin") || current_user.has_role?("Admin")
+    # Allow Sale and Admin roles (use code for stable checks)
+    return if current_user.has_role_code?("sale") || current_user.super_admin?
 
     redirect_to root_path, alert: "Bạn không có quyền truy cập khu vực này."
   end

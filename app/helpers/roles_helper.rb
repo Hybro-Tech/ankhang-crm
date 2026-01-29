@@ -2,39 +2,47 @@
 
 # Helper methods for Roles views
 module RolesHelper
-  # Get icon background color class based on role name
+  # Get icon background color class based on role code
   def role_icon_bg_class(role)
-    case role.name.downcase
-    when /admin|super/
+    case role.code
+    when "super_admin"
       "bg-red-100 text-red-600"
-    when /sale|kinh doanh/
+    when "sale"
       "bg-green-100 text-green-600"
-    when /tổng đài|call/
+    when "call_center"
       "bg-purple-100 text-purple-600"
-    when /cskh|support/
+    when "cskh"
       "bg-teal-100 text-teal-600"
-    when /manager|trưởng/
-      "bg-blue-100 text-blue-600"
     else
-      "bg-gray-100 text-gray-600"
+      # Fallback: match by name for custom roles
+      case role.name.to_s.downcase
+      when /manager|trưởng/
+        "bg-blue-100 text-blue-600"
+      else
+        "bg-gray-100 text-gray-600"
+      end
     end
   end
 
-  # Get icon class based on role name
+  # Get icon class based on role code
   def role_icon_class(role)
-    case role.name.downcase
-    when /admin|super/
+    case role.code
+    when "super_admin"
       "fa-solid fa-shield-halved"
-    when /sale|kinh doanh/
+    when "sale"
       "fa-solid fa-headset"
-    when /tổng đài|call/
+    when "call_center"
       "fa-solid fa-phone"
-    when /cskh|support/
+    when "cskh"
       "fa-solid fa-heart"
-    when /manager|trưởng/
-      "fa-solid fa-user-tie"
     else
-      "fa-solid fa-user"
+      # Fallback: match by name for custom roles
+      case role.name.to_s.downcase
+      when /manager|trưởng/
+        "fa-solid fa-user-tie"
+      else
+        "fa-solid fa-user"
+      end
     end
   end
 

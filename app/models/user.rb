@@ -101,9 +101,14 @@ class User < ApplicationRecord
     roles.exists?(name: role_name)
   end
 
+  # Check if user has role by code (preferred for system checks)
+  def has_role_code?(role_code)
+    roles.exists?(code: role_code)
+  end
+
   # Check if user is Super Admin
   def super_admin?
-    has_role?("Super Admin")
+    has_role_code?("super_admin")
   end
 
   # Get all effective permission codes (roles + overrides)
