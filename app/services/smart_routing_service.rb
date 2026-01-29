@@ -62,6 +62,9 @@ class SmartRoutingService
       last_expanded_at: Time.current
     )
 
+    # TASK-057: Notify the first sale
+    notify_user_about_contact(first_sale)
+
     true
   end
   # rubocop:enable Naming/PredicateMethod
@@ -83,6 +86,10 @@ class SmartRoutingService
         visible_to_user_ids: new_ids,
         last_expanded_at: Time.current
       )
+
+      # TASK-057: Notify the newly visible user
+      notify_user_about_contact(next_sale)
+
       true
     else
       # No more sales in team - convert to pool pick
@@ -128,5 +135,20 @@ class SmartRoutingService
         .where.not(id: exclude_ids)
         .order("RAND()")
         .first
+  end
+
+  # TASK-057: Send notification to user when contact becomes visible to them
+  def notify_user_about_contact(user)
+    NotificationService.notify(
+      user: user,
+      type: "contact_created",
+      notifiable: @contact,
+      metadata: {
+        source: @contact.source&.name,
+        service_type_id: @contact.service_type_id
+      }
+    )
+  rescue StandardError => e
+    Rails.logger.error("Failed to notify user #{user.id} about contact #{@contact.id}: #{e.message}")
   end
 end

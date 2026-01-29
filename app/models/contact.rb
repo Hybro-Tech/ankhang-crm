@@ -108,7 +108,6 @@ class Contact < ApplicationRecord
   before_validation :normalize_zalo_id
   before_save :set_team_from_service_type, if: :service_type_id_changed?
   after_create :initialize_smart_routing
-  after_create :notify_sales_on_create  # TASK-057
   after_save :set_assigned_at, if: :saved_change_to_assigned_user_id?
 
   # ============================================================================
@@ -276,13 +275,6 @@ class Contact < ApplicationRecord
   # TASK-053: Initialize Smart Routing visibility on create
   def initialize_smart_routing
     SmartRoutingService.initialize_visibility(self)
-  end
-
-  # TASK-057: Notify sales when new contact is created
-  def notify_sales_on_create
-    NotificationService.notify_contact_created(self)
-  rescue StandardError => e
-    Rails.logger.error("Failed to send notifications for contact #{id}: #{e.message}")
   end
 end
 # rubocop:enable Metrics/ClassLength
