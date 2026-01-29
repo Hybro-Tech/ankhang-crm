@@ -48,7 +48,11 @@ class SmartRoutingService
   # Set initial visibility when contact is created
   # rubocop:disable Naming/PredicateMethod
   def apply_initial_visibility
-    return false unless should_apply_routing?
+    # Outside working hours → Pool mode → notify all sales
+    unless should_apply_routing?
+      notify_all_sales_in_team
+      return false
+    end
 
     team = @contact.service_type&.team
     return false unless team
@@ -120,6 +124,10 @@ class SmartRoutingService
       visible_to_user_ids: nil,
       last_expanded_at: nil
     )
+
+    # TASK-057: Pool mode - notify all sales in team
+    notify_all_sales_in_team
+
     false
   end
   # rubocop:enable Naming/PredicateMethod
@@ -150,5 +158,24 @@ class SmartRoutingService
     )
   rescue StandardError => e
     Rails.logger.error("Failed to notify user #{user.id} about contact #{@contact.id}: #{e.message}")
+  end
+
+  # TASK-057: Pool mode - notify all sales in team (excluding already notified)
+  def notify_all_sales_in_team
+    team = @contact.service_type&.team
+    return unless team
+
+    sale_role = Role.find_by(code: "sale")
+    return unless sale_role
+
+    # Get already notified user IDs (from previous visibility)
+    already_notified = @contact.visible_to_user_ids || []
+
+    # Notify remaining sales
+    team.users
+        .joins(:user_roles)
+        .where(user_roles: { role_id: sale_role.id })
+        .where.not(id: already_notified)
+        .find_each { |user| notify_user_about_contact(user) }
   end
 end
