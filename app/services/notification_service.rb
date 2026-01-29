@@ -34,11 +34,23 @@ class NotificationService
       end
     end
 
-    # Notify all sales in a team about new contact
+    # Notify sales who can SEE the contact based on Smart Routing
     def notify_contact_created(contact)
-      return if contact.team.blank?
+      # Get visible user IDs from Smart Routing
+      visible_user_ids = contact.visible_to_user_ids
 
-      sales = contact.team.users.joins(:roles).where(roles: { name: "Sale" })
+      # If visible_to_user_ids is nil → Pool mode, notify all sales in team
+      # If visible_to_user_ids is array → Only notify those specific users
+      if visible_user_ids.blank?
+        # Pool mode: all sales in team can see
+        return if contact.team.blank?
+
+        sales = contact.team.users.joins(:roles).where(roles: { name: "Sale" })
+      else
+        # Smart Routing: only visible users
+        sales = User.where(id: visible_user_ids)
+      end
+
       return if sales.empty?
 
       notify_many(
@@ -46,7 +58,7 @@ class NotificationService
         type: "contact_created",
         notifiable: contact,
         metadata: {
-          source: contact.source,
+          source: contact.source&.name,
           service_type_id: contact.service_type_id,
           created_by_id: contact.created_by_id
         }
