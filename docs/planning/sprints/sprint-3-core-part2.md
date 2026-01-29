@@ -151,29 +151,53 @@ Implement state machine theo SRS v2 Section 5.2.
 
 ---
 
-### TASK-052: Admin Re-assign Contact
+### TASK-052: Admin Re-assign Contact (With Approval Workflow)
 | Field | Value |
 |-------|-------|
 | **Epic** | Contacts |
-| **Story Points** | 3 |
+| **Story Points** | 8 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
 | **Status** | Backlog |
 
 **User Story:**
-> Là Admin, tôi muốn chuyển Contact cho người khác khi cần thiết.
+> Là Admin, tôi muốn chuyển Contact cho người khác, nhưng cần Lead phê duyệt.
+
+**Description:**
+Approval workflow: Admin tạo request → Lead của Sale A approve/reject → Chuyển contact.
+
+**Workflow:**
+```
+Admin tạo Request → Lead nhận Notification → Approve/Reject/Auto-approve sau X giờ
+```
 
 **Acceptance Criteria:**
-- [ ] Chỉ Admin có quyền
+- [ ] Chỉ Admin có quyền tạo request
 - [ ] Modal: Chọn user mới từ dropdown (filter by team)
 - [ ] Nhập lý do re-assign (bắt buộc)
-- [ ] Update assigned_user_id
-- [ ] Log chi tiết: ai, cho ai, lý do, thời gian
-- [ ] Notification cho user mới
+- [ ] Notification đến Lead của Sale A (Manager của Team)
+- [ ] Notification đến Sale A (thông báo có yêu cầu)
+- [ ] Lead có thể Approve/Reject (từ notification hoặc trang danh sách)
+- [ ] Nếu Reject: Yêu cầu nhập lý do
+- [ ] Auto-approve sau X giờ (config trong Settings)
+- [ ] Sau Approve: Update assigned_user_id, notify tất cả parties
+- [ ] Log chi tiết: ai request, ai approve, lý do, thời gian
+
+**Database:**
+- [ ] Migration: `reassign_requests` table
+- [ ] Model: `ReassignRequest` với state machine
+
+**Config:**
+- [ ] Setting: `reassign_auto_approve_hours` (default 24)
 
 **Test Cases:**
-- [ ] Admin re-assign → Success + Logged
-- [ ] Non-admin re-assign → Forbidden
+- [ ] Admin tạo request → Lead nhận notification
+- [ ] Lead approve → Contact chuyển, tất cả nhận notification
+- [ ] Lead reject → Request hủy, Admin nhận lý do
+- [ ] Timeout → Auto-approve, Lead nhận thông báo
+- [ ] Non-admin tạo request → Forbidden
+
+**Related:** SRS v3 Section 5.4
 
 ---
 

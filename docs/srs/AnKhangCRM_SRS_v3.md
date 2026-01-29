@@ -193,6 +193,81 @@ stateDiagram-v2
 - Form thêm nhanh với icon chọn phương thức
 - Real-time update với Turbo Stream (không cần reload)
 
+### 5.4 Re-assign Contact (Chuyển giao khách hàng)
+
+> **Mô tả:** Khi cần chuyển Contact từ Sale A sang Sale B, yêu cầu cần được Team Lead của Sale A phê duyệt.
+
+**Workflow:**
+
+```mermaid
+sequenceDiagram
+    participant ADMIN as Admin
+    participant SYS as Hệ thống
+    participant LEAD as Team Lead (Sale A)
+    participant SALE_A as Sale A (cũ)
+    participant SALE_B as Sale B (mới)
+
+    ADMIN->>SYS: Tạo Reassign Request
+    Note over ADMIN,SYS: Contact, New Sale, Lý do
+    
+    SYS->>LEAD: 🔔 Notification: Yêu cầu phê duyệt
+    SYS->>SALE_A: 🔔 Notification: Có yêu cầu chuyển KH
+    
+    alt Lead Approve
+        LEAD->>SYS: ✅ Phê duyệt
+        SYS->>SYS: Update assigned_user_id
+        SYS->>SALE_B: 🔔 Bạn được gán KH mới
+        SYS->>SALE_A: 🔔 KH đã được chuyển
+        SYS->>ADMIN: 🔔 Request approved
+    else Lead Reject
+        LEAD->>SYS: ❌ Từ chối (kèm lý do)
+        SYS->>ADMIN: 🔔 Request rejected
+    else Timeout (X giờ)
+        SYS->>SYS: Auto-approve
+        SYS->>LEAD: 🔔 Request auto-approved
+    end
+```
+
+**Quy tắc:**
+
+| Rule | Mô tả |
+|------|-------|
+| Ai có quyền tạo request? | Chỉ Admin |
+| Ai phê duyệt? | Manager (Leader) của Team mà Sale A thuộc |
+| Cùng Team vẫn cần approve? | ✅ Có |
+| Khác Team cần 2 Lead approve? | ❌ Chỉ cần Lead của Sale A (người mất khách) |
+| Timeout auto-approve | Configurable (mặc định 24 giờ) |
+
+**Config (Admin Settings):**
+
+| Setting | Key | Default |
+|---------|-----|---------|
+| Tự động phê duyệt sau | `reassign_auto_approve_hours` | 24 (giờ) |
+
+**Database - ReassignRequest:**
+
+| Trường | Type | Mô tả |
+|--------|------|-------|
+| id | bigint | PK |
+| contact_id | bigint FK | Contact cần chuyển |
+| from_user_id | bigint FK | Sale hiện tại |
+| to_user_id | bigint FK | Sale mới |
+| requested_by_id | bigint FK | Admin tạo request |
+| approved_by_id | bigint FK | Lead phê duyệt (nullable) |
+| reason | text | Lý do chuyển |
+| rejection_reason | text | Lý do từ chối (nullable) |
+| status | enum | pending/approved/rejected/expired |
+| expires_at | datetime | Thời hạn auto-approve |
+| created_at | datetime | |
+| updated_at | datetime | |
+
+**Activity Log:**
+- Khi tạo request: `reassign_requested`
+- Khi approve: `reassign_approved`
+- Khi reject: `reassign_rejected`
+- Khi auto-approve: `reassign_auto_approved`
+
+
 ---
 
 ## 6. Module: Smart Routing
