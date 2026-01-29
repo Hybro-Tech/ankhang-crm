@@ -1,0 +1,38 @@
+<%# TASK-057: Full notifications list page %>
+<div class="max-w-3xl mx-auto py-6 px-4">
+  <%# Header %>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Thông báo</h1>
+    <% if @unread_count > 0 %>
+      <%= link_to mark_all_as_read_notifications_path,
+                  method: :post,
+                  class: "px-4 py-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg",
+                  data: { turbo_method: :post } do %>
+        <i class="fas fa-check-double mr-1"></i>
+        Đánh dấu tất cả đã đọc (<%= @unread_count %>)
+      <% end %>
+    <% end %>
+  </div>
+  
+  <%# Notifications list %>
+  <div class="bg-white rounded-lg shadow">
+    <% if @notifications.any? %>
+      <div id="notifications_list">
+        <%= render @notifications %>
+      </div>
+    <% else %>
+      <div class="py-16 text-center text-gray-500">
+        <i class="fas fa-bell-slash text-5xl mb-4 text-gray-300"></i>
+        <p class="text-lg">Không có thông báo</p>
+        <p class="text-sm mt-1">Thông báo mới sẽ xuất hiện ở đây</p>
+      </div>
+    <% end %>
+  </div>
+  
+  <%# Pagination %>
+  <% if @notifications.any? %>
+    <div class="mt-6">
+      <%= paginate @notifications %>
+    </div>
+  <% end %>
+</div>

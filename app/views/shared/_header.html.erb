@@ -19,10 +19,16 @@
 
   <%# Right side - Notifications + User menu %>
   <div class="flex items-center space-x-6">
-    <%# Notification bell %>
+    <%# Notification bell - TASK-057: Dynamic notifications %>
+    <% notifications = current_user.notifications.for_dropdown rescue [] %>
+    <% unread_count = current_user.notifications.unread.count rescue 0 %>
     <div class="relative" data-controller="dropdown">
       <button type="button" data-action="click->dropdown#toggle" class="relative p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
-        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-brand-red ring-2 ring-white"></span>
+        <% if unread_count > 0 %>
+          <span class="absolute -top-1 -right-1 flex items-center justify-center h-5 w-5 rounded-full bg-brand-red text-white text-xs font-bold ring-2 ring-white">
+            <%= unread_count > 9 ? '9+' : unread_count %>
+          </span>
+        <% end %>
         <i class="fa-regular fa-bell text-xl"></i>
       </button>
 
@@ -30,21 +36,27 @@
       <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
         <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
           <span class="font-bold text-gray-700">Thông báo</span>
-          <span class="text-xs text-brand-blue cursor-pointer hover:underline">Đánh dấu đã đọc</span>
+          <% if unread_count > 0 %>
+            <%= link_to mark_all_as_read_notifications_path, 
+                        method: :post, 
+                        data: { turbo_method: :post },
+                        class: "text-xs text-brand-blue cursor-pointer hover:underline" do %>
+              Đánh dấu đã đọc
+            <% end %>
+          <% end %>
         </div>
-        <div class="max-h-64 overflow-y-auto">
-          <div class="px-4 py-3 border-b border-gray-100 bg-blue-50/50 hover:bg-gray-50 cursor-pointer flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <i class="fa-solid fa-user-plus text-brand-blue"></i>
+        <div class="max-h-80 overflow-y-auto">
+          <% if notifications.any? %>
+            <%= render notifications %>
+          <% else %>
+            <div class="px-4 py-8 text-center text-gray-500">
+              <i class="fas fa-bell-slash text-2xl mb-2 text-gray-300"></i>
+              <p class="text-sm">Không có thông báo</p>
             </div>
-            <div class="ml-3 flex-1">
-              <p class="text-sm font-medium text-gray-900">Chưa có thông báo mới</p>
-              <p class="text-xs text-gray-500">Thông báo sẽ hiển thị ở đây.</p>
-            </div>
-          </div>
+          <% end %>
         </div>
         <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
-          <%= link_to "Xem tất cả", "#", class: "text-xs font-medium text-brand-blue hover:underline" %>
+          <%= link_to "Xem tất cả", notifications_path, class: "text-xs font-medium text-brand-blue hover:underline" %>
         </div>
       </div>
     </div>

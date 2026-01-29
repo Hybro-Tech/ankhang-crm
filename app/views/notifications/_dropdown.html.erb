@@ -1,0 +1,32 @@
+<%# TASK-057: Dropdown content for notification bell %>
+<div class="w-80 max-h-96 overflow-y-auto">
+  <%# Header %>
+  <div class="sticky top-0 bg-white px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+    <h3 class="font-semibold text-gray-900">Thông báo</h3>
+    <% if unread_count > 0 %>
+      <%= link_to mark_all_as_read_notifications_path, 
+                  method: :post,
+                  class: "text-xs text-blue-600 hover:text-blue-700",
+                  data: { turbo_method: :post } do %>
+        Đánh dấu tất cả đã đọc
+      <% end %>
+    <% end %>
+  </div>
+  
+  <%# Notification List %>
+  <% if notifications.any? %>
+    <div id="notifications_list">
+      <%= render notifications %>
+    </div>
+    
+    <%# View All Link %>
+    <div class="sticky bottom-0 bg-white px-4 py-3 border-t border-gray-200 text-center">
+      <%= link_to "Xem tất cả", notifications_path, class: "text-sm text-blue-600 hover:text-blue-700" %>
+    </div>
+  <% else %>
+    <div class="py-8 text-center text-gray-500">
+      <i class="fas fa-bell-slash text-3xl mb-2"></i>
+      <p class="text-sm">Không có thông báo</p>
+    </div>
+  <% end %>
+</div>

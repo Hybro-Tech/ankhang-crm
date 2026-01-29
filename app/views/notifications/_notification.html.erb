@@ -1,0 +1,38 @@
+<%# TASK-057: Notification item partial %>
+<div id="notification_<%= notification.id %>" 
+     class="flex items-start gap-3 p-3 hover:bg-gray-50 border-b border-gray-100 transition-colors <%= notification.read? ? 'opacity-60' : '' %>">
+  <%# Icon %>
+  <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center <%= notification.color_class %>">
+    <i class="fas <%= notification.resolved_icon %>"></i>
+  </div>
+  
+  <%# Content %>
+  <div class="flex-1 min-w-0">
+    <% if notification.action_url.present? && !notification.read? %>
+      <%= link_to mark_as_read_notification_path(notification), 
+                  method: :post, 
+                  class: "block",
+                  data: { turbo_method: :post } do %>
+        <p class="text-sm font-medium text-gray-900 truncate"><%= notification.title %></p>
+        <% if notification.body.present? %>
+          <p class="text-sm text-gray-500 line-clamp-2"><%= notification.body %></p>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="text-sm font-medium text-gray-900 truncate"><%= notification.title %></p>
+      <% if notification.body.present? %>
+        <p class="text-sm text-gray-500 line-clamp-2"><%= notification.body %></p>
+      <% end %>
+    <% end %>
+    <p class="text-xs text-gray-400 mt-1">
+      <%= time_ago_in_words(notification.created_at) %> trước
+    </p>
+  </div>
+  
+  <%# Unread indicator %>
+  <% unless notification.read? %>
+    <div class="flex-shrink-0">
+      <span class="inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
+    </div>
+  <% end %>
+</div>

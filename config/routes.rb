@@ -38,6 +38,18 @@ Rails.application.routes.draw do
   resources :service_types
   resources :sources
 
+  # TASK-057: Notifications
+  resources :notifications, only: [:index] do
+    member do
+      post :mark_as_read
+    end
+    collection do
+      get :dropdown
+      post :mark_all_as_read
+      get :unread_count
+    end
+  end
+
   # TASK-053: Admin Settings
   namespace :admin do
     resource :settings, only: %i[show update]
