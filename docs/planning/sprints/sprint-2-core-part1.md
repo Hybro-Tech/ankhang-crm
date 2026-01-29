@@ -230,7 +230,7 @@ Form tối ưu cho việc nhập nhanh thông tin khách hàng.
 | **Story Points** | 3 |
 | **Priority** | 🔴 Critical |
 | **Assignee** | Antigravity |
-| **Status** | Completed |
+| **Status** | ✅ Completed |
 
 **User Story:**
 > Là Tổng đài, tôi muốn có màn hình tối ưu để nhập Contact nhanh và xem thống kê.
@@ -239,18 +239,19 @@ Form tối ưu cho việc nhập nhanh thông tin khách hàng.
 Dashboard dành riêng cho role Tổng đài, theo SRS v2 Section 10.
 
 **Acceptance Criteria:**
-- [ ] Form tạo Contact inline (embedded, không cần navigate)
-- [ ] Thống kê số Contact đã tạo:
-  - [ ] Hôm nay
-  - [ ] Tuần này
-  - [ ] Tháng này
-- [ ] Danh sách Contact mới tạo (10 gần nhất)
-- [ ] Quick link: Xem tất cả Contact của mình
+- [x] Form tạo Contact inline (embedded, không cần navigate)
+- [x] Thống kê số Contact đã tạo:
+  - [x] Hôm nay
+  - [x] Tuần này
+  - [x] Tháng này
+- [x] Danh sách Contact mới tạo (10 gần nhất)
+- [x] Quick link: Xem tất cả Contact của mình
+- [x] Trang thống kê riêng với KPI cards, chart, progress bar
 
 **Test Cases:**
-- [ ] Tổng đài login → Redirect to Dashboard Tổng đài
-- [ ] Thống kê hiển thị đúng
-- [ ] Form submit → Contact created, list updated
+- [x] Tổng đài login → Redirect to Dashboard Tổng đài
+- [x] Thống kê hiển thị đúng
+- [x] Form submit → Contact created, list updated
 
 ---
 
@@ -260,8 +261,8 @@ Dashboard dành riêng cho role Tổng đài, theo SRS v2 Section 10.
 | **Epic** | Dashboard |
 | **Story Points** | 5 |
 | **Priority** | 🔴 Critical |
-| **Assignee** | |
-| **Status** | Backlog |
+| **Assignee** | Antigravity |
+| **Status** | ✅ Completed |
 
 **User Story:**
 > Là Sale, tôi muốn có màn hình tập trung để xem Contact mới và lịch hẹn.
@@ -270,19 +271,19 @@ Dashboard dành riêng cho role Tổng đài, theo SRS v2 Section 10.
 Dashboard dành riêng cho role Sale, theo SRS v2 Section 10.
 
 **Acceptance Criteria:**
-- [ ] **Khu vực Notification:** Contact mới cần nhận (Chưa có real-time, F5 refresh)
-- [ ] **Khu vực Lịch hẹn:** DS hẹn trong 1 tuần tới
-- [ ] **Khu vực DS Khách:** 
-  - [ ] Sort: Chưa ai nhận → Mới nhất
-  - [ ] Nút "Nhận khách" với basic validation
-- [ ] **Khu vực Đua top:** Bảng xếp hạng Sale (số khách đã pick)
-- [ ] Responsive design cho mobile
+- [x] **Khu vực Notification:** Contact mới cần nhận (F5 refresh) - Tabs Khách mới
+- [x] **Khu vực Lịch hẹn:** DS hẹn trong 1 tuần tới - Context Panel
+- [x] **Khu vực DS Khách:** 
+  - [x] Sort: Chưa ai nhận → Mới nhất
+  - [x] Nút "Nhận khách" với basic validation
+- [x] **Khu vực Đua top:** Bảng xếp hạng Sale (số khách đã pick)
+- [x] Responsive design cho mobile
 
 **Test Cases:**
-- [ ] Sale login → Redirect to Dashboard Sale
-- [ ] Contact mới hiển thị trong list
-- [ ] Click "Nhận khách" → Contact assigned
-- [ ] Lịch hẹn hiển thị đúng
+- [x] Sale login → Redirect to Sales Workspace
+- [x] Contact mới hiển thị trong list
+- [x] Click "Nhận khách" → Contact assigned
+- [x] Lịch hẹn hiển thị đúng
 
 **Related:** SRS v2 Section 10 - Dashboard Sale
 
@@ -303,7 +304,7 @@ Dashboard dành riêng cho role Sale, theo SRS v2 Section 10.
 
 **Success Criteria:**
 - [x] Admin có thể tạo Team, Employee
-- [ ] Admin có thể tạo lịch nghỉ, DS đi làm Thứ 7
-- [ ] Tổng đài có thể tạo Contact từ Dashboard
-- [ ] Sale có thể xem danh sách Contact từ Dashboard
-- [ ] Demo được flow cơ bản cho stakeholder trước Tết
+- [x] Admin có thể tạo lịch nghỉ, DS đi làm Thứ 7
+- [x] Tổng đài có thể tạo Contact từ Dashboard
+- [x] Sale có thể xem danh sách Contact từ Dashboard/Workspace
+- [x] Demo được flow cơ bản cho stakeholder trước Tết
