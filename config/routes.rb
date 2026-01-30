@@ -61,6 +61,7 @@ Rails.application.routes.draw do
   get "sales/workspace/tab_needs_update", to: "sales_workspace#tab_needs_update"
   get "sales/workspace/tab_in_progress", to: "sales_workspace#tab_in_progress"
   get "sales/workspace/preview/:id", to: "sales_workspace#preview", as: :sales_workspace_preview
+  get "sales/workspace/more_appointments", to: "sales_workspace#more_appointments", as: :sales_workspace_more_appointments
   get "sales/kanban", to: "sales_workspace#kanban", as: :sales_kanban
   patch "sales/kanban/update_status/:id", to: "sales_workspace#update_status", as: :sales_kanban_update_status
 

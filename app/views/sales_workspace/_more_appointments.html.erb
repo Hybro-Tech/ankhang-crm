@@ -1,0 +1,27 @@
+<%# Partial for load more appointments - appends to existing list %>
+<turbo-stream action="append" target="appointments_list ul">
+  <template>
+    <% @appointments.each do |appointment| %>
+      <%= render "sales_workspace/appointment_item", appointment: appointment %>
+    <% end %>
+  </template>
+</turbo-stream>
+
+<% if @has_more %>
+  <turbo-stream action="replace" target="load_more_appointments">
+    <template>
+      <div id="load_more_appointments" class="p-3 text-center border-t border-gray-100">
+        <button type="button" 
+                class="text-sm text-brand-blue hover:underline"
+                data-action="click->infinite-scroll#loadMore"
+                data-page="<%= @current_page + 1 %>">
+          <i class="fa-solid fa-plus mr-1"></i>
+          Xem thêm (<%= @total_appointments - (@current_page * 5) %> lịch hẹn)
+        </button>
+      </div>
+    </template>
+  </turbo-stream>
+<% else %>
+  <turbo-stream action="remove" target="load_more_appointments">
+  </turbo-stream>
+<% end %>

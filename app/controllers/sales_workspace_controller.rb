@@ -39,6 +39,23 @@ class SalesWorkspaceController < ApplicationController
     render partial: "contact_preview", locals: { contact: @contact }
   end
 
+  # GET /sales/workspace/more_appointments (Turbo Frame - Load More)
+  def more_appointments
+    page = (params[:page] || 2).to_i
+    per_page = 5
+    offset = (page - 1) * per_page
+
+    @appointments = appointments_base_query
+                    .offset(offset)
+                    .limit(per_page)
+
+    @total_appointments = appointments_base_query.count
+    @current_page = page
+    @has_more = (offset + @appointments.size) < @total_appointments
+
+    render partial: "more_appointments", layout: false
+  end
+
   # Kanban methods are in SalesKanbanConcern
 
   private
@@ -96,11 +113,9 @@ class SalesWorkspaceController < ApplicationController
   # rubocop:enable Metrics/MethodLength
 
   def load_context_panel
-    # Appointments for today and tomorrow
-    @appointments = current_user.assigned_contacts
-                                .where(next_appointment: Time.current.beginning_of_day...2.days.from_now.end_of_day)
-                                .order(next_appointment: :asc)
-                                .limit(5)
+    # Appointments for next 7 days (show first 5, load more on demand)
+    @appointments = appointments_base_query.limit(5)
+    @total_appointments = appointments_base_query.count
 
     # Today's activities for the current user (only customer-related work)
     @today_activities = ActivityLog.where(user_id: current_user.id)
@@ -108,5 +123,13 @@ class SalesWorkspaceController < ApplicationController
                                    .where("action LIKE ?", "contact.%")
                                    .order(created_at: :desc)
                                    .limit(10)
+  end
+
+  # Base query for appointments (reused for pagination)
+  def appointments_base_query
+    current_user.assigned_contacts
+                .where.not(next_appointment: nil)
+                .where(next_appointment: Time.current.beginning_of_day..7.days.from_now.end_of_day)
+                .order(next_appointment: :asc)
   end
 end

@@ -88,33 +88,48 @@
 
     <!-- Right Panel: Context Panel (30%) -->
     <div class="hidden lg:block lg:w-[30%] space-y-6">
-      <!-- Appointments Today/Tomorrow -->
+      <!-- Appointments with Load More -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <h3 class="text-base font-semibold text-gray-900">
             <i class="fa-solid fa-calendar-check text-brand-blue mr-2"></i>Lịch hẹn sắp tới
+            <% if @appointments.any? %>
+              <span class="ml-2 text-xs font-normal text-gray-500">(<%= @total_appointments %> lịch hẹn)</span>
+            <% end %>
           </h3>
-          <a href="#" class="text-xs text-brand-blue hover:underline">Xem tất cả</a>
+          <% if @total_appointments.to_i > 5 %>
+            <a href="#" class="text-xs text-brand-blue hover:underline">Xem tất cả</a>
+          <% end %>
         </div>
-        <ul class="divide-y divide-gray-100 max-h-64 overflow-y-auto">
-          <% @appointments.each do |appointment| %>
-            <li class="p-4 hover:bg-gray-50 transition-colors cursor-pointer">
-              <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-red-50 flex flex-col items-center justify-center text-brand-red border border-red-100">
-                  <span class="text-xs font-bold"><%= appointment.next_appointment.strftime("%d") %></span>
-                  <span class="text-[10px] uppercase"><%= appointment.next_appointment.strftime("%b") %></span>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 truncate"><%= appointment.name %></p>
-                  <p class="text-xs text-gray-500"><%= appointment.next_appointment.strftime("%H:%M") %> - <%= appointment.service_type&.name %></p>
-                </div>
+        
+        <%# Fixed height container with scroll %>
+        <turbo-frame id="appointments_list">
+          <div class="max-h-72 overflow-y-auto" data-controller="infinite-scroll" data-infinite-scroll-url-value="<%= sales_workspace_more_appointments_path %>">
+            <ul class="divide-y divide-gray-100" data-infinite-scroll-target="entries">
+              <% @appointments.each do |appointment| %>
+                <%= render "sales_workspace/appointment_item", appointment: appointment %>
+              <% end %>
+            </ul>
+            
+            <% if @appointments.empty? %>
+              <div class="p-6 text-center text-sm text-gray-500">
+                <i class="fa-regular fa-calendar-xmark text-2xl text-gray-300 mb-2"></i>
+                <p>Không có lịch hẹn nào.</p>
               </div>
-            </li>
-          <% end %>
-          <% if @appointments.empty? %>
-            <li class="p-6 text-center text-sm text-gray-500">Không có lịch hẹn nào.</li>
-          <% end %>
-        </ul>
+            <% elsif @appointments.size < @total_appointments.to_i %>
+              <%# Load more trigger %>
+              <div id="load_more_appointments" class="p-3 text-center border-t border-gray-100" data-infinite-scroll-target="pagination">
+                <button type="button" 
+                        class="text-sm text-brand-blue hover:underline"
+                        data-action="click->infinite-scroll#loadMore"
+                        data-page="2">
+                  <i class="fa-solid fa-plus mr-1"></i>
+                  Xem thêm (<%= @total_appointments - @appointments.size %> lịch hẹn)
+                </button>
+              </div>
+            <% end %>
+          </div>
+        </turbo-frame>
       </div>
 
       <!-- Today's Activities -->

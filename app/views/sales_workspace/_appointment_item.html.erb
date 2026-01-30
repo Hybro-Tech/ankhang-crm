@@ -1,0 +1,47 @@
+<%# Appointment list item with urgency color coding %>
+<%# urgent_threshold: appointments within 24 hours are RED, otherwise GREEN %>
+<% 
+  hours_until = ((appointment.next_appointment - Time.current) / 1.hour).round
+  is_urgent = hours_until <= 24
+  is_overdue = appointment.next_appointment < Time.current
+  
+  # Color classes based on urgency
+  if is_overdue
+    bg_class = "bg-gray-100"
+    text_class = "text-gray-500"
+    border_class = "border-gray-200"
+  elsif is_urgent
+    bg_class = "bg-red-50"
+    text_class = "text-red-600"
+    border_class = "border-red-200"
+  else
+    bg_class = "bg-green-50"
+    text_class = "text-green-600"
+    border_class = "border-green-200"
+  end
+%>
+
+<li class="p-4 hover:bg-gray-50 transition-colors cursor-pointer" 
+    id="<%= dom_id(appointment, :appointment) %>">
+  <a href="<%= contact_path(appointment) %>" class="flex items-start space-x-3" data-turbo-frame="_top">
+    <div class="flex-shrink-0 w-10 h-10 rounded-lg <%= bg_class %> flex flex-col items-center justify-center <%= text_class %> border <%= border_class %>">
+      <span class="text-xs font-bold"><%= appointment.next_appointment.strftime("%d") %></span>
+      <span class="text-[10px] uppercase"><%= appointment.next_appointment.strftime("%b") %></span>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-sm font-medium text-gray-900 truncate"><%= appointment.name %></p>
+      <p class="text-xs text-gray-500">
+        <%= appointment.next_appointment.strftime("%H:%M") %> - <%= appointment.service_type&.name %>
+      </p>
+      <% if is_overdue %>
+        <span class="inline-flex items-center mt-1 text-xs text-gray-500">
+          <i class="fa-solid fa-clock mr-1"></i> Đã qua
+        </span>
+      <% elsif is_urgent %>
+        <span class="inline-flex items-center mt-1 text-xs text-red-500">
+          <i class="fa-solid fa-fire mr-1"></i> Trong <%= hours_until %>h
+        </span>
+      <% end %>
+    </div>
+  </a>
+</li>
