@@ -1,13 +1,8 @@
 # ============================================
 # AnKhangCRM Docker Compose (Best Practices)
 # ============================================
-# Improvements Applied:
-# - Custom networks (frontend/backend isolation)
-# - Health checks on all services
-# - Resource limits
-# - Restart policies
-# - Environment file support
-# - Non-root security
+# Stack: Rails 8 + MySQL + Solid (Queue/Cable/Cache)
+# No Redis needed - Full Solid Stack
 # ============================================
 
 services:
@@ -84,7 +79,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
 
   # ==========================================
-  # Solid Queue Worker (Replaces Sidekiq)
+  # Solid Queue Worker (Background Jobs)
   # ==========================================
   worker:
     build:

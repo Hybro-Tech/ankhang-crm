@@ -43,8 +43,8 @@ gem "bootsnap", require: false
 gem "cancancan"    # Authorization / RBAC
 gem "devise"       # User authentication
 
-# Background Jobs
-# Replaced by Solid Queue in Rails 8
+# Background Jobs & WebSocket
+# Rails 8 Solid Stack: Queue + Cable + Cache
 
 # Utilities
 gem "kaminari" # Pagination
@@ -74,5 +74,6 @@ group :test do
   gem "simplecov", require: false # Code coverage
 end
 
+gem "solid_cable", "~> 3.0"
 gem "solid_cache", "~> 1.0"
 gem "solid_queue", "~> 1.3"
