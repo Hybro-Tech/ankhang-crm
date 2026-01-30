@@ -7,7 +7,8 @@
       <div>
         <h1 class="text-xl font-bold text-gray-900">
           Chào <%= current_user.name.split.first %>, 
-          <span class="font-normal text-gray-600">hôm nay có <%= @kpis[:new_contacts] + @kpis[:needs_update] + @kpis[:appointments_today] %> việc cần làm</span>
+          <%# TODO: Add @kpis[:needs_update] back when re-enabling "Cần cập nhật" tab %>
+          <span class="font-normal text-gray-600">hôm nay có <%= @kpis[:new_contacts] + @kpis[:appointments_today] %> việc cần làm</span>
         </h1>
       </div>
       <div class="flex items-center space-x-4">
@@ -16,10 +17,12 @@
               <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-brand-blue font-bold"><%= @kpis[:new_contacts] %></span>
               <span class="text-gray-600">Khách mới</span>
             </div>
+            <% if false # TODO: Uncomment when re-enabling "Cần cập nhật" feature %>
             <div class="flex items-center space-x-2 text-sm">
               <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-orange-600 font-bold"><%= @kpis[:needs_update] %></span>
               <span class="text-gray-600">Cần cập nhật</span>
             </div>
+            <% end %>
             <div class="flex items-center space-x-2 text-sm">
               <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold"><%= @kpis[:appointments_today] %></span>
               <span class="text-gray-600">Hẹn hôm nay</span>
@@ -48,6 +51,7 @@
                 <span>Khách mới (<%= @kpis[:new_contacts] %>)</span>
               </span>
             </button>
+            <% if false # TODO: Uncomment when re-enabling "Cần cập nhật" feature %>
             <button type="button"
                     class="workspace-tab group relative min-w-0 flex-1 overflow-hidden py-4 px-6 text-sm font-medium text-center border-b-2 focus:z-10 transition-colors"
                     data-workspace-tabs-target="tab"
@@ -58,6 +62,7 @@
                 <span>Cần cập nhật (<%= @kpis[:needs_update] %>)</span>
               </span>
             </button>
+            <% end %>
             <button type="button"
                     class="workspace-tab group relative min-w-0 flex-1 overflow-hidden py-4 px-6 text-sm font-medium text-center border-b-2 focus:z-10 transition-colors"
                     data-workspace-tabs-target="tab"

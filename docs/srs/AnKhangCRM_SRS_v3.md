@@ -486,7 +486,13 @@ Ghi log **tất cả** hành động: Đăng nhập/Đăng xuất, CRUD Contacts
 **Workspace Layout:**
 - **Header KPI:** Số liệu nhanh (KH mới, đang xử lý, chốt tháng này)
 - **Tab "Khách mới":** Hiển thị KH chưa có người nhận trong Team của mình
-- **Tab "Cần cập nhật":** KH đã nhận nhưng thiếu thông tin
+- **Tab "Cần cập nhật":** *(Tạm ẩn - TODO: Enable lại khi cần)*
+  - KH đã nhận (assigned) nhưng cần bổ sung thông tin
+  - **Điều kiện xuất hiện (thỏa 1 trong 3):**
+    1. Thiếu email (`email IS NULL OR email = ''`)
+    2. Thiếu ghi chú (`notes IS NULL OR notes = ''`)
+    3. Không cập nhật >7 ngày (`updated_at < 7.days.ago`)
+  - Scope: `Contact.needs_info_update`
 - **Tab "Đang xử lý":** KH đang trong quá trình tư vấn
 
 **Nút Nhận (Pick) - UX:**
