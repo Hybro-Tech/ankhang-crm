@@ -76,6 +76,9 @@ class SmartRoutingService
     # TASK-057: Notify the first sale
     notify_user_about_contact(first_sale)
 
+    # TASK-054: Schedule first visibility expansion job
+    schedule_expansion_job
+
     true
   end
   # rubocop:enable Naming/PredicateMethod
@@ -101,6 +104,9 @@ class SmartRoutingService
       # TASK-057: Notify the newly visible user
       notify_user_about_contact(next_sale)
 
+      # TASK-055: Broadcast contact row to newly visible user (real-time UI update)
+      broadcast_contact_to_user(next_sale)
+
       true
     else
       # No more sales in team - convert to pool pick
@@ -123,6 +129,13 @@ class SmartRoutingService
     Setting.within_working_hours? &&
       @contact.status_new_contact? &&
       @contact.assigned_user_id.nil?
+  end
+
+  # TASK-054: Schedule the first visibility expansion job
+  def schedule_expansion_job
+    interval = @contact.service_type&.visibility_expand_minutes || 2
+    SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(@contact.id)
+    Rails.logger.info "[SmartRouting] Scheduled first expansion for contact #{@contact.id} in #{interval} minutes"
   end
 
   # rubocop:disable Naming/PredicateMethod
@@ -170,6 +183,19 @@ class SmartRoutingService
     )
   rescue StandardError => e
     Rails.logger.error("Failed to notify user #{user.id} about contact #{@contact.id}: #{e.message}")
+  end
+
+  # TASK-055: Broadcast contact row to user via Turbo Streams (real-time UI update)
+  def broadcast_contact_to_user(user)
+    Turbo::StreamsChannel.broadcast_prepend_to(
+      "user_#{user.id}_contacts",
+      target: "new_contacts_table_body",
+      partial: "sales_workspace/contact_row_broadcast",
+      locals: { contact: @contact }
+    )
+    Rails.logger.info "[SmartRouting] Broadcast contact #{@contact.id} to user #{user.id}"
+  rescue StandardError => e
+    Rails.logger.error("[SmartRouting] Failed to broadcast contact #{@contact.id} to user #{user.id}: #{e.message}")
   end
 
   # TASK-057: Pool mode - make contact visible to ALL sales in team and notify them
