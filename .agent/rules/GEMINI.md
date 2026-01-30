@@ -91,18 +91,38 @@ When user's prompt is NOT in English:
 
 > 🔴 **CRITICAL:** ALL Ruby code MUST pass Rubocop and RSpec before completion. NO EXCEPTIONS.
 
+**⚡ IMMEDIATE ENFORCEMENT GATE:**
+
+After editing **ANY** Ruby file (`.rb`, `.rake`, Gemfile, etc.), you MUST run:
+```bash
+docker compose exec app bundle exec rubocop -A <edited_file>
+```
+
+**DO NOT:**
+- ❌ Wait until the end of the task to run Rubocop
+- ❌ Skip Rubocop for "quick fixes" or "small changes"
+- ❌ Report task completion without Rubocop passing
+- ❌ Rely on CI to catch Rubocop errors
+
+**WORKFLOW:**
+1. **Edit code** → Make your changes
+2. **Auto-fix immediately** → `rubocop -A <file>` (for single file) or `rubocop -A` (for all changed files)
+3. **Verify pass** → `rubocop --format simple` must show "no offenses detected"
+4. **Run tests** → `bundle exec rspec` (at minimum, related specs)
+5. **Report completion** → Only after steps 2-4 pass
+
 **Before completing ANY Ruby/Rails code task:**
 
 | Step | Command | Must Pass |
 |------|---------|-----------|
-| 1. Lint | `docker compose exec app bundle exec rubocop --format simple` | ✅ |
-| 2. Auto-fix | `docker compose exec app bundle exec rubocop -A` | - |
+| 1. Auto-fix | `docker compose exec app bundle exec rubocop -A` | ✅ |
+| 2. Verify | `docker compose exec app bundle exec rubocop --format simple` | ✅ (0 offenses) |
 | 3. Tests | `docker compose exec app bundle exec rspec` | ✅ |
 | 4. Security | `docker compose exec app bundle exec brakeman -q` | ✅ |
 
 **Rules:**
 - **FAIL = STOP** → Fix ALL errors before reporting completion
-- **Never skip** → Even for "quick fixes", run Rubocop
+- **Immediate feedback** → Run Rubocop after EACH file edit, not at end
 - **Auto-fix first** → Use `rubocop -A` to fix correctable offenses
 - **Test coverage** → New features MUST have RSpec tests
 

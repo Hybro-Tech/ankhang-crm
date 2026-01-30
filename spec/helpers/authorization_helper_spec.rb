@@ -104,11 +104,13 @@ RSpec.describe AuthorizationHelper, type: :helper do
   describe "#super_admin?" do
     context "when user is Super Admin" do
       let(:super_admin_role) do
-        Role.find_or_create_by!(name: "Super Admin") do |r|
+        role = Role.find_or_create_by!(name: "Super Admin") do |r|
           r.code = RoleCodes::SUPER_ADMIN
           r.dashboard_type = :admin
           r.is_system = true
-        end.tap { |role| role.update!(code: RoleCodes::SUPER_ADMIN) if role.code.blank? }
+        end
+        role.update!(code: RoleCodes::SUPER_ADMIN) if role.code.blank?
+        role
       end
 
       before do
