@@ -21,6 +21,12 @@
               <span class="font-medium text-gray-900"><%= interaction.user.name %></span>
             </p>
             <p class="text-sm text-gray-900 mt-1 whitespace-pre-wrap"><%= interaction.content %></p>
+            <% if interaction.interaction_method_appointment? && interaction.scheduled_at.present? %>
+              <div class="mt-2 inline-flex items-center gap-2 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-lg text-sm">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span class="font-medium"><%= l(interaction.scheduled_at, format: :long) %></span>
+              </div>
+            <% end %>
           </div>
           
           <div class="flex items-center gap-2">

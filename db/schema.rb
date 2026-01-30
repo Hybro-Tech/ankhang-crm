@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_29_065604) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_30_025132) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -109,6 +109,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_29_065604) do
     t.integer "interaction_method", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "scheduled_at"
     t.index ["contact_id", "created_at"], name: "index_interactions_on_contact_id_and_created_at"
     t.index ["contact_id"], name: "index_interactions_on_contact_id"
     t.index ["user_id"], name: "index_interactions_on_user_id"

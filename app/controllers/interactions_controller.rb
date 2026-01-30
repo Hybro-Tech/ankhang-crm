@@ -52,6 +52,6 @@ class InteractionsController < ApplicationController
   end
 
   def interaction_params
-    params.expect(interaction: %i[content interaction_method])
+    params.expect(interaction: %i[content interaction_method scheduled_at])
   end
 end

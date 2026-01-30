@@ -74,6 +74,7 @@ vi:
       zalo: "Zalo"
       email: "Email"
       meeting: "Gặp mặt"
+      appointment: "Lịch hẹn"
   # Custom Confirm Dialog
   confirm_dialog:
     title: "Xác nhận"

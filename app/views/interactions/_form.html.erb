@@ -1,4 +1,5 @@
 <%# TASK-023: Form to add new interaction %>
+<%# Updated: Added appointment type with datetime picker %>
 <%= form_with model: [contact, Interaction.new],
     id: "interaction_form",
     class: "mb-8",
@@ -20,7 +21,10 @@
           <label class="cursor-pointer">
             <%= f.radio_button :interaction_method, method,
                 class: "sr-only peer",
-                data: { interaction_form_target: "methodRadio" } %>
+                data: { 
+                  interaction_form_target: "methodRadio",
+                  action: "change->interaction-form#methodChanged"
+                } %>
             <span class="peer-checked:bg-brand-blue peer-checked:text-white p-2 rounded hover:bg-gray-100 text-gray-500 inline-flex items-center justify-center w-10 h-10 transition-colors"
                   title="<%= I18n.t("interactions.methods.#{method}") %>">
               <% case method %>
@@ -32,6 +36,8 @@
                 <i class="fa-solid fa-envelope"></i>
               <% when "meeting" %>
                 <i class="fa-solid fa-users"></i>
+              <% when "appointment" %>
+                <i class="fa-solid fa-calendar-check"></i>
               <% else %>
                 <i class="fa-solid fa-sticky-note"></i>
               <% end %>
@@ -43,6 +49,22 @@
       <%# Submit button %>
       <%= f.submit "Lưu Hoạt động",
           class: "bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900 transition-colors cursor-pointer" %>
+    </div>
+
+    <%# Appointment datetime picker - hidden by default %>
+    <div data-interaction-form-target="appointmentFields" 
+         class="hidden bg-purple-50 border border-purple-200 rounded-lg p-4 mt-3 transition-all">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-calendar-check text-purple-600"></i>
+        <label class="text-sm font-medium text-purple-800">Ngày giờ hẹn:</label>
+        <%= f.datetime_local_field :scheduled_at,
+            class: "flex-1 px-3 py-2 border border-purple-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent",
+            data: { interaction_form_target: "scheduledAt" } %>
+      </div>
+      <p class="text-xs text-purple-600 mt-2 ml-7">
+        <i class="fa-solid fa-info-circle mr-1"></i>
+        Lịch hẹn sẽ hiển thị trong "Lịch hẹn sắp tới" trên Dashboard
+      </p>
     </div>
   </div>
 <% end %>

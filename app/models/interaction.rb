@@ -9,6 +9,7 @@
 #  user_id            :bigint           not null
 #  content            :text             not null
 #  interaction_method :integer          not null, default: 0
+#  scheduled_at       :datetime         (for appointment type)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #
@@ -32,7 +33,8 @@ class Interaction < ApplicationRecord
     call: 1,
     zalo: 2,
     email: 3,
-    meeting: 4
+    meeting: 4,
+    appointment: 5
   }, prefix: true
 
   # ============================================
@@ -40,6 +42,12 @@ class Interaction < ApplicationRecord
   # ============================================
   validates :content, presence: true
   validates :interaction_method, presence: true
+  validates :scheduled_at, presence: true, if: :interaction_method_appointment?
+
+  # ============================================
+  # Callbacks
+  # ============================================
+  after_save :sync_appointment_to_contact, if: :interaction_method_appointment?
 
   # ============================================
   # Scopes
@@ -63,6 +71,7 @@ class Interaction < ApplicationRecord
     when "zalo" then "fa-solid fa-comment"
     when "email" then "fa-solid fa-envelope"
     when "meeting" then "fa-solid fa-users"
+    when "appointment" then "fa-solid fa-calendar-check"
     else "fa-solid fa-sticky-note"
     end
   end
@@ -74,7 +83,19 @@ class Interaction < ApplicationRecord
     when "zalo" then "bg-teal-100 text-teal-600"
     when "email" then "bg-gray-100 text-gray-600"
     when "meeting" then "bg-green-100 text-green-600"
+    when "appointment" then "bg-purple-100 text-purple-600"
     else "bg-yellow-100 text-yellow-600"
     end
+  end
+
+  private
+
+  # Sync scheduled_at to contact.next_appointment
+  def sync_appointment_to_contact
+    return if scheduled_at.blank?
+    return unless contact.next_appointment.nil? || scheduled_at > Time.current
+
+    # Using update to follow Rails validations, though we're only updating a timestamp
+    contact.update(next_appointment: scheduled_at)
   end
 end

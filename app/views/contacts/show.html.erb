@@ -146,23 +146,13 @@
     <%# Right Column: Tabs & Activity %>
     <div class="lg:col-span-2 space-y-6">
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <%# Tabs %>
+        <%# Tab Header - Only Tương tác is active; Deals & Tài liệu removed (mockup) %>
         <div class="border-b border-gray-200">
-          <nav class="flex -mb-px" data-controller="tabs" data-tabs-active-class="text-brand-blue border-brand-blue border-b-2">
-            <button class="text-brand-blue border-brand-blue border-b-2 py-4 px-6 text-sm font-medium"
-                    data-tabs-target="tab" data-action="click->tabs#select">
+          <div class="flex -mb-px">
+            <div class="text-brand-blue border-brand-blue border-b-2 py-4 px-6 text-sm font-medium">
               Tương tác
-            </button>
-            <button class="text-gray-500 hover:text-gray-700 border-transparent hover:border-gray-300 border-b-2 py-4 px-6 text-sm font-medium"
-                    data-tabs-target="tab" data-action="click->tabs#select" disabled>
-              Deals
-              <span class="bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs ml-2">0</span>
-            </button>
-            <button class="text-gray-500 hover:text-gray-700 border-transparent hover:border-gray-300 border-b-2 py-4 px-6 text-sm font-medium"
-                    data-tabs-target="tab" data-action="click->tabs#select" disabled>
-              Tài liệu
-            </button>
-          </nav>
+            </div>
+          </div>
         </div>
 
         <div class="p-6">
