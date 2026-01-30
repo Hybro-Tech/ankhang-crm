@@ -181,17 +181,20 @@
                     <li class="p-4 hover:bg-gray-50 transition-colors">
                         <div class="flex space-x-3">
                             <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-red-50 flex flex-col items-center justify-center text-brand-red border border-red-100">
-                                <span class="text-xs font-bold"><%= appointment.next_appointment.strftime("%d") %></span>
-                                <span class="text-[10px] uppercase"><%= appointment.next_appointment.strftime("%b") %></span>
+                                <span class="text-xs font-bold"><%= appointment.scheduled_at.strftime("%d") %></span>
+                                <span class="text-[10px] uppercase"><%= appointment.scheduled_at.strftime("%b") %></span>
                             </div>
                             <div class="flex-1 space-y-1">
                                 <div class="flex items-center justify-between">
-                                    <h3 class="text-sm font-medium text-gray-900"><%= appointment.name %></h3>
-                                    <span class="text-xs text-gray-500"><%= appointment.next_appointment.strftime("%H:%M") %></span>
+                                    <h3 class="text-sm font-medium text-gray-900"><%= appointment.contact.name %></h3>
+                                    <span class="text-xs text-gray-500"><%= appointment.scheduled_at.strftime("%H:%M") %></span>
                                 </div>
                                 <p class="text-xs text-gray-500">
-                                    <%= appointment.notes.presence || "Không có ghi chú" %>
+                                    <%= appointment.scheduled_at.strftime("%H:%M") %> - <%= appointment.contact.service_type&.name %>
                                 </p>
+                                <% if appointment.content.present? %>
+                                    <p class="text-xs text-gray-400 truncate"><i class="fa-regular fa-note-sticky mr-1"></i><%= appointment.content %></p>
+                                <% end %>
                             </div>
                         </div>
                     </li>

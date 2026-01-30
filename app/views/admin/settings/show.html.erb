@@ -28,11 +28,14 @@
               <i class="fa-regular fa-clock text-gray-400 mr-1"></i>
               Giờ bắt đầu
             </label>
-            <input type="time" 
+            <input type="text" 
                    name="settings[working_hours_start]" 
                    id="settings_working_hours_start"
                    value="<%= @settings.find { |s| s[:key] == 'working_hours_start' }&.dig(:value) %>"
-                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors">
+                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors"
+                   data-controller="datepicker"
+                   data-datepicker-enable-time-value="true"
+                   data-datepicker-no-calendar-value="true">
             <p class="mt-1 text-xs text-gray-500">Áp dụng T2 - T6</p>
           </div>
 
@@ -42,11 +45,14 @@
               <i class="fa-regular fa-clock text-gray-400 mr-1"></i>
               Giờ kết thúc (T2-T6)
             </label>
-            <input type="time" 
+            <input type="text" 
                    name="settings[working_hours_end]" 
                    id="settings_working_hours_end"
                    value="<%= @settings.find { |s| s[:key] == 'working_hours_end' }&.dig(:value) %>"
-                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors">
+                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors"
+                   data-controller="datepicker"
+                   data-datepicker-enable-time-value="true"
+                   data-datepicker-no-calendar-value="true">
             <p class="mt-1 text-xs text-gray-500">Thời gian kết thúc ngày thường</p>
           </div>
 
@@ -56,11 +62,14 @@
               <i class="fa-regular fa-calendar text-gray-400 mr-1"></i>
               Giờ kết thúc Thứ 7
             </label>
-            <input type="time" 
+            <input type="text" 
                    name="settings[saturday_hours_end]" 
                    id="settings_saturday_hours_end"
                    value="<%= @settings.find { |s| s[:key] == 'saturday_hours_end' }&.dig(:value) %>"
-                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors">
+                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors"
+                   data-controller="datepicker"
+                   data-datepicker-enable-time-value="true"
+                   data-datepicker-no-calendar-value="true">
             <p class="mt-1 text-xs text-gray-500">Thứ 7 kết thúc sớm hơn</p>
           </div>
         </div>

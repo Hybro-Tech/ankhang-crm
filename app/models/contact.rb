@@ -223,6 +223,16 @@ class Contact < ApplicationRecord
     )
   end
 
+  # Get appointment content from the Interaction that created this appointment
+  def appointment_content
+    return nil if next_appointment.blank?
+
+    interactions.interaction_method_appointment
+                .where(scheduled_at: next_appointment)
+                .order(created_at: :desc)
+                .first&.content
+  end
+
   private
 
   # Generate unique code: KH2026-XXX

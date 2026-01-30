@@ -57,9 +57,13 @@
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-calendar-check text-purple-600"></i>
         <label class="text-sm font-medium text-purple-800">Ngày giờ hẹn:</label>
-        <%= f.datetime_local_field :scheduled_at,
+        <%= f.text_field :scheduled_at,
             class: "flex-1 px-3 py-2 border border-purple-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent",
-            data: { interaction_form_target: "scheduledAt" } %>
+            data: { 
+              interaction_form_target: "scheduledAt",
+              controller: "datepicker",
+              datepicker_enable_time_value: "true"
+            } %>
       </div>
       <p class="text-xs text-purple-600 mt-2 ml-7">
         <i class="fa-solid fa-info-circle mr-1"></i>

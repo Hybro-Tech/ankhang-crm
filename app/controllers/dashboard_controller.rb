@@ -219,11 +219,14 @@ class DashboardController < ApplicationController
   end
 
   def load_sales_data
-    # Upcoming Appointments
-    @upcoming_appointments = current_user.assigned_contacts
-                                         .where(next_appointment: Time.current..)
-                                         .order(next_appointment: :asc)
-                                         .limit(5)
+    # Upcoming Appointments - query from Interaction model to get ALL appointments
+    @upcoming_appointments = Interaction.interaction_method_appointment
+                                        .joins(:contact)
+                                        .where(contacts: { assigned_user_id: current_user.id })
+                                        .where(scheduled_at: Time.current..)
+                                        .order(scheduled_at: :asc)
+                                        .includes(:contact)
+                                        .limit(5)
 
     # Contacts to process (Assigned but not yet closed)
     # Priority: Potential > New

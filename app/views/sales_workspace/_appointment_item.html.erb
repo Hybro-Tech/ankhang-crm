@@ -1,9 +1,9 @@
 <%# Appointment list item with urgency color coding %>
-<%# urgent_threshold: appointments within 24 hours are RED, otherwise GREEN %>
+<%# Now appointment is an Interaction, not a Contact %>
 <% 
-  hours_until = ((appointment.next_appointment - Time.current) / 1.hour).round
+  hours_until = ((appointment.scheduled_at - Time.current) / 1.hour).round
   is_urgent = hours_until <= 24
-  is_overdue = appointment.next_appointment < Time.current
+  is_overdue = appointment.scheduled_at < Time.current
   
   # Color classes based on urgency
   if is_overdue
@@ -23,16 +23,19 @@
 
 <li class="p-4 hover:bg-gray-50 transition-colors cursor-pointer" 
     id="<%= dom_id(appointment, :appointment) %>">
-  <a href="<%= contact_path(appointment) %>" class="flex items-start space-x-3" data-turbo-frame="_top">
+  <a href="<%= contact_path(appointment.contact) %>" class="flex items-start space-x-3" data-turbo-frame="_top">
     <div class="flex-shrink-0 w-10 h-10 rounded-lg <%= bg_class %> flex flex-col items-center justify-center <%= text_class %> border <%= border_class %>">
-      <span class="text-xs font-bold"><%= appointment.next_appointment.strftime("%d") %></span>
-      <span class="text-[10px] uppercase"><%= appointment.next_appointment.strftime("%b") %></span>
+      <span class="text-xs font-bold"><%= appointment.scheduled_at.strftime("%d") %></span>
+      <span class="text-[10px] uppercase"><%= appointment.scheduled_at.strftime("%b") %></span>
     </div>
     <div class="flex-1 min-w-0">
-      <p class="text-sm font-medium text-gray-900 truncate"><%= appointment.name %></p>
+      <p class="text-sm font-medium text-gray-900 truncate"><%= appointment.contact.name %></p>
       <p class="text-xs text-gray-500">
-        <%= appointment.next_appointment.strftime("%H:%M") %> - <%= appointment.service_type&.name %>
+        <%= appointment.scheduled_at.strftime("%H:%M") %> - <%= appointment.contact.service_type&.name %>
       </p>
+      <% if appointment.content.present? %>
+        <p class="text-xs text-gray-500 truncate mt-0.5"><i class="fa-regular fa-note-sticky mr-1"></i><%= appointment.content %></p>
+      <% end %>
       <% if is_overdue %>
         <span class="inline-flex items-center mt-1 text-xs text-gray-500">
           <i class="fa-solid fa-clock mr-1"></i> Đã qua

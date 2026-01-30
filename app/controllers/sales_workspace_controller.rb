@@ -126,11 +126,13 @@ class SalesWorkspaceController < ApplicationController
   end
 
   # Base query for appointments (reused for pagination)
-  # No day limit - shows all future appointments, ordered nearest first
+  # Query from Interaction model to get ALL appointments, not just next_appointment
   def appointments_base_query
-    current_user.assigned_contacts
-                .where.not(next_appointment: nil)
-                .where(next_appointment: Time.current.beginning_of_day..)
-                .order(next_appointment: :asc)
+    Interaction.interaction_method_appointment
+               .joins(:contact)
+               .where(contacts: { assigned_user_id: current_user.id })
+               .where(scheduled_at: Time.current.beginning_of_day..)
+               .order(scheduled_at: :asc)
+               .includes(:contact)
   end
 end
