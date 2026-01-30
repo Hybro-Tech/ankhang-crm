@@ -32,7 +32,13 @@ FactoryBot.define do
 
     trait :super_admin do
       after(:create) do |user|
-        super_admin_role = Role.find_or_create_by!(name: "Super Admin", is_system: true)
+        super_admin_role = Role.find_or_create_by!(name: "Super Admin") do |r|
+          r.code = RoleCodes::SUPER_ADMIN
+          r.dashboard_type = :admin
+          r.is_system = true
+        end
+        # Ensure code is set even if role already exists without code
+        super_admin_role.update!(code: RoleCodes::SUPER_ADMIN) if super_admin_role.code.blank?
         user.roles << super_admin_role unless user.roles.include?(super_admin_role)
       end
     end

@@ -50,6 +50,12 @@ RSpec.describe DashboardController, type: :controller do
 
     context "when logged in as Sale" do
       before do
+        # Grant permission for sales dashboard
+        permission = Permission.find_or_create_by!(code: "dashboards.view_sales") do |p|
+          p.name = "View Sales Dashboard"
+          p.category = "Dashboard"
+        end
+        role_sale.permissions << permission unless role_sale.permissions.include?(permission)
         sign_in sale_user
       end
 
@@ -73,7 +79,15 @@ RSpec.describe DashboardController, type: :controller do
       let(:role_cskh) { Role.find_by(name: "CSKH") || FactoryBot.create(:role, name: "CSKH", dashboard_type: :cskh) }
       let(:cskh_user) { FactoryBot.create(:user, roles: [role_cskh], username: "cskh_test") }
 
-      before { sign_in cskh_user }
+      before do
+        # Grant permission for CSKH dashboard
+        permission = Permission.find_or_create_by!(code: "dashboards.view_cskh") do |p|
+          p.name = "View CSKH Dashboard"
+          p.category = "Dashboard"
+        end
+        role_cskh.permissions << permission unless role_cskh.permissions.include?(permission)
+        sign_in cskh_user
+      end
 
       it "renders cskh dashboard view" do
         get :index

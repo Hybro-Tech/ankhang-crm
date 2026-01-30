@@ -13,7 +13,13 @@ RSpec.describe Ability, type: :model do
   end
 
   describe "Super Admin" do
-    let(:super_admin_role) { Role.find_or_create_by!(name: "Super Admin", is_system: true) }
+    let(:super_admin_role) do
+      Role.find_or_create_by!(name: "Super Admin") do |r|
+        r.code = RoleCodes::SUPER_ADMIN
+        r.dashboard_type = :admin
+        r.is_system = true
+      end.tap { |role| role.update!(code: RoleCodes::SUPER_ADMIN) if role.code.blank? }
+    end
     let(:user) { create(:user) }
 
     before do
