@@ -173,7 +173,7 @@ class Contact < ApplicationRecord
   end
 
   # Find by phone (normalized)
-  def self.find_by_phone(phone)
+  def self.find_by_normalized_phone(phone)
     normalized = phone.to_s.gsub(/\D/, "")
     find_by(phone: normalized)
   end

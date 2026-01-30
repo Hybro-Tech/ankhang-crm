@@ -42,9 +42,9 @@
                 placeholder: "09xx xxx xxx",
                 data: { 
                   call_center_mode_target: "phoneInput",
-                  controller: "identity-lookup",
+                  controller: "identity-lookup phone-format",
                   identity_lookup_type_value: "phone",
-                  action: "input->identity-lookup#search blur->identity-lookup#check"
+                  action: "input->phone-format#format input->identity-lookup#search blur->identity-lookup#check"
                 } %>
           </div>
           <% if contact.errors[:phone].any? %>
