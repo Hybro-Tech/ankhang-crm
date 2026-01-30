@@ -113,7 +113,7 @@ class SalesWorkspaceController < ApplicationController
   # rubocop:enable Metrics/MethodLength
 
   def load_context_panel
-    # Appointments for next 7 days (show first 5, load more on demand)
+    # Appointments (show first 5, load more on demand, no day limit)
     @appointments = appointments_base_query.limit(5)
     @total_appointments = appointments_base_query.count
 
@@ -126,10 +126,11 @@ class SalesWorkspaceController < ApplicationController
   end
 
   # Base query for appointments (reused for pagination)
+  # No day limit - shows all future appointments, ordered nearest first
   def appointments_base_query
     current_user.assigned_contacts
                 .where.not(next_appointment: nil)
-                .where(next_appointment: Time.current.beginning_of_day..7.days.from_now.end_of_day)
+                .where("next_appointment >= ?", Time.current.beginning_of_day)
                 .order(next_appointment: :asc)
   end
 end
