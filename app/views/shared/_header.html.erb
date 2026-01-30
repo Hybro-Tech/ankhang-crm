@@ -20,52 +20,28 @@
   <%# Right side - Notifications + User menu %>
   <div class="flex items-center space-x-6">
     <%# Notification bell - TASK-057: Dynamic notifications %>
-    <% total_count = current_user.notifications.count rescue 0 %>
-    <% notifications = current_user.notifications.recent.limit(10) rescue [] %>
+    <%# TASK-035: Real-time subscription for badge updates %>
+    <%= turbo_stream_from "user_#{current_user.id}_notifications" %>
+    
     <% unread_count = current_user.notifications.unread.count rescue 0 %>
-    <% remaining_count = [total_count - 10, 0].max %>
-    <div class="relative" data-controller="dropdown">
-      <button type="button" data-action="click->dropdown#toggle" class="relative p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
-        <% if unread_count > 0 %>
-          <span class="absolute -top-1 -right-1 flex items-center justify-center h-5 w-5 rounded-full bg-brand-red text-white text-xs font-bold ring-2 ring-white">
-            <%= unread_count > 9 ? '9+' : unread_count %>
-          </span>
-        <% end %>
+    <div class="relative" data-controller="dropdown notification-dropdown">
+      <button type="button" data-action="click->dropdown#toggle click->notification-dropdown#refresh" class="relative p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none">
+        <%# Badge with Turbo target for real-time updates %>
+        <span id="notification_badge" class="<%= unread_count > 0 ? '' : 'hidden' %> absolute -top-1 -right-1 flex items-center justify-center h-5 w-5 rounded-full bg-brand-red text-white text-xs font-bold ring-2 ring-white">
+          <%= unread_count > 0 ? (unread_count > 9 ? '9+' : unread_count) : '' %>
+        </span>
         <i class="fa-regular fa-bell text-xl"></i>
       </button>
 
       <%# Notification dropdown %>
       <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-        <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
-          <span class="font-bold text-gray-700">Thông báo</span>
-          <%= link_to mark_all_as_read_notifications_path, 
-                      method: :post, 
-                      data: { turbo_method: :post },
-                      class: "text-xs text-brand-blue cursor-pointer hover:underline" do %>
-            Đánh dấu đã đọc
-          <% end %>
-        </div>
-        <div class="max-h-80 overflow-y-auto">
-          <% if notifications.any? %>
-            <%= render notifications %>
-            
-            <%# Show "Xem thêm" if more notifications exist %>
-            <% if remaining_count > 0 %>
-              <%= link_to notifications_path, class: "block px-4 py-3 text-center text-sm text-brand-blue hover:bg-gray-50 border-t border-gray-100" do %>
-                <i class="fas fa-plus-circle mr-1"></i>
-                Xem thêm <%= remaining_count %> thông báo
-              <% end %>
-            <% end %>
-          <% else %>
-            <div class="px-4 py-8 text-center text-gray-500">
-              <i class="fas fa-bell-slash text-2xl mb-2 text-gray-300"></i>
-              <p class="text-sm">Không có thông báo</p>
-            </div>
-          <% end %>
-        </div>
-        <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
-          <%= link_to "Xem tất cả", notifications_path, class: "text-xs font-medium text-brand-blue hover:underline" %>
-        </div>
+        <%# Turbo Frame for lazy loading notifications %>
+        <turbo-frame id="notification_dropdown_content" src="<%= dropdown_notifications_path %>" loading="lazy">
+          <div class="px-4 py-8 text-center text-gray-500">
+            <i class="fas fa-spinner fa-spin text-2xl mb-2 text-gray-300"></i>
+            <p class="text-sm">Đang tải...</p>
+          </div>
+        </turbo-frame>
       </div>
     </div>
 

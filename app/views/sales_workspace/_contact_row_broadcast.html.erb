@@ -1,0 +1,63 @@
+<%# TASK-035: Contact row for Sales Dashboard real-time broadcast %>
+<%# Simplified partial without controller context %>
+
+<tr class="hover:bg-blue-50/50 transition-all duration-200 group relative bg-green-50" id="<%= dom_id(contact) %>">
+  <!-- Customer Info -->
+  <td class="pl-6 pr-3 py-4 whitespace-nowrap">
+    <div class="flex items-center">
+      <div class="flex-shrink-0 h-11 w-11 bg-white border border-green-300 rounded-full flex items-center justify-center text-green-600 font-bold text-lg shadow-sm">
+         <% if contact.name.present? %>
+            <%= contact.name.first.upcase %>
+         <% else %>
+            <i class="fa-solid fa-user"></i>
+         <% end %>
+      </div>
+      <div class="ml-4">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-bold text-gray-900"><%= contact.name %></span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800">
+            <i class="fa-solid fa-sparkles mr-1"></i> MỚI
+          </span>
+        </div>
+        <div class="text-xs text-gray-500 flex items-center mt-0.5 space-x-2">
+          <span class="font-mono text-gray-400"><%= contact.code %></span>
+          <span class="text-gray-300">|</span>
+          <span class="font-medium text-gray-600"><%= contact.phone %></span>
+        </div>
+      </div>
+    </div>
+  </td>
+
+  <!-- Service Type -->
+  <td class="px-3 py-4 whitespace-nowrap">
+    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-100">
+      <%= contact.service_type&.name || "Chưa xác định" %>
+    </span>
+  </td>
+
+  <!-- Status -->
+  <td class="px-3 py-4 whitespace-nowrap">
+    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border bg-blue-50 text-blue-700 border-blue-100">
+      <%= contact.status_label %>
+    </span>
+  </td>
+
+  <!-- Time -->
+  <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-400">
+    <div class="flex items-center">
+      <i class="fa-regular fa-clock mr-1.5 text-gray-300"></i>
+      <span>Vừa xong</span>
+    </div>
+  </td>
+
+  <!-- Actions -->
+  <td class="pl-3 pr-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+    <div class="flex items-center justify-end space-x-3">
+      <%= button_to pick_contact_path(contact), method: :post,
+          form: { class: "inline-block", data: { turbo_confirm: "Nhận khách hàng #{contact.name}?", turbo_frame: "_top" } },
+          class: "inline-flex items-center px-6 py-2 bg-[#0B387A] hover:bg-[#1a4b9c] text-white text-sm font-bold rounded-full shadow-[0_4px_14px_0_rgba(11,56,122,0.39)] hover:shadow-[0_6px_20px_rgba(11,56,122,0.23)] hover:-translate-y-1 transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0B387A] uppercase tracking-wider" do %>
+        <i class="fa-solid fa-dollar-sign mr-2"></i>NHẬN
+      <% end %>
+    </div>
+  </td>
+</tr>

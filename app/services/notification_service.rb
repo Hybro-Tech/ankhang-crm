@@ -39,6 +39,9 @@ class NotificationService
 
     # Notify sales who can SEE the contact based on Smart Routing
     def notify_contact_created(contact)
+      # Guard: Check if notification already exists for this contact
+      return if Notification.exists?(notifiable: contact, notification_type: "contact_created")
+
       # Get visible user IDs from Smart Routing
       visible_user_ids = contact.visible_to_user_ids
 

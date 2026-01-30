@@ -1,0 +1,33 @@
+<%# TASK-035: Dropdown content loaded via Turbo Frame %>
+<turbo-frame id="notification_dropdown_content">
+  <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center rounded-t-lg">
+    <span class="font-bold text-gray-700">Thông báo</span>
+    <%= link_to mark_all_as_read_notifications_path, 
+                method: :post, 
+                data: { turbo_method: :post, turbo_frame: "_top" },
+                class: "text-xs text-brand-blue cursor-pointer hover:underline" do %>
+      Đánh dấu đã đọc
+    <% end %>
+  </div>
+  <div class="max-h-80 overflow-y-auto">
+    <% if @notifications.any? %>
+      <%= render @notifications %>
+      
+      <%# Show "Xem thêm" if more notifications exist %>
+      <% if @remaining_count > 0 %>
+        <%= link_to notifications_path, class: "block px-4 py-3 text-center text-sm text-brand-blue hover:bg-gray-50 border-t border-gray-100", data: { turbo_frame: "_top" } do %>
+          <i class="fas fa-plus-circle mr-1"></i>
+          Xem thêm <%= @remaining_count %> thông báo
+        <% end %>
+      <% end %>
+    <% else %>
+      <div class="px-4 py-8 text-center text-gray-500">
+        <i class="fas fa-bell-slash text-2xl mb-2 text-gray-300"></i>
+        <p class="text-sm">Không có thông báo</p>
+      </div>
+    <% end %>
+  </div>
+  <div class="px-4 py-2 bg-gray-50 text-center border-t border-gray-200 rounded-b-lg">
+    <%= link_to "Xem tất cả", notifications_path, class: "text-xs font-medium text-brand-blue hover:underline", data: { turbo_frame: "_top" } %>
+  </div>
+</turbo-frame>

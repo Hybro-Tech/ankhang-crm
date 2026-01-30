@@ -14,6 +14,7 @@
 | 2 | Remove Redis | Xoá redis gem + container | ✅ Done |
 | 3 | Docker Rebuild | Rebuild image với solid_cable gem | ✅ Done |
 | 4 | Migrations | Solid Cable tables created | ✅ Done |
+| 5 | **TASK-035** | ActionCable + Turbo Streams Real-time | ✅ Done |
 
 ---
 
@@ -23,9 +24,8 @@
 
 | # | Task/Item | Loại | Mô tả | Effort |
 |---|-----------|------|-------|--------|
-| **1** | TASK-035 | Sprint 3 | ActionCable + Turbo Streams Real-time | 5 SP |
-| **2** | TASK-054 | Sprint 3 | Solid Queue Scheduled Jobs (Smart Routing) | 5 SP |
-| **3** | TASK-055 | Sprint 3 | WebSocket Realtime Updates | 5 SP |
+| **1** | TASK-054 | Sprint 3 | Solid Queue Scheduled Jobs (Smart Routing) | 5 SP |
+| **2** | TASK-055 | Sprint 3 | WebSocket Realtime Updates | 5 SP |
 
 ---
 

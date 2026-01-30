@@ -5,7 +5,7 @@
             data: (notification.read? ? {} : { turbo_method: :post }),
             class: "block" do %>
   <div id="notification_<%= notification.id %>" 
-       class="flex items-start gap-3 p-3 hover:bg-gray-100 border-b border-gray-100 transition-colors <%= notification.read? ? 'bg-white' : 'bg-blue-50' %>">
+       class="flex items-start gap-3 p-3 hover:bg-gray-100 border-b border-gray-100 transition-colors <%= notification.read? ? 'bg-white opacity-75' : 'bg-blue-50' %>">
     <%# Icon %>
     <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center <%= notification.color_class %>">
       <i class="fas <%= notification.resolved_icon %>"></i>
@@ -13,7 +13,7 @@
     
     <%# Content %>
     <div class="flex-1 min-w-0">
-      <p class="text-sm font-medium text-gray-900 truncate"><%= notification.title %></p>
+      <p class="text-sm font-medium <%= notification.read? ? 'text-gray-600' : 'text-gray-900' %> truncate"><%= notification.title %></p>
       <% if notification.body.present? %>
         <p class="text-sm text-gray-500 line-clamp-2"><%= notification.body %></p>
       <% end %>
@@ -25,7 +25,7 @@
     <%# Unread indicator - blue dot %>
     <% unless notification.read? %>
       <div class="flex-shrink-0 self-center">
-        <span class="inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
+        <span class="inline-block w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
       </div>
     <% end %>
   </div>

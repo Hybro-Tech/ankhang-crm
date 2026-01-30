@@ -72,6 +72,9 @@ class Contact < ApplicationRecord
   # TASK-023: Care History / Interactions
   has_many :interactions, dependent: :destroy
 
+  # TASK-035: Notifications referencing this contact
+  has_many :notifications, as: :notifiable, dependent: :destroy
+
   # TASK-049: Zalo Integration
   has_one_attached :zalo_qr
 
@@ -107,8 +110,15 @@ class Contact < ApplicationRecord
   before_validation :normalize_phone
   before_validation :normalize_zalo_id
   before_save :set_team_from_service_type, if: :service_type_id_changed?
+  after_create :mark_as_just_created
   after_create :initialize_smart_routing
   after_save :set_assigned_at, if: :saved_change_to_assigned_user_id?
+
+  # TASK-035: Real-time broadcasts
+  after_create_commit :broadcast_contact_created
+  after_update_commit :broadcast_contact_picked, if: :saved_change_to_assigned_user_id?
+
+  # TASK-035: In-app notifications for Sales (included in broadcast_contact_created)
 
   # ============================================================================
   # Scopes
@@ -272,9 +282,135 @@ class Contact < ApplicationRecord
     # Redundant check but keeps logic clear for individual fields if needed later
   end
 
+  # TASK-035: Flag to track just-created records for callbacks
+  def mark_as_just_created
+    @just_created = true
+  end
+
+  def just_created?
+    @just_created == true
+  end
+
   # TASK-053: Initialize Smart Routing visibility on create
   def initialize_smart_routing
     SmartRoutingService.initialize_visibility(self)
+  end
+
+  # TASK-035: Broadcast new contact to visible users + create notifications
+  def broadcast_contact_created
+    # Skip in test environment (no Warden context for can? helper in partial)
+    return if Rails.env.test?
+    # Guard: Only run on actual CREATE, not on subsequent updates
+    return unless just_created?
+
+    # Clear flag immediately to prevent any duplicate calls
+    @just_created = false
+
+    # STEP 1: Create in-app notifications for visible Sales
+    NotificationService.notify_contact_created(self)
+
+    # STEP 2: Broadcast badge update
+    broadcast_notification_badge_update
+
+    # STEP 3: Broadcast contact list update (prepend new contact to table)
+    broadcast_contact_list_update
+
+    Rails.logger.info "[Contact#broadcast_created] Contact #{id} - notifications, badge, and list updated"
+  rescue StandardError => e
+    Rails.logger.error "[Contact#broadcast_created] Error: #{e.message}"
+  end
+
+  # TASK-035: Broadcast contact picked - remove from other users' lists
+  def broadcast_contact_picked
+    return if Rails.env.test?
+    return if assigned_user_id.blank?
+
+    # Broadcast to global stream to remove this contact from all lists
+    Turbo::StreamsChannel.broadcast_remove_to(
+      "contacts_global",
+      target: dom_id(self)
+    )
+
+    # Also broadcast to specific users who could see this contact before
+    previous_visible_ids = visible_to_user_ids_before_last_save || []
+    previous_visible_ids.each do |user_id|
+      next if user_id == assigned_user_id # Don't remove from picker's list
+
+      Turbo::StreamsChannel.broadcast_remove_to(
+        "user_#{user_id}_contacts",
+        target: dom_id(self)
+      )
+    end
+
+    Rails.logger.info "[Contact#broadcast_picked] Contact #{id} picked by user #{assigned_user_id}"
+  rescue StandardError => e
+    Rails.logger.error "[Contact#broadcast_picked] Error: #{e.message}"
+  end
+
+  # Helper: Calculate which users can see this contact
+  def calculate_visible_user_ids
+    if visible_to_user_ids.present?
+      # Smart Routing mode: specific users
+      visible_to_user_ids
+    else
+      # Pool mode: all active sales users in the same team
+      team_users = fetch_team_user_ids
+      # Also include super admins (they can see all)
+      admin_ids = User.joins(:roles).where(roles: { code: Role::SUPER_ADMIN }).active.distinct.pluck(:id)
+      (team_users + admin_ids).uniq
+    end
+  end
+
+  def fetch_team_user_ids
+    return [] unless team
+
+    team.users.active.pluck(:id)
+  end
+
+  # Broadcast to update notification badge count for users
+  def broadcast_notification_badge_update
+    visible_user_ids = calculate_visible_user_ids
+    return if visible_user_ids.empty?
+
+    visible_user_ids.each do |user_id|
+      unread_count = Notification.where(user_id: user_id).unread.count
+
+      badge_html = if unread_count.positive?
+                     display = unread_count > 9 ? "9+" : unread_count.to_s
+                     %(<span id="notification_badge" class="absolute -top-1 -right-1 flex items-center ) +
+                       %(justify-center h-5 w-5 rounded-full bg-brand-red text-white text-xs font-bold ) +
+                       %(ring-2 ring-white">#{display}</span>)
+                   else
+                     # Hidden badge when no notifications
+                     %(<span id="notification_badge" class="hidden"></span>)
+                   end
+
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "user_#{user_id}_notifications",
+        target: "notification_badge",
+        html: badge_html
+      )
+    end
+
+    Rails.logger.info "[Contact#broadcast_badge] Badge updated for #{visible_user_ids.size} users"
+  end
+
+  # TASK-035: Broadcast new contact row to Sales Dashboard
+  def broadcast_contact_list_update
+    visible_user_ids = calculate_visible_user_ids
+    return if visible_user_ids.empty?
+
+    visible_user_ids.each do |user_id|
+      # Broadcast to Sales Dashboard (new_contacts_table_body)
+      Turbo::StreamsChannel.broadcast_prepend_to(
+        "user_#{user_id}_contacts",
+        target: "new_contacts_table_body",
+        partial: "sales_workspace/contact_row_broadcast",
+        locals: { contact: self }
+      )
+    end
+
+    Rails.logger.info "[Contact#broadcast_list] Contact #{id} added to #{visible_user_ids.size} users' dashboards"
   end
 end
 # rubocop:enable Metrics/ClassLength
