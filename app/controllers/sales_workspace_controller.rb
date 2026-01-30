@@ -130,7 +130,7 @@ class SalesWorkspaceController < ApplicationController
   def appointments_base_query
     current_user.assigned_contacts
                 .where.not(next_appointment: nil)
-                .where("next_appointment >= ?", Time.current.beginning_of_day)
+                .where(next_appointment: Time.current.beginning_of_day..)
                 .order(next_appointment: :asc)
   end
 end
