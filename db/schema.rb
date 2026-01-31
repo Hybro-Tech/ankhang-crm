@@ -221,6 +221,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_30_025132) do
     t.index ["key"], name: "index_settings_on_key", unique: true
   end
 
+  create_table "solid_cable_messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.binary "channel", limit: 1024, null: false
+    t.binary "payload", size: :long, null: false
+    t.datetime "created_at", null: false
+    t.bigint "channel_hash", null: false
+    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
+  end
+
   create_table "solid_cache_entries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.binary "key", limit: 1024, null: false
     t.binary "value", size: :long, null: false
@@ -450,9 +460,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_30_025132) do
   add_foreign_key "saturday_schedule_users", "saturday_schedules"
   add_foreign_key "saturday_schedule_users", "users"
   add_foreign_key "service_types", "teams", on_delete: :nullify
-  add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

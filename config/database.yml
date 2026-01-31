@@ -8,9 +8,25 @@ default: &default
   host: <%= ENV.fetch("DB_HOST", "db") %>
 
 development:
-  <<: *default
-  database: ankhang_crm_development
-  ssl_mode: disabled
+  primary:
+    <<: *default
+    database: ankhang_crm_development
+    ssl_mode: disabled
+  cache:
+    <<: *default
+    database: ankhang_crm_development
+    ssl_mode: disabled
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: ankhang_crm_development
+    ssl_mode: disabled
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: ankhang_crm_development
+    ssl_mode: disabled
+    migrations_paths: db/cable_migrate
 
 test:
   <<: *default
