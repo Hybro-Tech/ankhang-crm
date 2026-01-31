@@ -122,7 +122,10 @@ class Ability
     sources: "Source",
     saturday_schedules: "SaturdaySchedule",
     interactions: "Interaction",
-    dashboards: nil # Symbol-only, no model class
+    dashboards: nil, # Symbol-only, no model class
+    solid_queue: nil, # Solid Queue monitoring dashboard (super_admin only)
+    solid_cache: nil, # Solid Cache monitoring dashboard (super_admin only)
+    solid_cable: nil  # Solid Cable monitoring dashboard (super_admin only)
   }.freeze
 
   def subject_to_model_class(subject)

@@ -1,0 +1,105 @@
+<%# Hidden System Monitoring Portal %>
+<%# Accessible only via /solid URL - not linked in sidebar %>
+
+<div class="bg-gray-900 min-h-screen py-12">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <%# Header %>
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-800 mb-4">
+        <i class="fa-solid fa-terminal text-green-400 text-2xl"></i>
+      </div>
+      <h1 class="text-2xl font-mono font-bold text-green-400">System Monitoring</h1>
+      <p class="mt-2 text-sm text-gray-500 font-mono">Solid Stack Dashboard Portal</p>
+    </div>
+
+    <%# Dashboard Cards %>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <%# Solid Queue %>
+      <%= link_to admin_solid_queue_path, class: "group" do %>
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-blue-500 hover:bg-gray-750 transition-all duration-200 h-full">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-900/50 flex items-center justify-center">
+              <i class="fa-solid fa-list-check text-blue-400 text-xl"></i>
+            </div>
+            <i class="fa-solid fa-arrow-right text-gray-600 group-hover:text-blue-400 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Solid Queue</h3>
+          <p class="text-sm text-gray-400 mb-4">Background Jobs</p>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-500">Jobs</span>
+              <span class="text-white font-mono"><%= number_with_delimiter(@queue_stats[:total_jobs]) %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Pending</span>
+              <span class="text-yellow-400 font-mono"><%= @queue_stats[:pending] %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Failed</span>
+              <span class="<%= @queue_stats[:failed] > 0 ? 'text-red-400' : 'text-green-400' %> font-mono"><%= @queue_stats[:failed] %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Workers</span>
+              <span class="text-green-400 font-mono"><%= @queue_stats[:processes] %></span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <%# Solid Cache %>
+      <%= link_to admin_solid_cache_path, class: "group" do %>
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-green-500 hover:bg-gray-750 transition-all duration-200 h-full">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-green-900/50 flex items-center justify-center">
+              <i class="fa-solid fa-database text-green-400 text-xl"></i>
+            </div>
+            <i class="fa-solid fa-arrow-right text-gray-600 group-hover:text-green-400 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Solid Cache</h3>
+          <p class="text-sm text-gray-400 mb-4">Database Cache</p>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-500">Entries</span>
+              <span class="text-white font-mono"><%= number_with_delimiter(@cache_stats[:total_entries]) %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Size</span>
+              <span class="text-green-400 font-mono"><%= @cache_stats[:total_size] %></span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <%# Solid Cable %>
+      <%= link_to admin_solid_cable_path, class: "group" do %>
+        <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-purple-500 hover:bg-gray-750 transition-all duration-200 h-full">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-purple-900/50 flex items-center justify-center">
+              <i class="fa-solid fa-plug text-purple-400 text-xl"></i>
+            </div>
+            <i class="fa-solid fa-arrow-right text-gray-600 group-hover:text-purple-400 transition-colors"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Solid Cable</h3>
+          <p class="text-sm text-gray-400 mb-4">WebSocket Messages</p>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-500">Messages</span>
+              <span class="text-white font-mono"><%= number_with_delimiter(@cable_stats[:total_messages]) %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-500">Channels</span>
+              <span class="text-purple-400 font-mono"><%= @cable_stats[:channels] %></span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Footer %>
+    <div class="mt-12 text-center">
+      <p class="text-xs text-gray-600 font-mono">
+        <%= Time.current.strftime("%Y-%m-%d %H:%M:%S %Z") %>
+      </p>
+    </div>
+  </div>
+</div>

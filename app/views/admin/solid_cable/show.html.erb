@@ -1,0 +1,215 @@
+<%# TASK: Solid Cable Monitoring Dashboard %>
+<%# Custom dashboard for WebSocket message monitoring %>
+
+<div class="bg-gray-50 min-h-screen py-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <%# Header %>
+    <div class="sm:flex sm:items-center sm:justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Solid Cable Monitor</h1>
+        <p class="mt-1 text-sm text-gray-500">WebSocket messages và channels monitoring</p>
+      </div>
+      <div class="mt-4 sm:mt-0 flex space-x-3">
+        <%= button_to "Dọn dẹp tin cũ (>24h)", 
+            cleanup_admin_solid_cable_path,
+            method: :delete,
+            class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none",
+            data: { confirm: "Xóa tất cả tin nhắn cũ hơn 24 giờ?" } %>
+        <%= link_to admin_solid_cable_path, 
+            class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-blue-900 focus:outline-none shadow-md",
+            data: { turbo_frame: "_top" } do %>
+          <i class="fa-solid fa-rotate mr-2"></i> Làm mới
+        <% end %>
+      </div>
+    </div>
+
+    <%# KPI Cards %>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <%# Total Messages %>
+      <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 bg-blue-50 rounded-md p-3">
+              <i class="fa-solid fa-envelope text-brand-blue text-xl"></i>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Tổng tin nhắn</dt>
+                <dd>
+                  <div class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(@stats[:total_messages]) %></div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%# Channels Count %>
+      <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 bg-green-50 rounded-md p-3">
+              <i class="fa-solid fa-tower-broadcast text-green-600 text-xl"></i>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">Channels</dt>
+                <dd>
+                  <div class="text-2xl font-bold text-gray-900"><%= @stats[:channels_count] %></div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%# Last Hour %>
+      <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 bg-orange-50 rounded-md p-3">
+              <i class="fa-solid fa-clock text-brand-orange text-xl"></i>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">1 giờ qua</dt>
+                <dd>
+                  <div class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(@stats[:messages_last_hour]) %></div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%# Last 24h %>
+      <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="p-5">
+          <div class="flex items-center">
+            <div class="flex-shrink-0 bg-purple-50 rounded-md p-3">
+              <i class="fa-solid fa-calendar-day text-purple-600 text-xl"></i>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+              <dl>
+                <dt class="text-sm font-medium text-gray-500 truncate">24 giờ qua</dt>
+                <dd>
+                  <div class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(@stats[:messages_last_24h]) %></div>
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Content Grid %>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <%# Chart Section %>
+      <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6 lg:col-span-2">
+        <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">Tin nhắn theo giờ (24h)</h3>
+        <div class="h-72">
+          <% if @messages_by_hour.present? %>
+            <%= line_chart @messages_by_hour, 
+                colors: ["#0B387A"],
+                library: {
+                  plugins: { legend: { display: false } },
+                  scales: { 
+                    y: { beginAtZero: true },
+                    x: { grid: { display: false } }
+                  }
+                } %>
+          <% else %>
+            <div class="flex items-center justify-center h-full text-gray-400">
+              <div class="text-center">
+                <i class="fa-solid fa-chart-line text-4xl mb-2"></i>
+                <p>Không có dữ liệu</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# Time Info %>
+      <div class="bg-white shadow-sm rounded-xl border border-gray-100 p-6">
+        <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-4">Thông tin thời gian</h3>
+        <div class="space-y-4">
+          <div class="flex justify-between items-center py-3 border-b border-gray-100">
+            <span class="text-sm text-gray-500">Tin cũ nhất</span>
+            <span class="text-sm font-medium text-gray-900">
+              <%= @stats[:oldest_message] ? l(@stats[:oldest_message], format: :short) : "N/A" %>
+            </span>
+          </div>
+          <div class="flex justify-between items-center py-3 border-b border-gray-100">
+            <span class="text-sm text-gray-500">Tin mới nhất</span>
+            <span class="text-sm font-medium text-gray-900">
+              <%= @stats[:newest_message] ? l(@stats[:newest_message], format: :short) : "N/A" %>
+            </span>
+          </div>
+          <div class="flex justify-between items-center py-3">
+            <span class="text-sm text-gray-500">Thời gian hiện tại</span>
+            <span class="text-sm font-medium text-gray-900">
+              <%= l(Time.current, format: :short) %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Channels Table %>
+    <div class="mt-8 bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-100">
+        <h3 class="text-lg leading-6 font-semibold text-gray-900">Active Channels</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Channel
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Messages
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Last Activity
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% if @channels.any? %>
+              <% @channels.each do |channel| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-hashtag text-brand-blue text-sm"></i>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900"><%= channel.channel || "unknown" %></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      <%= number_with_delimiter(channel.message_count) %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= channel.last_activity ? time_ago_in_words(channel.last_activity) + " trước" : "N/A" %>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="3" class="px-6 py-12 text-center text-gray-400">
+                  <i class="fa-solid fa-inbox text-4xl mb-2"></i>
+                  <p>Chưa có channels nào</p>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

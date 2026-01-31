@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   get "dashboard/index"
   get "dashboard/call_center"
   get "dashboard/call_center_stats", to: "dashboard#call_center_stats", as: :call_center_stats
+
+  # Hidden System Monitoring Portal (super_admin only)
+  get "solid", to: "admin/solid#index", as: :solid_portal
+
   # TASK-014: Use custom controllers for auth logging
   devise_for :users, controllers: {
     sessions: "users/sessions",
@@ -50,9 +54,33 @@ Rails.application.routes.draw do
     end
   end
 
-  # TASK-053: Admin Settings
+  # TASK-053: Admin Settings & Solid Stack Monitoring (super_admin only)
   namespace :admin do
     resource :settings, only: %i[show update]
+    # Hidden Solid Stack monitoring portal (accessible via /solid)
+    resources :solid, only: [:index], controller: "solid"
+    # Custom-built Solid Stack monitoring dashboards with management actions
+    resource :solid_queue, only: [:show], controller: "solid_queue" do
+      member do
+        post :retry
+        post :retry_all
+        delete :discard
+        delete :discard_all
+        delete :clear_completed
+      end
+    end
+    resource :solid_cache, only: [:show], controller: "solid_cache" do
+      member do
+        delete :clear_all
+        delete :clear_old
+      end
+      collection do
+        delete "entry/:id", action: :destroy, as: :delete_entry
+      end
+    end
+    resource :solid_cable, only: [:show], controller: "solid_cable" do
+      delete :cleanup, on: :member
+    end
   end
 
   # Sales Workspace (TASK-050 v2: Productivity-focused screen)

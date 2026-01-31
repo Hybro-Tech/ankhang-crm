@@ -77,3 +77,7 @@ end
 gem "solid_cable", "~> 3.0"
 gem "solid_cache", "~> 1.0"
 gem "solid_queue", "~> 1.3"
+
+# Solid Stack Monitoring Dashboards (Custom-built)
+gem "chartkick"  # Charts for dashboards
+gem "groupdate"  # Date grouping for charts
