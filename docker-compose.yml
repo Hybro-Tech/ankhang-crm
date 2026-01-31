@@ -22,6 +22,10 @@ services:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=${DB_PASSWORD:-password}
+      # Web Push VAPID keys (TASK-056)
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_SUBJECT=${VAPID_SUBJECT:-mailto:admin@ankhang.com}
     depends_on:
       db:
         condition: service_healthy
@@ -91,6 +95,10 @@ services:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=${DB_PASSWORD:-password}
+      # Web Push VAPID keys (TASK-056)
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_SUBJECT=${VAPID_SUBJECT:-mailto:admin@ankhang.com}
     depends_on:
       db:
         condition: service_healthy
