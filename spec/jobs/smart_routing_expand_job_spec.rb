@@ -26,7 +26,7 @@ RSpec.describe SmartRoutingExpandJob, type: :job do
 
   # Skip smart routing initialization for tests
   before do
-    allow_any_instance_of(Contact).to receive(:initialize_smart_routing)
+    allow_any_instance_of(Contact).to receive(:initialize_smart_routing_and_broadcast)
   end
 
   describe "#perform with contact_id" do

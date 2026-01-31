@@ -1,6 +1,5 @@
 <turbo-frame id="contact_list_frame">
-<%# TASK-035: Real-time subscription for new contacts %>
-<%= turbo_stream_from "user_#{current_user.id}_contacts" %>
+<%# NOTE: turbo_stream_from subscription is in show.html.erb (outside turbo-frame) %>
 
 <div class="overflow-x-auto">
   <table class="min-w-full divide-y divide-gray-100">

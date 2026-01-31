@@ -76,6 +76,9 @@ class SmartRoutingService
     # TASK-057: Notify the first sale
     notify_user_about_contact(first_sale)
 
+    # TASK-055: Broadcast contact row to first Sale (real-time UI update)
+    broadcast_contact_to_user(first_sale)
+
     # TASK-054: Schedule first visibility expansion job
     schedule_expansion_job
 
@@ -138,19 +141,20 @@ class SmartRoutingService
     Rails.logger.info "[SmartRouting] Scheduled first expansion for contact #{@contact.id} in #{interval} minutes"
   end
 
-  # rubocop:disable Naming/PredicateMethod
-  def switch_to_pool_pick
+  def switch_to_pool_pick # rubocop:disable Naming/PredicateMethod
+    # IMPORTANT: Save already_notified BEFORE clearing visible_to_user_ids
+    already_notified_ids = @contact.visible_to_user_ids || []
+
     @contact.update!(
       visible_to_user_ids: nil,
       last_expanded_at: nil
     )
 
-    # TASK-057: Pool mode - notify all sales in team
-    notify_all_sales_in_team
+    # TASK-057: Pool mode - notify all sales in team (skip already notified)
+    notify_all_sales_in_team(skip_user_ids: already_notified_ids)
 
     false
   end
-  # rubocop:enable Naming/PredicateMethod
 
   def random_sale_from_team(team, exclude_ids: [])
     # Get users in team with Sale role
@@ -181,6 +185,9 @@ class SmartRoutingService
         service_type_id: @contact.service_type_id
       }
     )
+
+    # Broadcast badge update immediately after creating notification
+    broadcast_badge_to_user(user)
   rescue StandardError => e
     Rails.logger.error("Failed to notify user #{user.id} about contact #{@contact.id}: #{e.message}")
   end
@@ -198,8 +205,32 @@ class SmartRoutingService
     Rails.logger.error("[SmartRouting] Failed to broadcast contact #{@contact.id} to user #{user.id}: #{e.message}")
   end
 
+  # TASK-035: Broadcast notification badge count to user
+  def broadcast_badge_to_user(user)
+    unread_count = Notification.where(user_id: user.id).unread.count
+
+    badge_html = if unread_count.positive?
+                   display = unread_count > 9 ? "9+" : unread_count.to_s
+                   %(<span id="notification_badge" class="absolute -top-1 -right-1 flex items-center ) +
+                     %(justify-center h-5 w-5 rounded-full bg-brand-red text-white text-xs font-bold ) +
+                     %(ring-2 ring-white">#{display}</span>)
+                 else
+                   %(<span id="notification_badge" class="hidden"></span>)
+                 end
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "user_#{user.id}_notifications",
+      target: "notification_badge",
+      html: badge_html
+    )
+    Rails.logger.info "[SmartRouting] Broadcast badge (#{unread_count}) to user #{user.id}"
+  rescue StandardError => e
+    Rails.logger.error("[SmartRouting] Failed to broadcast badge to user #{user.id}: #{e.message}")
+  end
+
   # TASK-057: Pool mode - make contact visible to ALL sales in team and notify them
-  def notify_all_sales_in_team
+  # @param skip_user_ids [Array<Integer>] User IDs that have already been notified
+  def notify_all_sales_in_team(skip_user_ids: [])
     team = @contact.service_type&.team
     return unless team
 
@@ -214,8 +245,8 @@ class SmartRoutingService
     all_sale_ids = all_sales.pluck(:id)
     return if all_sale_ids.empty?
 
-    # Get already notified user IDs (from previous visibility)
-    already_notified = @contact.visible_to_user_ids || []
+    # Combine skip_user_ids with any existing visible_to_user_ids
+    already_notified = (skip_user_ids + (@contact.visible_to_user_ids || [])).uniq
 
     # Set visibility to ALL sales (Pool mode = everyone can pick)
     @contact.update!(visible_to_user_ids: all_sale_ids)
@@ -223,6 +254,7 @@ class SmartRoutingService
     # Notify only those who haven't been notified yet
     all_sales.where.not(id: already_notified).find_each do |user|
       notify_user_about_contact(user)
+      broadcast_contact_to_user(user)
     end
   end
 end

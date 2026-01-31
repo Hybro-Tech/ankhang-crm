@@ -111,11 +111,10 @@ class Contact < ApplicationRecord
   before_validation :normalize_zalo_id
   before_save :set_team_from_service_type, if: :service_type_id_changed?
   after_create :mark_as_just_created
-  after_create :initialize_smart_routing
   after_save :set_assigned_at, if: :saved_change_to_assigned_user_id?
 
-  # TASK-035: Real-time broadcasts
-  after_create_commit :broadcast_contact_created
+  # TASK-035/054: Real-time broadcasts (must run AFTER commit for solid_cable to work)
+  after_create_commit :initialize_smart_routing_and_broadcast
   after_update_commit :broadcast_contact_picked, if: :saved_change_to_assigned_user_id?
 
   # TASK-035: In-app notifications for Sales (included in broadcast_contact_created)
@@ -301,33 +300,23 @@ class Contact < ApplicationRecord
     @just_created == true
   end
 
-  # TASK-053: Initialize Smart Routing visibility on create
-  def initialize_smart_routing
-    SmartRoutingService.initialize_visibility(self)
-  end
-
-  # TASK-035: Broadcast new contact to visible users + create notifications
-  def broadcast_contact_created
+  # TASK-035/054: Initialize Smart Routing and broadcast (runs AFTER commit)
+  # Combined method to ensure proper order: visibility → notify → broadcast
+  def initialize_smart_routing_and_broadcast
     # Skip in test environment (no Warden context for can? helper in partial)
     return if Rails.env.test?
-    # Guard: Only run on actual CREATE, not on subsequent updates
+    # Guard: Only run on actual CREATE
     return unless just_created?
 
-    # Clear flag immediately to prevent any duplicate calls
+    # Clear flag immediately to prevent duplicate calls
     @just_created = false
 
-    # STEP 1: Create in-app notifications for visible Sales
-    NotificationService.notify_contact_created(self)
+    # Initialize Smart Routing (sets visibility + sends notifications + broadcasts contact + badge)
+    SmartRoutingService.initialize_visibility(self)
 
-    # STEP 2: Broadcast badge update
-    broadcast_notification_badge_update
-
-    # STEP 3: Broadcast contact list update (prepend new contact to table)
-    broadcast_contact_list_update
-
-    Rails.logger.info "[Contact#broadcast_created] Contact #{id} - notifications, badge, and list updated"
+    Rails.logger.info "[Contact#after_create_commit] Contact #{id} - smart routing initialized"
   rescue StandardError => e
-    Rails.logger.error "[Contact#broadcast_created] Error: #{e.message}"
+    Rails.logger.error "[Contact#after_create_commit] Error: #{e.message}"
   end
 
   # TASK-035: Broadcast contact picked - remove from other users' lists
