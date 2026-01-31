@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_30_025132) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_31_094753) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -154,6 +154,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_30_025132) do
     t.string "name"
     t.string "category"
     t.index ["code"], name: "index_permissions_on_code", unique: true
+  end
+
+  create_table "push_subscriptions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "endpoint", null: false
+    t.string "p256dh", null: false
+    t.string "auth", null: false
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "endpoint"], name: "index_push_subscriptions_on_user_id_and_endpoint", unique: true
+    t.index ["user_id"], name: "index_push_subscriptions_on_user_id"
   end
 
   create_table "role_permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -455,6 +467,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_30_025132) do
   add_foreign_key "interactions", "contacts"
   add_foreign_key "interactions", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "push_subscriptions", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "saturday_schedule_users", "saturday_schedules"
