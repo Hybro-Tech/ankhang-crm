@@ -106,6 +106,7 @@ services:
         condition: service_healthy
     networks:
       - backend
+      - frontend  # TASK-056: Required for Web Push to external services (FCM)
     volumes:
       - .:/app
       - bundle_cache:/usr/local/bundle

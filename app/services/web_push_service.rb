@@ -51,7 +51,7 @@ class WebPushService
         user,
         title: "📞 Khách hàng mới",
         body: "#{contact.name || contact.phone} - #{contact.service_type&.name}",
-        url: "/sales_workspace?tab=new_contacts",
+        url: "/sales/workspace?tab=new_contacts&highlight=contact_#{contact.id}",
         tag: "contact-#{contact.id}",
         data: { contact_id: contact.id }
       )

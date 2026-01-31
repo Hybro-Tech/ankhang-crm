@@ -14,7 +14,7 @@
     </thead>
     <tbody id="new_contacts_table_body" class="bg-white divide-y divide-gray-100">
       <% contacts.each do |contact| %>
-        <tr class="hover:bg-blue-50/50 transition-all duration-200 group relative">
+        <tr id="contact_<%= contact.id %>" class="hover:bg-blue-50/50 transition-all duration-200 group relative">
           <!-- Customer Info -->
           <td class="pl-6 pr-3 py-4 whitespace-nowrap cursor-pointer"
               data-action="click->workspace-tabs#showPreview"
