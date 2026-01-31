@@ -1,0 +1,93 @@
+<%# Scheduled Jobs Detail View %>
+
+<div class="bg-gray-50 min-h-screen py-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <%# Header %>
+    <div class="sm:flex sm:items-center sm:justify-between mb-8">
+      <div class="flex items-center">
+        <%= link_to admin_solid_queue_path, class: "mr-4 p-2 rounded-lg hover:bg-gray-200 transition-colors" do %>
+          <i class="fa-solid fa-arrow-left text-gray-600"></i>
+        <% end %>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">
+            <i class="fa-solid fa-calendar-clock text-purple-600 mr-2"></i>
+            Scheduled Jobs
+          </h1>
+          <p class="mt-1 text-sm text-gray-500">Jobs đã được lên lịch (<%= @stats[:scheduled] %> jobs)</p>
+        </div>
+      </div>
+      <div class="mt-4 sm:mt-0">
+        <%= link_to admin_solid_queue_path, 
+            class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 shadow-sm" do %>
+          <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại Dashboard
+        <% end %>
+      </div>
+    </div>
+
+    <%# Jobs Table %>
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
+        <% if @scheduled_jobs.any? %>
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Job ID</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Job Class</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Queue</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Arguments</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Scheduled At</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time Until</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @scheduled_jobs.each do |execution| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
+                    #<%= execution.job_id %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <%= execution.job&.class_name %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                      <%= execution.queue_name %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title="<%= execution.job&.arguments&.to_json %>">
+                    <%= truncate(execution.job&.arguments&.to_json.to_s, length: 50) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span title="<%= execution.scheduled_at&.strftime('%Y-%m-%d %H:%M:%S') %>">
+                      <%= execution.scheduled_at&.strftime('%H:%M:%S') %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <% if execution.scheduled_at && execution.scheduled_at > Time.current %>
+                      <span class="text-purple-600 font-medium">
+                        <i class="fa-solid fa-hourglass-half mr-1"></i>
+                        trong <%= distance_of_time_in_words(Time.current, execution.scheduled_at) %>
+                      </span>
+                    <% else %>
+                      <span class="text-green-600 font-medium">
+                        <i class="fa-solid fa-play mr-1"></i>
+                        Sẵn sàng chạy
+                      </span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="p-12 text-center">
+            <div class="bg-purple-50 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fa-solid fa-calendar-check text-4xl text-purple-400"></i>
+            </div>
+            <p class="text-lg font-medium text-gray-900 mb-1">Không có scheduled jobs</p>
+            <p class="text-sm text-gray-500">Hiện không có jobs nào được lên lịch</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

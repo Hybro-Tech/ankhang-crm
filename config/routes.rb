@@ -68,6 +68,12 @@ Rails.application.routes.draw do
         delete :discard_all
         delete :clear_completed
       end
+      collection do
+        get :pending
+        get :scheduled
+        get :failed
+        get :completed
+      end
     end
     resource :solid_cache, only: [:show], controller: "solid_cache" do
       member do

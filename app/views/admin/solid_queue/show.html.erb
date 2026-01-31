@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <%# KPI Cards %>
+    <%# KPI Cards - Clickable to view details %>
     <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6 mb-8">
       <%# Total Jobs %>
       <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4">
@@ -56,44 +56,47 @@
         </div>
       </div>
 
-      <%# Pending %>
-      <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4">
+      <%# Pending - Clickable %>
+      <%= link_to pending_admin_solid_queue_path, class: "bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4 hover:border-yellow-300 hover:shadow-md transition-all cursor-pointer group" do %>
         <div class="flex items-center">
-          <div class="flex-shrink-0 bg-yellow-50 rounded-md p-2">
+          <div class="flex-shrink-0 bg-yellow-50 rounded-md p-2 group-hover:bg-yellow-100 transition-colors">
             <i class="fa-solid fa-clock text-yellow-600"></i>
           </div>
           <div class="ml-3">
             <p class="text-xs text-gray-500">Pending</p>
             <p class="text-lg font-bold text-gray-900"><%= number_with_delimiter(@stats[:pending]) %></p>
           </div>
+          <i class="fa-solid fa-chevron-right text-gray-300 ml-auto group-hover:text-yellow-500 transition-colors"></i>
         </div>
-      </div>
+      <% end %>
 
-      <%# Scheduled %>
-      <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4">
+      <%# Scheduled - Clickable %>
+      <%= link_to scheduled_admin_solid_queue_path, class: "bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4 hover:border-purple-300 hover:shadow-md transition-all cursor-pointer group" do %>
         <div class="flex items-center">
-          <div class="flex-shrink-0 bg-purple-50 rounded-md p-2">
+          <div class="flex-shrink-0 bg-purple-50 rounded-md p-2 group-hover:bg-purple-100 transition-colors">
             <i class="fa-solid fa-calendar-clock text-purple-600"></i>
           </div>
           <div class="ml-3">
             <p class="text-xs text-gray-500">Scheduled</p>
             <p class="text-lg font-bold text-gray-900"><%= number_with_delimiter(@stats[:scheduled]) %></p>
           </div>
+          <i class="fa-solid fa-chevron-right text-gray-300 ml-auto group-hover:text-purple-500 transition-colors"></i>
         </div>
-      </div>
+      <% end %>
 
-      <%# Failed %>
-      <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4">
+      <%# Failed - Clickable %>
+      <%= link_to failed_admin_solid_queue_path, class: "bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4 hover:border-red-300 hover:shadow-md transition-all cursor-pointer group" do %>
         <div class="flex items-center">
-          <div class="flex-shrink-0 bg-red-50 rounded-md p-2">
+          <div class="flex-shrink-0 bg-red-50 rounded-md p-2 group-hover:bg-red-100 transition-colors">
             <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
           </div>
           <div class="ml-3">
             <p class="text-xs text-gray-500">Failed</p>
             <p class="text-lg font-bold text-red-600"><%= number_with_delimiter(@stats[:failed]) %></p>
           </div>
+          <i class="fa-solid fa-chevron-right text-gray-300 ml-auto group-hover:text-red-500 transition-colors"></i>
         </div>
-      </div>
+      <% end %>
 
       <%# Workers %>
       <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4">
@@ -108,18 +111,19 @@
         </div>
       </div>
 
-      <%# Completed Today %>
-      <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4">
+      <%# Completed Today - Clickable %>
+      <%= link_to completed_admin_solid_queue_path, class: "bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 p-4 hover:border-green-300 hover:shadow-md transition-all cursor-pointer group" do %>
         <div class="flex items-center">
-          <div class="flex-shrink-0 bg-green-50 rounded-md p-2">
+          <div class="flex-shrink-0 bg-green-50 rounded-md p-2 group-hover:bg-green-100 transition-colors">
             <i class="fa-solid fa-check-circle text-green-600"></i>
           </div>
           <div class="ml-3">
             <p class="text-xs text-gray-500">Hôm nay</p>
             <p class="text-lg font-bold text-gray-900"><%= number_with_delimiter(@stats[:completed_today]) %></p>
           </div>
+          <i class="fa-solid fa-chevron-right text-gray-300 ml-auto group-hover:text-green-500 transition-colors"></i>
         </div>
-      </div>
+      <% end %>
     </div>
 
     <%# Content Grid %>
