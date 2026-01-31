@@ -176,7 +176,7 @@ class SmartRoutingService
 
   # TASK-057: Send notification to user when contact becomes visible to them
   def notify_user_about_contact(user)
-    NotificationService.notify(
+    notification = NotificationService.notify(
       user: user,
       type: "contact_created",
       notifiable: @contact,
@@ -188,6 +188,9 @@ class SmartRoutingService
 
     # Broadcast badge update immediately after creating notification
     broadcast_badge_to_user(user)
+
+    # Broadcast notification item to dropdown (real-time)
+    broadcast_notification_to_user(user, notification)
 
     # TASK-056: Send Web Push notification (for when browser is closed)
     WebPushService.notify_contact_assigned(user, @contact)
@@ -203,6 +206,10 @@ class SmartRoutingService
       partial: "sales_workspace/contact_row_broadcast",
       locals: { contact: @contact }
     )
+
+    # Update KPI count
+    broadcast_kpi_to_user(user)
+
     Rails.logger.info "[SmartRouting] Broadcast contact #{@contact.id} to user #{user.id}"
   rescue StandardError => e
     Rails.logger.error("[SmartRouting] Failed to broadcast contact #{@contact.id} to user #{user.id}: #{e.message}")
@@ -229,6 +236,44 @@ class SmartRoutingService
     Rails.logger.info "[SmartRouting] Broadcast badge (#{unread_count}) to user #{user.id}"
   rescue StandardError => e
     Rails.logger.error("[SmartRouting] Failed to broadcast badge to user #{user.id}: #{e.message}")
+  end
+
+  # Broadcast notification item to dropdown
+  def broadcast_notification_to_user(user, notification)
+    return unless notification
+
+    Turbo::StreamsChannel.broadcast_prepend_to(
+      "user_#{user.id}_notifications",
+      target: "notification_items",
+      partial: "notifications/notification",
+      locals: { notification: notification }
+    )
+  rescue StandardError => e
+    Rails.logger.error("[SmartRouting] Failed to broadcast notification to user #{user.id}: #{e.message}")
+  end
+
+  # Broadcast KPI count update to user
+  def broadcast_kpi_to_user(user)
+    # Count new contacts visible to this user
+    team_ids = user.teams.pluck(:id)
+    new_contacts_count = Contact.where(status: :new_contact, team_id: team_ids)
+                                .where(assigned_user_id: nil)
+                                .where(
+                                  "visible_to_user_ids IS NULL OR JSON_CONTAINS(visible_to_user_ids, ?)",
+                                  user.id.to_s
+                                )
+                                .count
+
+    kpi_html = '<span id="kpi_new_contacts" class="inline-flex items-center justify-center ' \
+               "w-8 h-8 rounded-full bg-blue-100 text-brand-blue font-bold\">#{new_contacts_count}</span>"
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "user_#{user.id}_contacts",
+      target: "kpi_new_contacts",
+      html: kpi_html
+    )
+  rescue StandardError => e
+    Rails.logger.error("[SmartRouting] Failed to broadcast KPI to user #{user.id}: #{e.message}")
   end
 
   # TASK-057: Pool mode - make contact visible to ALL sales in team and notify them

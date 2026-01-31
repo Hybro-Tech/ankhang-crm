@@ -9,7 +9,7 @@
       Đánh dấu đã đọc
     <% end %>
   </div>
-  <div class="max-h-80 overflow-y-auto">
+  <div id="notification_items" class="max-h-80 overflow-y-auto">
     <% if @notifications.any? %>
       <%= render @notifications %>
       

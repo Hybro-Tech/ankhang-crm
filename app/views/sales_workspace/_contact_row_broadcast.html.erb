@@ -3,7 +3,9 @@
 
 <tr class="hover:bg-blue-50/50 transition-all duration-200 group relative bg-green-50" id="contact_<%= contact.id %>">
   <!-- Customer Info -->
-  <td class="pl-6 pr-3 py-4 whitespace-nowrap">
+  <td class="pl-6 pr-3 py-4 whitespace-nowrap cursor-pointer"
+      data-action="click->workspace-tabs#showPreview"
+      data-preview-url="<%= sales_workspace_preview_path(contact) %>">
     <div class="flex items-center">
       <div class="flex-shrink-0 h-11 w-11 bg-white border border-green-300 rounded-full flex items-center justify-center text-green-600 font-bold text-lg shadow-sm">
          <% if contact.name.present? %>
