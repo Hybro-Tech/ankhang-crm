@@ -54,6 +54,13 @@ Rails.application.routes.draw do
     end
   end
 
+  # TASK-056: Web Push Subscriptions
+  resources :push_subscriptions, only: %i[create destroy] do
+    collection do
+      get :vapid_public_key
+    end
+  end
+
   # TASK-053: Admin Settings & Solid Stack Monitoring (super_admin only)
   namespace :admin do
     resource :settings, only: %i[show update]

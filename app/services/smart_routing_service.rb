@@ -188,6 +188,9 @@ class SmartRoutingService
 
     # Broadcast badge update immediately after creating notification
     broadcast_badge_to_user(user)
+
+    # TASK-056: Send Web Push notification (for when browser is closed)
+    WebPushService.notify_contact_assigned(user, @contact)
   rescue StandardError => e
     Rails.logger.error("Failed to notify user #{user.id} about contact #{@contact.id}: #{e.message}")
   end

@@ -69,6 +69,9 @@ class User < ApplicationRecord
   # TASK-057: Notifications
   has_many :notifications, dependent: :destroy
 
+  # TASK-056: Web Push Subscriptions
+  has_many :push_subscriptions, dependent: :destroy
+
   # TASK-011: Allow login with username or email
   # Override Devise's find_for_database_authentication
   def self.find_for_database_authentication(warden_conditions)

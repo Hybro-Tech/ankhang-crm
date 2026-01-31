@@ -48,6 +48,7 @@ gem "devise"       # User authentication
 
 # Utilities
 gem "kaminari" # Pagination
+gem "web-push" # Web Push notifications via VAPID
 
 # ============================================
 # Development & Test Groups
