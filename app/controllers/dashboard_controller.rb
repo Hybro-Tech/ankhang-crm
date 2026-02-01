@@ -71,7 +71,7 @@ class DashboardController < ApplicationController
     else
       # Admin or fallback
       load_dashboard_stats
-      @recent_activities = mock_recent_activities
+      @recent_activities = build_recent_activities
       load_recent_contacts
       prepare_inline_form
     end
@@ -79,20 +79,33 @@ class DashboardController < ApplicationController
 
   # --- Admin / Generic ---
   def load_dashboard_stats
-    @kpi = build_admin_kpi
+    @period = params[:period] || "month"
+    @kpi = build_admin_kpi(@period)
     @team_stats = build_team_stats
     @sales_stats = build_sales_stats
     @chart_data = build_admin_chart_data
-    @top_performers = mock_top_performers
+    @top_performers = build_top_performers
+    @status_distribution = build_status_distribution
   end
 
-  def build_admin_kpi
+  def build_admin_kpi(period = "month")
+    current_range = calculate_date_range(period)
+    previous_range = calculate_previous_range(period)
+
+    current_contacts = Contact.where(created_at: current_range).count
+    previous_contacts = Contact.where(created_at: previous_range).count
+
+    current_closed = Contact.status_closed_new.where(updated_at: current_range).count
+    previous_closed = Contact.status_closed_new.where(updated_at: previous_range).count
+
     {
       total_contacts: Contact.count,
-      total_employees: User.count,
-      contacts_this_month: Contact.where(created_at: Time.zone.now.beginning_of_month..).count,
-      won_deals_count: Contact.status_closed_new.count,
-      revenue: 0, # TODO: Calculate from Deal model when implemented
+      total_employees: User.where(status: :active).count,
+      new_contacts: current_contacts,
+      new_contacts_trend: calculate_trend(current_contacts, previous_contacts),
+      won_deals_count: current_closed,
+      won_deals_trend: calculate_trend(current_closed, previous_closed),
+      revenue: 0, # Phase 2 - Deal model
       conversion_rate: calculate_conversion_rate
     }
   end
@@ -131,6 +144,59 @@ class DashboardController < ApplicationController
 
     closed = Contact.status_closed_new.count
     ((closed.to_f / total) * 100).round(1)
+  end
+
+  def calculate_date_range(period)
+    case period
+    when "today"
+      Time.zone.today.all_day
+    when "week"
+      Time.zone.now.beginning_of_week..Time.zone.now
+    else
+      Time.zone.now.beginning_of_month..Time.zone.now
+    end
+  end
+
+  def calculate_previous_range(period)
+    case period
+    when "today"
+      1.day.ago.all_day
+    when "week"
+      1.week.ago.all_week
+    else
+      1.month.ago.all_month
+    end
+  end
+
+  def calculate_trend(current_value, previous_value)
+    return 0 if previous_value.zero?
+
+    ((current_value - previous_value).to_f / previous_value * 100).round(1)
+  end
+
+  def build_status_distribution
+    Contact.group(:status).count
+  end
+
+  def build_top_performers(limit = 5)
+    User.joins(:roles)
+        .where(roles: { dashboard_type: :sale }, status: :active)
+        .left_joins(:assigned_contacts)
+        .select(
+          "users.id",
+          "users.name",
+          "COUNT(contacts.id) as picked_count",
+          "SUM(CASE WHEN contacts.status = 'closed_new' THEN 1 ELSE 0 END) as closed_count"
+        )
+        .group("users.id, users.name")
+        .order(closed_count: :desc, picked_count: :desc)
+        .limit(limit)
+  end
+
+  def build_recent_activities(limit = 5)
+    ActivityLog.includes(:user, :subject)
+               .order(created_at: :desc)
+               .limit(limit)
   end
 
   def load_recent_contacts

@@ -1,27 +1,44 @@
 <div class="min-h-screen bg-gray-50 flex flex-col">
-  <%# Header %>
+  <%# Header with Date Filter %>
   <div class="sm:flex sm:items-center sm:justify-between mb-8">
     <div>
       <h1 class="text-2xl font-bold text-gray-900">Tổng quan Quản trị</h1>
       <p class="mt-1 text-sm text-gray-500">Tổng quan về hiệu quả kinh doanh toàn hệ thống.</p>
     </div>
     <div class="mt-4 sm:mt-0 flex space-x-3">
-      <span class="inline-flex rounded-md shadow-sm">
-        <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
-          <i class="fa-solid fa-calendar mr-2 text-gray-400"></i> Tháng này
+      <%# Date Filter Dropdown %>
+      <div class="relative" data-controller="dropdown">
+        <button type="button" 
+                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
+                data-action="click->dropdown#toggle">
+          <i class="fa-solid fa-calendar mr-2 text-gray-400"></i>
+          <%= case @period
+              when "today" then "Hôm nay"
+              when "week" then "Tuần này"
+              else "Tháng này"
+              end %>
+          <i class="fa-solid fa-chevron-down ml-2 text-gray-400"></i>
         </button>
-      </span>
+        <div class="hidden absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 z-10" data-dropdown-target="menu">
+          <%= link_to "Hôm nay", dashboard_index_path(period: "today"), 
+              class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 #{'bg-blue-50 font-medium' if @period == 'today'}" %>
+          <%= link_to "Tuần này", dashboard_index_path(period: "week"), 
+              class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 #{'bg-blue-50 font-medium' if @period == 'week'}" %>
+          <%= link_to "Tháng này", dashboard_index_path(period: "month"), 
+              class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 #{'bg-blue-50 font-medium' if @period == 'month'}" %>
+        </div>
+      </div>
       <span class="inline-flex rounded-md shadow-sm">
-        <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-blue-900 focus:outline-none shadow-md" data-action="click->export#downloadReport">
+        <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-blue-900 focus:outline-none shadow-md">
           <i class="fa-solid fa-download mr-2"></i> Xuất báo cáo
         </button>
       </span>
     </div>
   </div>
 
-  <%# KPI Cards - 4 columns %>
-  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-    <%# Total Contacts %>
+  <%# KPI Cards - 5 columns matching wireframe %>
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5 mb-8">
+    <%# Card 1: Total Contacts %>
     <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
       <div class="p-5">
         <div class="flex items-center">
@@ -40,26 +57,36 @@
       </div>
     </div>
 
-    <%# Total Employees %>
+    <%# Card 2: New Contacts (with trend) %>
     <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
       <div class="p-5">
         <div class="flex items-center">
           <div class="flex-shrink-0 bg-orange-50 rounded-md p-3">
-            <i class="fa-solid fa-id-card text-brand-orange text-xl"></i>
+            <i class="fa-solid fa-user-plus text-brand-orange text-xl"></i>
           </div>
           <div class="ml-5 w-0 flex-1">
             <dl>
-              <dt class="text-sm font-medium text-gray-500 truncate">Tổng nhân viên</dt>
+              <dt class="text-sm font-medium text-gray-500 truncate">Khách mới</dt>
               <dd>
-                <div class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(@kpi[:total_employees]) %></div>
+                <div class="text-2xl font-bold text-gray-900"><%= number_with_delimiter(@kpi[:new_contacts]) %></div>
               </dd>
             </dl>
           </div>
         </div>
       </div>
+      <div class="bg-gray-50 px-5 py-3">
+        <div class="text-sm">
+          <% if @kpi[:new_contacts_trend] >= 0 %>
+            <span class="text-green-600 font-semibold"><i class="fa-solid fa-arrow-up text-xs mr-1"></i> <%= @kpi[:new_contacts_trend] %>%</span>
+          <% else %>
+            <span class="text-red-600 font-semibold"><i class="fa-solid fa-arrow-down text-xs mr-1"></i> <%= @kpi[:new_contacts_trend].abs %>%</span>
+          <% end %>
+          <span class="text-gray-500 ml-1">so với kỳ trước</span>
+        </div>
+      </div>
     </div>
 
-    <%# Won Deals %>
+    <%# Card 3: Won Deals (with trend) %>
     <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
       <div class="p-5">
         <div class="flex items-center">
@@ -68,7 +95,7 @@
           </div>
           <div class="ml-5 w-0 flex-1">
             <dl>
-              <dt class="text-sm font-medium text-gray-500 truncate">Đơn chốt tháng này</dt>
+              <dt class="text-sm font-medium text-gray-500 truncate">Đơn chốt thành công</dt>
               <dd>
                 <div class="text-2xl font-bold text-gray-900"><%= @kpi[:won_deals_count] %></div>
               </dd>
@@ -76,9 +103,41 @@
           </div>
         </div>
       </div>
+      <div class="bg-gray-50 px-5 py-3">
+        <div class="text-sm">
+          <% if @kpi[:won_deals_trend] >= 0 %>
+            <span class="text-green-600 font-semibold"><i class="fa-solid fa-arrow-up text-xs mr-1"></i> <%= @kpi[:won_deals_trend] %>%</span>
+          <% else %>
+            <span class="text-red-600 font-semibold"><i class="fa-solid fa-arrow-down text-xs mr-1"></i> <%= @kpi[:won_deals_trend].abs %>%</span>
+          <% end %>
+          <span class="text-gray-500 ml-1">so với kỳ trước</span>
+        </div>
+      </div>
     </div>
 
-    <%# Conversion Rate %>
+    <%# Card 4: Revenue (Phase 2 placeholder) %>
+    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-red-50 rounded-md p-3">
+            <i class="fa-solid fa-sack-dollar text-brand-red text-xl"></i>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Doanh thu</dt>
+              <dd>
+                <div class="text-2xl font-bold text-gray-900">-</div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-50 px-5 py-3">
+        <div class="text-sm text-gray-400">Phase 2</div>
+      </div>
+    </div>
+
+    <%# Card 5: Conversion Rate %>
     <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
       <div class="p-5">
         <div class="flex items-center">
@@ -97,6 +156,7 @@
       </div>
     </div>
   </div>
+
 
   <%# Charts Section %>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
@@ -149,8 +209,8 @@
           <thead class="bg-gray-50">
             <tr>
               <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Họ tên</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Đơn hàng</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doanh thu</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KH Picked</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chốt</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -159,21 +219,28 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
                     <div class="flex-shrink-0 h-8 w-8">
-                      <img class="h-8 w-8 rounded-full" src="<%= performer[:avatar] %>" alt="User Avatar">
+                      <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name=<%= URI.encode_www_form_component(performer.name) %>&background=random" alt="User Avatar">
                     </div>
                     <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900"><%= performer[:name] %></div>
+                      <div class="text-sm font-medium text-gray-900"><%= performer.name %></div>
                     </div>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    <%= performer[:deals] %>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                    <%= performer.picked_count %>
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <%= number_to_currency(performer[:revenue], unit: "₫", format: "%n %u", precision: 0) %>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    <%= performer.closed_count %>
+                  </span>
                 </td>
+              </tr>
+            <% end %>
+            <% if @top_performers.empty? %>
+              <tr>
+                <td colspan="3" class="px-6 py-4 text-center text-gray-500 text-sm">Chưa có dữ liệu</td>
               </tr>
             <% end %>
           </tbody>
@@ -183,22 +250,40 @@
 
     <%# Recent Activities %>
     <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
-      <div class="px-6 py-5 border-b border-gray-100">
+      <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
         <h3 class="text-lg leading-6 font-semibold text-gray-900">🔔 Hoạt động hệ thống</h3>
+        <%= link_to "Xem tất cả", "#", class: "text-sm text-brand-blue hover:text-blue-800 font-medium" %>
       </div>
-      <ul class="divide-y divide-gray-200">
+      <ul class="divide-y divide-gray-200 max-h-80 overflow-y-auto">
         <% @recent_activities.each do |activity| %>
           <li class="p-4 hover:bg-gray-50 transition-colors">
             <div class="flex space-x-3">
-              <div class="mt-1">
-                <i class="<%= activity[:icon] %> <%= activity[:color] %>"></i>
+              <div class="flex-shrink-0">
+                <% icon_class = case activity.action
+                   when 'create' then 'fa-plus-circle text-green-500'
+                   when 'update' then 'fa-edit text-blue-500'
+                   when 'delete' then 'fa-trash text-red-500'
+                   when 'login' then 'fa-sign-in-alt text-purple-500'
+                   when 'pick' then 'fa-hand-pointer text-orange-500'
+                   else 'fa-circle text-gray-400'
+                   end %>
+                <i class="fa-solid <%= icon_class %>"></i>
               </div>
-              <div class="ml-3 flex-1">
-                <p class="text-sm text-gray-900"><%= activity[:text] %></p>
-                <p class="text-xs text-gray-400 mt-1"><%= activity[:time] %></p>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-900">
+                  <span class="font-medium"><%= activity.user&.name || 'Hệ thống' %></span>
+                  <%= activity.action %>
+                  <% if activity.subject %>
+                    <span class="text-gray-500"><%= activity.subject_type.underscore.humanize %></span>
+                  <% end %>
+                </p>
+                <p class="text-xs text-gray-400 mt-1"><%= time_ago_in_words(activity.created_at) %> trước</p>
               </div>
             </div>
           </li>
+        <% end %>
+        <% if @recent_activities.empty? %>
+          <li class="p-4 text-center text-gray-500 text-sm">Chưa có hoạt động nào</li>
         <% end %>
       </ul>
     </div>
