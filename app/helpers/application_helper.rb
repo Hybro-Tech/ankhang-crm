@@ -6,7 +6,8 @@ module ApplicationHelper
   #   If provided, link is hidden when user lacks permission
   def sidebar_link(title, path, icon, permission: nil, is_active: false)
     # TASK-015: Skip rendering if permission required but not granted
-    return nil if permission.present? && !can_access?(permission)
+    # Super admin bypasses permission check
+    return nil if permission.present? && !current_user&.super_admin? && !can_access?(permission)
 
     # Check active state:
     # 1. Explicitly active
