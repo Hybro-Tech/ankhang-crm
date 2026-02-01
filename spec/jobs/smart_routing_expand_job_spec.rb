@@ -51,7 +51,7 @@ RSpec.describe SmartRoutingExpandJob, type: :job do
         described_class.new.perform(contact.id)
 
         expect(described_class).to have_received(:set).with(wait: 2.minutes)
-        expect(job_double).to have_received(:perform_later).with(contact.id)
+        expect(job_double).to have_received(:perform_later).with(contact.id, nil)
       end
     end
 

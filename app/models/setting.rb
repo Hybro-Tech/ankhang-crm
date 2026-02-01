@@ -90,8 +90,14 @@ class Setting < ApplicationRecord
     "working_hours_start" => { value: "08:00", description: "Giờ bắt đầu làm việc (T2-T6)" },
     "working_hours_end" => { value: "17:30", description: "Giờ kết thúc làm việc (T2-T6)" },
     "saturday_hours_end" => { value: "11:30", description: "Giờ kết thúc làm việc Thứ 7" },
-    "timezone" => { value: "Hanoi", description: "Múi giờ hệ thống" }
+    "timezone" => { value: "Hanoi", description: "Múi giờ hệ thống" },
+    "call_center_daily_target" => { value: "50", description: "Chỉ tiêu liên hệ hàng ngày của Call Center" }
   }.freeze
+
+  # Call Center Settings
+  def self.call_center_daily_target
+    get("call_center_daily_target", 50).to_i
+  end
 
   # Available timezones for dropdown
   AVAILABLE_TIMEZONES = [

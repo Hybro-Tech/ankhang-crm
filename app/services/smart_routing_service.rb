@@ -4,6 +4,8 @@
 # Handles progressive visibility for new contacts during working hours
 # rubocop:disable Metrics/ClassLength
 class SmartRoutingService
+  include NotificationBadgeHelper
+
   # Initialize visibility when contact is created
   # @param contact [Contact] The newly created contact
   # @return [Boolean] true if routing was applied
@@ -221,19 +223,10 @@ class SmartRoutingService
   def broadcast_badge_to_user(user)
     unread_count = Notification.where(user_id: user.id).unread.count
 
-    badge_html = if unread_count.positive?
-                   display = unread_count > 9 ? "9+" : unread_count.to_s
-                   %(<span id="notification_badge" class="absolute -top-1 -right-1 flex items-center ) +
-                     %(justify-center h-5 w-5 rounded-full bg-brand-red text-white text-xs font-bold ) +
-                     %(ring-2 ring-white">#{display}</span>)
-                 else
-                   %(<span id="notification_badge" class="hidden"></span>)
-                 end
-
     Turbo::StreamsChannel.broadcast_replace_to(
       "user_#{user.id}_notifications",
       target: "notification_badge",
-      html: badge_html
+      html: notification_badge_html(unread_count)
     )
     Rails.logger.info "[SmartRouting] Broadcast badge (#{unread_count}) to user #{user.id}"
   rescue StandardError => e

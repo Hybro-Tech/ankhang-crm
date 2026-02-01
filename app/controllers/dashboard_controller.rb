@@ -2,8 +2,6 @@
 
 # rubocop:disable Metrics/ClassLength
 class DashboardController < ApplicationController
-  include DashboardMockData
-
   before_action :authenticate_user!
 
   def index
@@ -232,14 +230,14 @@ class DashboardController < ApplicationController
       week: scope.where(created_at: Time.zone.now.beginning_of_week..).count,
       month: scope.where(created_at: Time.zone.now.beginning_of_month..).count,
       total: scope.count,
-      daily_target: 50, # TODO: Make configurable
+      daily_target: Setting.call_center_daily_target,
       progress: calculate_daily_progress(scope)
     }
   end
 
   def calculate_daily_progress(scope)
     today_count = scope.where(created_at: Time.zone.today.all_day).count
-    target = 50 # TODO: Make configurable
+    target = Setting.call_center_daily_target
     [(today_count.to_f / target * 100).round, 100].min
   end
 
@@ -281,7 +279,7 @@ class DashboardController < ApplicationController
       revenue: 0,
       conversion_rate: 0
     }
-    @top_performers = mock_top_performers
+    @top_performers = build_top_performers
   end
 
   def load_sales_data
@@ -301,8 +299,14 @@ class DashboardController < ApplicationController
                                   .order(updated_at: :desc)
                                   .limit(10)
 
-    @recent_activities = mock_sale_activities
-    @chart_data = mock_chart_data
+    # Recent activities from ActivityLog (real data)
+    @recent_activities = ActivityLog.where(user: current_user)
+                                    .where(created_at: 7.days.ago..)
+                                    .order(created_at: :desc)
+                                    .limit(5)
+
+    # Chart data - use same method as admin dashboard
+    @chart_data = build_admin_chart_data
   end
 
   # --- CSKH (Customer Care) ---
