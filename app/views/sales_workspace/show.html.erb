@@ -58,7 +58,10 @@
                     aria-selected="true">
               <span class="flex items-center justify-center space-x-2">
                 <i class="fa-solid fa-user-plus text-brand-blue"></i>
-                <span>Khách mới (<%= @kpis[:new_contacts] %>)</span>
+                <span>Khách mới</span>
+                <span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold bg-blue-500 text-white rounded-full">
+                  <%= @kpis[:new_contacts] %>
+                </span>
               </span>
             </button>
             <% if false # TODO: Uncomment when re-enabling "Cần cập nhật" feature %>
@@ -80,7 +83,10 @@
                     data-action="click->workspace-tabs#switchTab">
               <span class="flex items-center justify-center space-x-2">
                 <i class="fa-solid fa-spinner text-green-500"></i>
-                <span>Đang chăm sóc (<%= @kpis[:in_progress] %>)</span>
+                <span>Đang chăm sóc</span>
+                <span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold bg-green-500 text-white rounded-full">
+                  <%= @kpis[:in_progress] %>
+                </span>
               </span>
             </button>
             <%# TASK-052: Pending Requests Tab for Team Leaders %>
