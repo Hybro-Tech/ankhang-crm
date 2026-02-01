@@ -2,6 +2,8 @@
 
 # Join table for Users and Teams
 class TeamMember < ApplicationRecord
+  include Loggable
+
   belongs_to :user
   belongs_to :team
 

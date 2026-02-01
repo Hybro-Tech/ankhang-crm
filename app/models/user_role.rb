@@ -22,6 +22,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class UserRole < ApplicationRecord
+  include Loggable
+
   belongs_to :user
   belongs_to :role
 

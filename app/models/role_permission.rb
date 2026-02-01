@@ -22,6 +22,8 @@
 #  fk_rails_...  (role_id => roles.id)
 #
 class RolePermission < ApplicationRecord
+  include Loggable
+
   belongs_to :role
   belongs_to :permission
 

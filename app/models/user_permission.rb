@@ -26,6 +26,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class UserPermission < ApplicationRecord
+  include Loggable
+
   belongs_to :user
   belongs_to :permission
 
