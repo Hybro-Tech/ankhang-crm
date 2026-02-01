@@ -1,6 +1,6 @@
 # AnKhangCRM - Đặc tả Yêu cầu Phần mềm (v3.0)
 
-> **Phiên bản:** 3.1 | **Ngày:** 01/02/2026 | **Trạng thái:** Sprint 3 Completed
+> **Phiên bản:** 3.2 | **Ngày:** 01/02/2026 | **Trạng thái:** Sprint 4 In Progress
 
 ---
 
@@ -503,11 +503,102 @@ sequenceDiagram
 
 ## 9. Module: Activity Logs
 
-Ghi log **tất cả** hành động: Đăng nhập/Đăng xuất, CRUD Contacts/Teams/Users, Thay đổi trạng thái, Gửi ZNS
+> **Implemented:** Sprint 4 (TASK-LOGGING)
 
-**Mỗi log:** Thời gian, Người thực hiện, Hành động, Đối tượng, Dữ liệu trước/sau, IP
+### 9.1 Kiến trúc 2-Tier
 
----
+```mermaid
+flowchart TD
+    A[User Action] --> B{Loại event?}
+    B -->|CRUD Business| C[Loggable Concern]
+    B -->|Auth Events| D[Warden Hooks]
+    B -->|Raw Tracking| E[UserEvent]
+    
+    C --> F[ActivityLog Table]
+    D --> F
+    E --> G[UserEvent Table]
+    
+    F --> H[Admin UI /admin/logs]
+    G --> I[Background Analysis]
+```
+
+**2 Tiers:**
+- **Tier 1 - ActivityLog:** Business events (CRUD, auth), hiển thị cho Admin
+- **Tier 2 - UserEvent:** Raw interactions (click, view), cho analytics
+
+### 9.2 ActivityLog Schema
+
+| Column | Type | Mô tả |
+|--------|------|-------|
+| user_id | FK | User thực hiện (nullable cho system) |
+| user_name | string | Cached tên user |
+| action | string | `contact.create`, `login`, `login_failed`... |
+| category | string | `contact`, `authentication`, `rbac`... |
+| subject_type/id | polymorphic | Đối tượng bị tác động |
+| record_changes | JSON | `{old: {...}, new: {...}}` |
+| ip_address | string | IP nguồn |
+| user_agent | string | Browser/Client info |
+| request_id | string | Correlation ID |
+
+### 9.3 Models với Loggable (17 models)
+
+| Category | Models |
+|----------|--------|
+| Core Business | Contact, User, Team, Interaction |
+| RBAC | Role, Permission, UserRole, UserPermission, RolePermission |
+| Config | ServiceType, Holiday, SaturdaySchedule, Source, Setting |
+| Workflow | ReassignRequest, TeamMember |
+| System | Notification |
+
+**Tự động log:** create, update, destroy  
+**Skip fields:** `encrypted_password`, `reset_password_token`, timestamps...
+
+### 9.4 Authentication Logging
+
+| Event | Khi nào | Lưu gì |
+|-------|---------|--------|
+| `login` | User đăng nhập thành công | user, IP, user_agent |
+| `logout` | User đăng xuất | user, IP, user_agent |
+| `login_failed` | Đăng nhập thất bại | attempted_login, reason, IP |
+
+**Failure Reasons:**
+- `invalid_password` - Sai mật khẩu
+- `user_not_found` - Không tìm thấy user
+- `account_locked` - Tài khoản bị khóa
+- `account_inactive` - Tài khoản không hoạt động
+
+### 9.5 Admin UI
+
+**URL:** `/admin/logs`
+
+| Feature | Mô tả |
+|---------|-------|
+| Danh sách | Pagination, filter by action/user |
+| Action Badges | Color-coded (green=create, yellow=update, red=delete/failed) |
+| Detail Modal | Click row → xem full details + before/after diff |
+| Chi tiết thay đổi | Visual diff cho update actions |
+
+### 9.6 Background Jobs Logging
+
+Jobs sử dụng `with_user_context(user_id)` để maintain Current.user:
+
+```ruby
+class SmartRoutingExpandJob < ApplicationJob
+  def perform(contact_id = nil, user_id = nil)
+    with_user_context(user_id)
+    # ... actions logged với đúng user context
+  end
+end
+```
+
+### 9.7 Archiving Strategy
+
+| Sau | Hành động |
+|-----|-----------|
+| 30 ngày | Move to `activity_log_archives` |
+| 90 ngày | Export to S3 + Delete |
+
+**Jobs:** `ArchiveActivityLogsJob`, `S3ExportLogsJob`
 
 ## 10. Module: Dashboard & Báo cáo
 
@@ -582,18 +673,47 @@ Ghi log **tất cả** hành động: Đăng nhập/Đăng xuất, CRUD Contacts
 
 ---
 
-## 12. Phạm vi Sprint 1-3 (Done)
+## 12. Phạm vi Sprint
 
-| ✅ Completed | ❌ Phase 2 |
-|--------------|------------|
-| Smart Routing + Pick Mechanism + Pick Rules | Deals, Products |
-| Real-time Notifications (In-app + Web Push) | Coupon |
-| Sales Workspace + Contact Detail slide-over | Mobile App, AI |
-| Admin Reassign/Unassign + Team Leader Approval | Import Google Sheets |
-| Connection Status Indicator | 2FA, Export PDF |
-| Solid Stack Monitoring Dashboards | ZNS Automation Rules |
-| Dashboard Sale/Tổng đài | Reports & Analytics |
-| Teams (Many-to-Many), Lịch T7, Ngày lễ, RBAC | |
+### Sprint 1-3 (Completed ✅)
+
+| Feature | Status |
+|---------|--------|
+| Smart Routing + Pick Mechanism + Pick Rules | ✅ |
+| Real-time Notifications (In-app + Web Push) | ✅ |
+| Sales Workspace + Contact Detail slide-over | ✅ |
+| Admin Reassign/Unassign + Team Leader Approval | ✅ |
+| Connection Status Indicator | ✅ |
+| Solid Stack Monitoring Dashboards | ✅ |
+| Dashboard Sale/Tổng đài/Admin | ✅ |
+| Teams (Many-to-Many), Lịch T7, Ngày lễ | ✅ |
+| Dynamic RBAC (CanCanCan) | ✅ |
+
+### Sprint 4 (In Progress 🔄)
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| **Activity Logs System** | ✅ Done | 2-tier, 17 models, Admin UI |
+| **Authentication Logging** | ✅ Done | login/logout/login_failed |
+| **Dashboard Recent Activities** | ✅ Done | Widget + link to logs |
+| **Job Context Propagation** | ✅ Done | `with_user_context` |
+| Zalo ZNS Integration | 🔄 Pending | Chờ spec |
+| Bulk Import/Export | 📋 TODO | |
+| Advanced Search | 📋 TODO | |
+| Reports Module | 📋 TODO | |
+
+### Phase 2 (Backlog)
+
+| Feature |
+|---------|
+| Deals, Products, Coupon |
+| Mobile App |
+| AI Features |
+| Import from Google Sheets |
+| 2FA Authentication |
+| Export PDF |
+| ZNS Automation Rules |
+| Advanced Reports & Analytics |
 
 ---
 
