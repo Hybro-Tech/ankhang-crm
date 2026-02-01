@@ -1,70 +1,132 @@
-# Backlog Ưu Tiên - Sprint 3 & Cải Tiến
+# Backlog Ưu Tiên - Sprint 4 (Cập nhật)
 
-> **Ngày cập nhật**: 30/01/2026  
-> **Sprint hiện tại**: Sprint 3 (23/02 - 09/03/2026)  
-> **Stack**: Full Solid (Queue + Cable + Cache) - No Redis
-
----
-
-## ✅ ĐÃ HOÀN THÀNH HÔM NAY
-
-| # | Task/Item | Mô tả | Status |
-|---|-----------|-------|--------|
-| 1 | Solid Cable | Thay thế Redis ActionCable | ✅ Done |
-| 2 | Remove Redis | Xoá redis gem + container | ✅ Done |
-| 3 | Docker Rebuild | Rebuild image với solid_cable gem | ✅ Done |
-| 4 | Migrations | Solid Cable tables created | ✅ Done |
-| 5 | **TASK-035** | ActionCable + Turbo Streams Real-time | ✅ Done |
+> **Ngày cập nhật**: 01/02/2026  
+> **Sprint hiện tại**: Sprint 4 (Bắt đầu 03/02/2026)  
+> **Stack**: Full Solid (Queue + Cable + Cache) - No Redis  
+> **Thay đổi**: ZNS tasks deferred - chờ thông tin từ Zalo OA
 
 ---
 
-## 🎯 DANH SÁCH ƯU TIÊN (Còn lại)
+## ✅ SPRINT 3 - ĐÃ HOÀN THÀNH (100%)
 
-### ⚡ CRITICAL (Phải làm trước)
-
-| # | Task/Item | Loại | Mô tả | Effort |
-|---|-----------|------|-------|--------|
-| **1** | TASK-054 | Sprint 3 | Solid Queue Scheduled Jobs (Smart Routing) | 5 SP |
-| **2** | TASK-055 | Sprint 3 | WebSocket Realtime Updates | 5 SP |
-
----
-
-### 🟡 HIGH (Quan trọng)
-
-| # | Task/Item | Loại | Mô tả | Effort |
-|---|-----------|------|-------|--------|
-| **4** | VAPID Keys | Infra | Generate Web Push VAPID keys | 1h |
-| **5** | TASK-032 | Sprint 3 | Thông báo Web Push | 5 SP |
-| **6** | TASK-056 | Sprint 3 | Web Push Service Worker & Subscriptions | 5 SP |
-| **7** | TASK-052 | Sprint 3 | Admin Re-assign Contact (Approval Workflow) | 8 SP |
-| **8** | Annotate Models | Improve | Chạy `annotate --models` để document schema | 30m |
-| **9** | Rubocop Cleanup | Improve | Chạy `rubocop -A` toàn project | 1h |
+| # | Task | Mô tả | Status |
+|---|------|-------|--------|
+| 1 | TASK-022 | Pick Core (DB Locking/Concurrency) | ✅ Done |
+| 2 | TASK-022b | Pick Rules Engine (Dynamic Limits) | ✅ Done |
+| 3 | TASK-023 | Contact Detail & Care Timeline | ✅ Done |
+| 4 | TASK-051 | Status Flow (State Machine) | ✅ Done |
+| 5 | TASK-052 | Admin Re-assign/Unassign Workflow | ✅ Done |
+| 6 | TASK-053 | Smart Routing Config | ✅ Done |
+| 7 | TASK-054 | Solid Queue Polling (0.1s) | ✅ Done |
+| 8 | TASK-035 | ActionCable Real-time Engine | ✅ Done |
+| 9 | TASK-055 | WebSocket Turbo Streams Sync | ✅ Done |
+| 10 | TASK-055b | Connection Status Indicator | ✅ Done |
+| 11 | TASK-056/032 | Web Push Infra & UI (VAPID) | ✅ Done |
+| 12 | Solid Dashboards | Custom Queue/Cache/Cable Monitoring | ✅ Done |
+| 13 | UI-SYNC | Real-time notification click handling | ✅ Done |
+| 14 | KPI-SYNC | Real-time KPI header sync | ✅ Done |
 
 ---
 
-### 🟢 MEDIUM (Nên làm)
+## 🎯 SPRINT 4 - DANH SÁCH ƯU TIÊN (Sắp xếp lại)
 
-| # | Task/Item | Loại | Mô tả | Effort |
-|---|-----------|------|-------|--------|
-| **10** | Test Coverage | Improve | RSpec integration tests cho Pick flow | 4h |
-| **11** | Authorization Specs | Improve | Fix authorization tests cho RolesController | 2h |
-| **12** | Race Condition Tests | Improve | Tests cho concurrent pick scenarios | 3h |
-| **13** | N+1 Review | Improve | Review queries với Bullet gem | 2h |
-| **14** | CODEBASE.md | Docs | Cập nhật với Contacts, ServiceTypes, Interactions | 2h |
-| **15** | API Docs | Docs | Document PickEligibilityService, SmartRoutingService | 2h |
+### ⚡ PHASE A: LÀM NGAY (Available Now)
+
+#### A1. Dashboard & Reports (Tuần 1)
+
+| # | Task | Mô tả | Effort | Status |
+|---|------|-------|--------|--------|
+| 1 | **TASK-037** | KPI Cards trên Admin Dashboard | 3 SP | 🔵 Ready |
+| 2 | **TASK-038** | Biểu đồ Dashboard (Charts) | 5 SP | 🔵 Ready |
+| 3 | **TASK-039** | Bảng Top Performers (Real Data) | 2 SP | 🔵 Ready |
+
+**Dependencies:** ✅ None - Backend logic có sẵn trong `DashboardController`  
+**Wireframe:** `docs/ui-design/wireframes/dashboard.html`
 
 ---
 
-### 🔵 LOW (Khi có thời gian)
+#### A2. Activity Logs UI (Tuần 1-2)
 
-| # | Task/Item | Loại | Mô tả | Effort |
-|---|-----------|------|-------|--------|
-| **16** | TASK-047 | Deferred | Cronjob tạo lịch nghỉ cho năm mới | 3h |
-| **17** | TASK-048 | Deferred | Integrate Saturday Schedule với Smart Routing | 4h |
-| **18** | I18n Completion | Tech Debt | Hoàn thiện translations (~30% hardcoded) | 4h |
-| **19** | CSS Cleanup | Tech Debt | Consolidate duplicate Tailwind classes | 2h |
-| **20** | ViewComponent | Tech Debt | Migrate partials phức tạp sang ViewComponent | 8h |
-| **21** | Stimulus Refactor | Tech Debt | Tách Stimulus controllers lớn | 4h |
+| # | Task | Mô tả | Effort | Status |
+|---|------|-------|--------|--------|
+| 4 | **TASK-040** | Activity Logs Viewer (List, Filter, Diff) | 5 SP | 🔵 Ready |
+
+**Dependencies:** ✅ None - `ActivityLog` model đã hoàn chỉnh  
+**Wireframe:** `docs/ui-design/wireframes/logs.html`
+
+---
+
+#### A3. Email Notifications (Tuần 2)
+
+| # | Task | Mô tả | Effort | Status |
+|---|------|-------|--------|--------|
+| 5 | **TASK-033** | Email Notifications (ActionMailer + Solid Queue) | 3 SP | 🔵 Ready |
+
+**Scope:**
+- Contact assigned notification
+- Reminder: Lịch hẹn sắp tới
+- Admin: Daily summary (optional)
+
+**Dependencies:** ✅ None - `ApplicationMailer` và Solid Queue đã có
+
+---
+
+#### A4. Tech Debt Quick Wins (Tuần 1-2)
+
+| # | Item | Mô tả | Effort | Status |
+|---|------|-------|--------|--------|
+| 6 | Annotate Refresh | `annotate --models` (update annotations) | 30m | 🔵 Ready |
+| 7 | N+1 Audit | Bullet gem optimization | 2h | 🔵 Ready |
+| 8 | I18n Audit | Identify remaining hardcoded strings | 1h | 🔵 Ready |
+
+---
+
+### ⏸️ PHASE B: CHỜ THÔNG TIN (ZNS Deferred)
+
+| # | Task | Mô tả | Status | Chờ |
+|---|------|-------|--------|-----|
+| - | TASK-034 | Tích hợp Zalo OA API | ⏸️ Waiting | Credentials |
+| - | ZNS Templates | Quản lý Mẫu ZNS (CRUD) | ⏸️ Waiting | Template IDs |
+| - | ZNS Send UI | Giao diện Gửi ZNS (CSKH) | ⏸️ Waiting | API Ready |
+| - | ZNS History | Lịch sử Gửi ZNS | ⏸️ Waiting | API Ready |
+
+**Thông tin cần để bắt đầu:**
+- [ ] Zalo OA App ID & Secret Key
+- [ ] Zalo OA Refresh Token  
+- [ ] Danh sách Template IDs đã được duyệt
+- [ ] Quy tắc gửi ZNS (xem `docs/CÁC RULES ZNS DỰ KIẾN.docx`)
+
+---
+
+## 🔵 SPRINT 5 - PRODUCTION PREP (Sau khi hoàn thành Phase A)
+
+| # | Priority | Task | Mô tả | Effort |
+|---|----------|------|-------|--------|
+| 1 | 🔴 Critical | TASK-043 | Kiểm tra Bảo mật (Brakeman, OWASP) | 3 SP |
+| 2 | 🔴 Critical | TASK-044 | Cài đặt Server Production | 5 SP |
+| 3 | 🔴 Critical | TASK-045 | Backup & Monitoring (Sentry, S3) | 3 SP |
+| 4 | 🟢 Medium | TASK-046 | Tài liệu & Bàn giao | 3 SP |
+| 5 | 🔴 Critical | TASK-042 | UAT & Fixes | 5 SP |
+
+---
+
+## 📅 TIMELINE ĐỀ XUẤT
+
+```
+TUẦN 1 (03/02 - 09/02):
+├── TASK-037: KPI Cards Dashboard
+├── TASK-038: Charts Dashboard  
+├── TASK-039: Top Performers
+└── Tech Debt (Annotate, N+1 Audit)
+
+TUẦN 2 (10/02 - 16/02):
+├── TASK-040: Activity Logs UI
+└── TASK-033: Email Notifications
+
+TUẦN 3+ (17/02 onwards):
+├── ZNS Integration (khi có thông tin)
+└── Sprint 5: Production Prep
+```
 
 ---
 
@@ -76,15 +138,11 @@
 | **Solid Queue** | ✅ Running | Worker container |
 | **Solid Cache** | ✅ Ready | Database-backed |
 | **Solid Cable** | ✅ Ready | Database-backed WebSocket |
-| **Redis** | ❌ Removed | Không cần nữa |
+| **Redis** | ❌ Removed | Không cần |
+| **RSpec** | ✅ 315+ passing | Full coverage |
+| **Rubocop** | ✅ 0 offenses | Clean |
 
 ---
 
-## 🔄 Migrate lên Redis (nếu cần sau này)
-
-Chỉ cần 3 bước:
-1. Thêm `gem "redis"` vào Gemfile
-2. Đổi `cable.yml` adapter thành `redis`
-3. Thêm Redis container vào docker-compose
-
-**Thời gian ước tính: 30 phút**
+> **Cập nhật lần cuối:** 01/02/2026  
+> **Phê duyệt bởi:** User
