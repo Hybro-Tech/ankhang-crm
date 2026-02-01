@@ -1,6 +1,6 @@
 # AnKhangCRM - Đặc tả Yêu cầu Phần mềm (v3.0)
 
-> **Phiên bản:** 3.0 | **Ngày:** 28/01/2026 | **Trạng thái:** Draft - Cập nhật Sale Role
+> **Phiên bản:** 3.1 | **Ngày:** 01/02/2026 | **Trạng thái:** Sprint 3 Completed
 
 ---
 
@@ -314,9 +314,12 @@ flowchart TD
 ```
 
 ### 6.2 Config (Admin)
+
 | Setting | Mặc định | Mô tả |
 |---------|----------|-------|
-| Thời gian chờ | 2 phút | Thời gian Sale phản hồi |
+| `visibility_expand_minutes` | 2 | Thời gian trước khi mở rộng visibility |
+| `max_pick_per_day` | 20 | Giới hạn Pick/ngày cho mỗi Sale |
+| `pick_cooldown_minutes` | 5 | Thời gian chờ giữa 2 lần pick |
 | Loại nhu cầu → Team | Mapping | Loại A → Team A |
 | Ngày nghỉ | Lịch VN | Job đầu năm, Admin chỉnh |
 
@@ -460,9 +463,41 @@ sequenceDiagram
 ### 8.6 Roadmap
 
 - [x] **MVP**: In-app notifications (TASK-057)
-- [ ] **Real-time**: WebSocket/Turbo Streams (TASK-055)
-- [ ] **Web Push**: Service Worker + VAPID (TASK-056)
+- [x] **Real-time**: ActionCable/Turbo Streams (TASK-055) ✅ Completed
+- [x] **Web Push**: Service Worker + VAPID (TASK-056) ✅ Completed  
+- [x] **Connection Status**: Real-time indicator (TASK-055b) ✅ Completed
 - [ ] **Rules Engine**: Configurable triggers (TASK-029)
+
+### 8.7 Web Push Notifications
+
+> **Implemented:** TASK-056
+
+**Kiến trúc:**
+- VAPID keys lưu trong ENV (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`)
+- Service Worker (`serviceworker.js`) xử lý push events
+- `PushSubscription` model lưu subscription/user
+
+**Database - PushSubscription:**
+| Trường | Type | Mô tả |
+|--------|------|-------|
+| user_id | FK | User sở hữu subscription |
+| endpoint | string | Push service endpoint |
+| p256dh_key | string | Public key |
+| auth_key | string | Auth secret |
+
+**UX:** Button "Bật thông báo" trong User Menu → Browser permission → "🔔 Tắt thông báo"
+
+### 8.8 Connection Status Indicator
+
+> **Implemented:** TASK-055b
+
+| Status | Icon | Màu | Text |
+|--------|------|-----|------|
+| Connected | 🟢 | green-500 | Trực tuyến |
+| Disconnected | 🔴 | red-500 | Mất kết nối |
+| Reconnecting | 🟡 | yellow-500 | Đang kết nối lại... |
+
+**Vị trí:** Header góc phải, bên cạnh notification bell
 
 ---
 
@@ -509,6 +544,7 @@ Ghi log **tất cả** hành động: Đăng nhập/Đăng xuất, CRUD Contacts
     3. Không cập nhật >7 ngày (`updated_at < 7.days.ago`)
   - Scope: `Contact.needs_info_update`
 - **Tab "Đang xử lý":** KH đang trong quá trình tư vấn
+- **Tab "Yêu cầu duyệt":** *(Chỉ Team Leader)* Pending reassign requests với nút Duyệt/Từ chối
 
 **Nút Nhận (Pick) - UX:**
 - Vị trí: Cột Action trong danh sách Khách mới
@@ -520,6 +556,18 @@ Ghi log **tất cả** hành động: Đăng nhập/Đăng xuất, CRUD Contacts
 ### Dashboard Tổng đài
 - Form tạo Contact (tối ưu nhập nhanh)
 - Thống kê số Contact đã tạo (filter ngày/tháng)
+
+### Solid Stack Monitoring (Admin only)
+
+> **Implemented:** Sprint 3
+
+| Dashboard | URL | Chức năng |
+|-----------|-----|-----------|
+| Solid Queue | `/admin/solid_queue` | Monitor jobs, retry/discard failed |
+| Solid Cache | `/admin/solid_cache` | View cache, clear expired |
+| Solid Cable | `/admin/solid_cable` | Active WebSocket connections |
+
+**Quyền:** Chỉ Super Admin. Sidebar menu "Giám sát hệ thống".
 
 ---
 
@@ -534,16 +582,18 @@ Ghi log **tất cả** hành động: Đăng nhập/Đăng xuất, CRUD Contacts
 
 ---
 
-## 12. Phạm vi Phase 1
+## 12. Phạm vi Sprint 1-3 (Done)
 
-| ✅ Làm | ❌ Không làm (Phase sau) |
-|--------|-------------------------|
-| Smart Routing + Notification | Deals, Products |
-| Dashboard Sale/Tổng đài | Coupon |
-| ZNS (thủ công + mẫu) | Mobile App, AI |
-| Teams (Many-to-Many) | Import Google Sheets |
-| Lịch thứ 7, Ngày lễ | 2FA, Export PDF |
-| Activity Logs, Contacts | |
+| ✅ Completed | ❌ Phase 2 |
+|--------------|------------|
+| Smart Routing + Pick Mechanism + Pick Rules | Deals, Products |
+| Real-time Notifications (In-app + Web Push) | Coupon |
+| Sales Workspace + Contact Detail slide-over | Mobile App, AI |
+| Admin Reassign/Unassign + Team Leader Approval | Import Google Sheets |
+| Connection Status Indicator | 2FA, Export PDF |
+| Solid Stack Monitoring Dashboards | ZNS Automation Rules |
+| Dashboard Sale/Tổng đài | Reports & Analytics |
+| Teams (Many-to-Many), Lịch T7, Ngày lễ, RBAC | |
 
 ---
 
