@@ -2,7 +2,7 @@
 
 # TASK-052: ReassignRequestNotificationJob
 # Sends notifications to stakeholders when reassign request events occur
-class ReassignRequestNotificationJob < ApplicationJob
+class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/ClassLength
   queue_as :default
 
   # @param request_id [Integer] The ReassignRequest ID
@@ -24,46 +24,65 @@ class ReassignRequestNotificationJob < ApplicationJob
   private
 
   def notify_on_created
-    # Notify Lead (Manager of the team)
-    if @request.approver.present?
-      create_notification(
-        recipient: @request.approver,
-        title: "Yêu cầu #{request_type_label} cần duyệt",
-        body: "#{@request.requested_by.name} yêu cầu #{request_type_label.downcase} " \
-              "KH #{@request.contact.code} - #{@request.contact.name}",
-        action_url: "/teams/reassign_requests"
-      )
-    end
+    notify_approver_on_created
+    notify_owner_on_created
+  end
 
-    # Notify Sale A (current owner)
+  def notify_approver_on_created
+    return if @request.approver.blank?
+
+    create_notification(
+      recipient: @request.approver,
+      title: "Yêu cầu #{request_type_label} cần duyệt",
+      body: build_created_approver_body,
+      action_url: "/teams/reassign_requests"
+    )
+  end
+
+  def notify_owner_on_created
     create_notification(
       recipient: @request.from_user,
       title: "Có yêu cầu #{request_type_label.downcase} KH của bạn",
-      body: "#{@request.requested_by.name} đã tạo yêu cầu #{request_type_label.downcase} " \
-            "cho #{@request.contact.code}. Lý do: #{@request.reason.truncate(50)}",
+      body: build_created_owner_body,
       action_url: "/contacts/#{@request.contact_id}"
     )
   end
 
+  def build_created_approver_body
+    "#{@request.requested_by.name} yêu cầu #{request_type_label.downcase} " \
+      "KH #{@request.contact.code} - #{@request.contact.name}"
+  end
+
+  def build_created_owner_body
+    "#{@request.requested_by.name} đã tạo yêu cầu #{request_type_label.downcase} " \
+      "cho #{@request.contact.code}. Lý do: #{@request.reason.truncate(50)}"
+  end
+
   def notify_on_approved
-    # Notify Admin (requester)
+    notify_requester_on_approved
+    notify_previous_owner_on_approved
+    notify_new_owner_on_approved
+  end
+
+  def notify_requester_on_approved
     create_notification(
       recipient: @request.requested_by,
       title: "Yêu cầu #{request_type_label} đã được duyệt",
-      body: "#{@request.approved_by&.name} đã duyệt yêu cầu cho " \
-            "#{@request.contact.code} - #{@request.contact.name}",
+      body: "#{@request.approved_by&.name} đã duyệt yêu cầu cho #{@request.contact.code} - #{@request.contact.name}",
       action_url: "/contacts/#{@request.contact_id}"
     )
+  end
 
-    # Notify Sale A (previous owner)
+  def notify_previous_owner_on_approved
     create_notification(
       recipient: @request.from_user,
       title: "KH #{@request.contact.code} đã được #{action_label}",
       body: approved_body_for_from_user,
       action_url: "/contacts/#{@request.contact_id}"
     )
+  end
 
-    # Notify Sale B (new owner) - only for reassign
+  def notify_new_owner_on_approved
     return unless @request.reassign? && @request.to_user.present?
 
     create_notification(

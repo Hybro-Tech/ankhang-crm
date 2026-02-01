@@ -46,7 +46,7 @@ class PushSubscription < ApplicationRecord
     Rails.logger.info "[WebPush] Sent notification to user #{user_id}: #{title}"
     true
   rescue WebPush::ExpiredSubscription, WebPush::InvalidSubscription => e
-    handle_invalid_subscription(e)
+    process_invalid_subscription(e)
   rescue StandardError => e
     Rails.logger.error "[WebPush] Failed to send notification to user #{user_id}: #{e.message}"
     false
@@ -66,7 +66,7 @@ class PushSubscription < ApplicationRecord
     }.compact
   end
 
-  def handle_invalid_subscription(exception)
+  def process_invalid_subscription(exception) # rubocop:disable Naming/PredicateMethod
     Rails.logger.warn "[WebPush] Subscription expired/invalid for user #{user_id}, removing: #{exception.message}"
     destroy
     false

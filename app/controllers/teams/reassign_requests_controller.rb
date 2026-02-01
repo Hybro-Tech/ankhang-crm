@@ -41,29 +41,29 @@ module Teams
     # POST /teams/reassign_requests/:id/reject
     def reject
       rejection_reason = params[:rejection_reason]
-
-      if rejection_reason.blank?
-        respond_to do |format|
-          format.html { redirect_to teams_reassign_requests_path, alert: "Vui lòng nhập lý do từ chối" }
-          format.turbo_stream { flash.now[:alert] = "Vui lòng nhập lý do từ chối" }
-        end
-        return
-      end
+      return respond_with_error("Vui lòng nhập lý do từ chối") if rejection_reason.blank?
 
       @reassign_request.reject!(current_user, rejection_reason)
-
-      respond_to do |format|
-        format.html { redirect_to teams_reassign_requests_path, notice: "Đã từ chối yêu cầu" }
-        format.turbo_stream { flash.now[:notice] = "Đã từ chối yêu cầu" }
-      end
+      respond_with_success("Đã từ chối yêu cầu")
     rescue StandardError => e
-      respond_to do |format|
-        format.html { redirect_to teams_reassign_requests_path, alert: "Lỗi: #{e.message}" }
-        format.turbo_stream { flash.now[:alert] = "Lỗi: #{e.message}" }
-      end
+      respond_with_error("Lỗi: #{e.message}")
     end
 
     private
+
+    def respond_with_success(message)
+      respond_to do |format|
+        format.html { redirect_to teams_reassign_requests_path, notice: message }
+        format.turbo_stream { flash.now[:notice] = message }
+      end
+    end
+
+    def respond_with_error(message)
+      respond_to do |format|
+        format.html { redirect_to teams_reassign_requests_path, alert: message }
+        format.turbo_stream { flash.now[:alert] = message }
+      end
+    end
 
     def authorize_team_leader!
       return if current_user.super_admin? || current_user.team_leader?
