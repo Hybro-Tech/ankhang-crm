@@ -1,0 +1,11 @@
+<%# TASK-052: Reassign Request Created - Turbo Stream Response %>
+
+<%# Close the modal %>
+<%= turbo_stream.replace "reassign_modal" do %>
+  <%# Empty frame to close the modal %>
+<% end %>
+
+<%# Show flash message %>
+<%= turbo_stream.update "flash-messages" do %>
+  <%= render "shared/flash_messages" %>
+<% end %>

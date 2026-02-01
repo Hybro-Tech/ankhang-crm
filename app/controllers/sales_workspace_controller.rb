@@ -4,6 +4,7 @@
 # Main working screen for Sales staff - optimized for productivity
 class SalesWorkspaceController < ApplicationController
   include SalesKanbanConcern
+  include SalesWorkspaceKpisConcern
 
   before_action :authenticate_user!
   before_action :authorize_sale_user
@@ -31,6 +32,21 @@ class SalesWorkspaceController < ApplicationController
   def tab_in_progress
     load_tab_data(:in_progress)
     render partial: "contact_list", locals: { contacts: @contacts, tab: :in_progress }, layout: false
+  end
+
+  # GET /sales/workspace/tab_pending_requests (Turbo Frame) - TASK-052: For Team Leaders
+  def tab_pending_requests
+    unless current_user.team_leader?
+      head :forbidden
+      return
+    end
+
+    @reassign_requests = ReassignRequest.for_approver(current_user)
+                                        .pending
+                                        .includes(:contact, :from_user, :to_user, :requested_by)
+                                        .order(created_at: :desc)
+                                        .limit(20)
+    render partial: "pending_requests_list", layout: false
   end
 
   # GET /sales/workspace/preview/:id (Turbo Frame)
@@ -61,34 +77,19 @@ class SalesWorkspaceController < ApplicationController
   private
 
   def authorize_sale_user
-    # Allow Sale and Admin roles (use enum-based checks for stability)
-    return if current_user.sale_staff? || current_user.super_admin?
+    # Allow Sale, Admin, and Team Leaders (use enum-based checks for stability)
+    return if current_user.sale_staff? || current_user.super_admin? || current_user.team_leader?
 
     redirect_to root_path, alert: "Bạn không có quyền truy cập khu vực này."
   end
 
-  def load_kpis
-    user_teams = current_user.teams.pluck(:id)
-
-    @kpis = {
-      new_contacts: Contact.status_new_contact.where(team_id: user_teams).visible_to(current_user).count,
-      needs_update: current_user.assigned_contacts.needs_info_update.count,
-      in_progress: current_user.assigned_contacts.where(status: %i[potential in_progress]).count,
-      appointments_today: current_user.assigned_contacts
-                                      .where(next_appointment: Time.current.all_day)
-                                      .count
-    }
-  end
-
   # rubocop:disable Metrics/MethodLength
   def load_tab_data(tab)
-    user_teams = current_user.teams.pluck(:id)
-
     @contacts = case tab
                 when :new_contacts
                   # Contacts in user's teams that are unassigned (new) and visible to this user
                   Contact.status_new_contact
-                         .where(team_id: user_teams)
+                         .where(team_id: user_team_ids)
                          .visible_to(current_user)
                          .order(created_at: :desc)
                          .limit(20)

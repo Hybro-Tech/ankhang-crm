@@ -156,6 +156,11 @@ class User < ApplicationRecord
   def cskh_staff?
     roles.exists?(dashboard_type: :cskh)
   end
+
+  # TASK-052: Check if user is a Team Leader (Manager)
+  def team_leader?
+    managed_team.present?
+  end
 end
 
 #------------------------------------------------------------------------------

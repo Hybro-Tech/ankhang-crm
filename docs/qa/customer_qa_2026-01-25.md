@@ -49,3 +49,18 @@
 | 4.1 | Quản lý mẫu ZNS? | ✅ Màn hình CRUD cho Admin |
 | 4.2 | Nội dung mẫu ZNS cụ thể? | ⏳ Chờ trao đổi |
 | 4.3 | Các rule tự động gửi ZNS là gì? (Trigger khi nào?) | ⏳ Chờ trao đổi rồi chốt |
+
+---
+
+## 5. Re-assign / Unassign Contact (TASK-052)
+
+**Ngữ cảnh:** Admin gỡ Contact khỏi Sale A (Unassign), Contact trở về pool.
+
+| # | Câu hỏi | Trả lời |
+|---|---------|---------|
+| 5.1 | Khi **Unassign** được approve, Contact nên xử lý thế nào? | ⏳ |
+| | A) Status về `new_contact` + chạy Smart Routing (như Contact mới) | |
+| | B) Giữ nguyên status, chỉ clear `assigned_user_id` | |
+| | C) Về trạng thái khác? | |
+| 5.2 | Lịch sử chăm sóc (Interactions) có giữ lại không? | ✅ Có, giữ lại tất cả |
+| 5.3 | Contact đã Unassign có thể được bất kỳ Sale nào pick, hay chỉ Team cũ? | ⏳ |

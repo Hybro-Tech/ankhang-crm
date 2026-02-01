@@ -62,7 +62,7 @@
     <%= l(contact.created_at, format: :short) %>
   </td>
   <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-    <div class="flex items-center justify-end gap-3">
+    <div class="flex items-center justify-end gap-2">
       <%# Pick button - only for pickable contacts %>
       <% if can?(:pick, Contact) && contact.pickable? %>
         <%= button_to pick_contact_path(contact), 
@@ -83,6 +83,25 @@
       <% if can?(:edit, contact) %>
         <%= link_to edit_contact_path(contact), class: "text-brand-blue hover:text-blue-900 transition-colors", title: "Sửa", data: { turbo_frame: "_top" } do %>
           <i class="fa-solid fa-pen-to-square"></i>
+        <% end %>
+      <% end %>
+
+      <%# TASK-052: Admin Direct Icons for Reassign/Unassign %>
+      <% if current_user.super_admin? && contact.assigned_user.present? %>
+        <%# Reassign button %>
+        <%= link_to new_contact_reassign_request_path(contact),
+                    class: "text-blue-500 hover:text-blue-700 transition-colors",
+                    title: "Chuyển cho người khác",
+                    data: { turbo_frame: "reassign_modal" } do %>
+          <i class="fa-solid fa-share"></i>
+        <% end %>
+        
+        <%# Unassign button %>
+        <%= link_to new_contact_reassign_request_path(contact, unassign: true),
+                    class: "text-red-500 hover:text-red-700 transition-colors",
+                    title: "Gỡ phân công",
+                    data: { turbo_frame: "reassign_modal" } do %>
+          <i class="fa-solid fa-user-minus"></i>
         <% end %>
       <% end %>
     </div>

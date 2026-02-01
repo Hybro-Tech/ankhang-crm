@@ -1,0 +1,94 @@
+<%# TASK-052: Lead Reassign Requests Index %>
+<div class="container mx-auto px-4 py-6">
+  <%# Header %>
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <h1 class="text-2xl font-bold text-gray-900">Yêu cầu chờ duyệt</h1>
+      <% if @counts[:pending] > 0 %>
+        <span class="bg-red-500 text-white text-sm font-medium px-2.5 py-0.5 rounded-full">
+          <%= @counts[:pending] %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Tabs %>
+  <div class="border-b border-gray-200 mb-6">
+    <nav class="flex gap-6">
+      <%= link_to teams_reassign_requests_path(status: "all"),
+                  class: "pb-3 text-sm font-medium border-b-2 #{@status_filter == 'all' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}" do %>
+        Tất cả (<%= @counts[:all] %>)
+      <% end %>
+      <%= link_to teams_reassign_requests_path(status: "pending"),
+                  class: "pb-3 text-sm font-medium border-b-2 #{@status_filter == 'pending' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}" do %>
+        Chờ duyệt (<%= @counts[:pending] %>)
+      <% end %>
+      <%= link_to teams_reassign_requests_path(status: "processed"),
+                  class: "pb-3 text-sm font-medium border-b-2 #{@status_filter == 'processed' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}" do %>
+        Đã xử lý (<%= @counts[:processed] %>)
+      <% end %>
+    </nav>
+  </div>
+
+  <%# Request Cards %>
+  <div class="space-y-4" id="reassign_requests">
+    <% if @reassign_requests.any? %>
+      <% @reassign_requests.each do |request| %>
+        <%= render "teams/reassign_requests/card", request: request %>
+      <% end %>
+    <% else %>
+      <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Không có yêu cầu nào</h3>
+        <p class="mt-1 text-sm text-gray-500">
+          <% if @status_filter == "pending" %>
+            Bạn đã xử lý tất cả các yêu cầu!
+          <% else %>
+            Chưa có yêu cầu chuyển/gỡ khách hàng nào.
+          <% end %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+
+  <%# Pagination %>
+  <% if @reassign_requests.total_pages > 1 %>
+    <div class="mt-6">
+      <%= paginate @reassign_requests %>
+    </div>
+  <% end %>
+</div>
+
+<%# Reject Modal %>
+<div id="reject_modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50" 
+     data-controller="reject-modal">
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">Từ chối yêu cầu</h3>
+    </div>
+    <div class="px-6 py-4">
+      <%= form_tag "", method: :post, id: "reject_form", data: { reject_modal_target: "form" } do %>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Lý do từ chối *</label>
+          <textarea name="rejection_reason" rows="3" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    placeholder="Nhập lý do từ chối..."></textarea>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button type="button" 
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                  data-action="click->reject-modal#close">
+            Hủy
+          </button>
+          <button type="submit" 
+                  class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+            Xác nhận từ chối
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

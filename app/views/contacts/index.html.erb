@@ -55,8 +55,18 @@
             ),
             class: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue" %>
         
+        <%# TASK-052: User filter (Admin only) %>
+        <% if current_user.super_admin? && @users_filter.present? %>
+          <%= select_tag :user_id, 
+              options_for_select(
+                [["Tất cả người phụ trách", ""]] + @users_filter.map { |u| [u.name, u.id] }, 
+                params[:user_id]
+              ),
+              class: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue" %>
+        <% end %>
+
         <%# Reset button %>
-        <% if params[:q].present? || params[:status].present? || params[:team_id].present? || params[:service_type_id].present? %>
+        <% if params[:q].present? || params[:status].present? || params[:team_id].present? || params[:service_type_id].present? || params[:user_id].present? %>
           <%= link_to contacts_path, class: "px-4 py-2 text-gray-600 hover:text-gray-900 flex items-center gap-1" do %>
             <i class="fa-solid fa-times"></i> Xóa lọc
           <% end %>
@@ -122,3 +132,6 @@
     </div>
   <% end %>
 </div>
+
+<%# TASK-052: Turbo Frame for Reassign Modal %>
+<%= turbo_frame_tag "reassign_modal" %>

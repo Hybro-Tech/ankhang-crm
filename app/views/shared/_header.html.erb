@@ -17,8 +17,17 @@
     </nav>
   </div>
 
-  <%# Right side - Notifications + User menu %>
+  <%# Right side - Connection Status + Notifications + User menu %>
   <div class="flex items-center space-x-6">
+    <%# TASK-055b: Connection Status Indicator %>
+    <div data-controller="connection-status" 
+         class="flex items-center space-x-2 cursor-pointer" 
+         title="Trạng thái kết nối real-time"
+         data-action="click->connection-status#reconnect">
+      <span data-connection-status-target="indicator" class="h-2.5 w-2.5 rounded-full bg-gray-400"></span>
+      <span data-connection-status-target="text" class="text-xs font-medium text-gray-500 hidden sm:block">Đang kết nối...</span>
+    </div>
+    
     <%# Notification bell - TASK-057: Dynamic notifications %>
     <%# TASK-035: Real-time subscription for badge updates %>
     <%= turbo_stream_from "user_#{current_user.id}_notifications" %>

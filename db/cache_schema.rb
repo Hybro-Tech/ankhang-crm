@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_31_094753) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_31_135524) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -166,6 +166,28 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_31_094753) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "endpoint"], name: "index_push_subscriptions_on_user_id_and_endpoint", unique: true
     t.index ["user_id"], name: "index_push_subscriptions_on_user_id"
+  end
+
+  create_table "reassign_requests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "contact_id", null: false
+    t.bigint "from_user_id", null: false
+    t.bigint "to_user_id"
+    t.bigint "requested_by_id", null: false
+    t.bigint "approved_by_id"
+    t.integer "request_type", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.text "reason", null: false
+    t.text "rejection_reason"
+    t.datetime "decided_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_by_id"], name: "index_reassign_requests_on_approved_by_id"
+    t.index ["contact_id", "status"], name: "index_reassign_requests_on_contact_id_and_status"
+    t.index ["contact_id"], name: "index_reassign_requests_on_contact_id"
+    t.index ["from_user_id", "status"], name: "index_reassign_requests_on_from_user_id_and_status"
+    t.index ["from_user_id"], name: "index_reassign_requests_on_from_user_id"
+    t.index ["requested_by_id"], name: "index_reassign_requests_on_requested_by_id"
+    t.index ["to_user_id"], name: "index_reassign_requests_on_to_user_id"
   end
 
   create_table "role_permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -468,6 +490,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_31_094753) do
   add_foreign_key "interactions", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "push_subscriptions", "users"
+  add_foreign_key "reassign_requests", "contacts"
+  add_foreign_key "reassign_requests", "users", column: "approved_by_id"
+  add_foreign_key "reassign_requests", "users", column: "from_user_id"
+  add_foreign_key "reassign_requests", "users", column: "requested_by_id"
+  add_foreign_key "reassign_requests", "users", column: "to_user_id"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "saturday_schedule_users", "saturday_schedules"

@@ -202,6 +202,8 @@ class ContactsController < ApplicationController
     @teams = Team.order(:name)
     @service_types_filter = ServiceType.active.ordered
     @statuses = Contact.statuses.keys
+    # TASK-052: Add users filter for Admin
+    @users_filter = User.active.order(:name) if current_user.super_admin?
   end
 
   def set_contact
@@ -214,7 +216,9 @@ class ContactsController < ApplicationController
     # TASK-Refine: Sort by newest first
     query = query.order(created_at: :desc)
 
-    # TASK-Refine: Filter by creator if user is Call Center (Tổng Đài)
+    # TASK-052: Admin sees ALL contacts (no filter)
+    return query if current_user.super_admin?
+
     # TASK-Refine: Filter by creator if user is Call Center (Tổng Đài)
     query = query.where(created_by_id: current_user.id) if current_user.call_center_staff?
 
@@ -225,11 +229,23 @@ class ContactsController < ApplicationController
   end
 
   def apply_filters(query)
+    query = apply_basic_filters(query)
+    apply_admin_filters(query)
+  end
+
+  def apply_basic_filters(query)
     query = query.by_status(params[:status]) if params[:status].present?
     query = query.by_team(params[:team_id]) if params[:team_id].present?
     query = query.by_service_type(params[:service_type_id]) if params[:service_type_id].present?
     query = query.search(params[:q]) if params[:q].present?
     query
+  end
+
+  def apply_admin_filters(query)
+    # TASK-052: Filter by assigned user (Admin only)
+    return query unless current_user.super_admin? && params[:user_id].present?
+
+    query.where(assigned_user_id: params[:user_id])
   end
 
   def contact_params

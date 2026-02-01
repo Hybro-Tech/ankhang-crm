@@ -193,39 +193,54 @@ stateDiagram-v2
 - Form thêm nhanh với icon chọn phương thức
 - Real-time update với Turbo Stream (không cần reload)
 
-### 5.4 Re-assign Contact (Chuyển giao khách hàng)
+### 5.4 Re-assign / Unassign Contact (Chuyển giao / Gỡ khách hàng)
 
-> **Mô tả:** Khi cần chuyển Contact từ Sale A sang Sale B, yêu cầu cần được Team Lead của Sale A phê duyệt.
+> **Mô tả:** Admin có thể:
+> - **Re-assign:** Chuyển Contact từ Sale A sang Sale B
+> - **Unassign:** Gỡ Contact khỏi Sale A, đưa về pool để Sale khác nhận
+>
+> Cả 2 hành động đều cần được Team Lead của Sale A phê duyệt.
 
 **Workflow:**
 
-```mermaid
-sequenceDiagram
-    participant ADMIN as Admin
-    participant SYS as Hệ thống
-    participant LEAD as Team Lead (Sale A)
-    participant SALE_A as Sale A (cũ)
-    participant SALE_B as Sale B (mới)
-
-    ADMIN->>SYS: Tạo Reassign Request
-    Note over ADMIN,SYS: Contact, New Sale, Lý do
-    
-    SYS->>LEAD: 🔔 Notification: Yêu cầu phê duyệt
-    SYS->>SALE_A: 🔔 Notification: Có yêu cầu chuyển KH
-    
-    alt Lead Approve
-        LEAD->>SYS: ✅ Phê duyệt
-        SYS->>SYS: Update assigned_user_id
-        SYS->>SALE_B: 🔔 Bạn được gán KH mới
-        SYS->>SALE_A: 🔔 KH đã được chuyển
-        SYS->>ADMIN: 🔔 Request approved
-    else Lead Reject
-        LEAD->>SYS: ❌ Từ chối (kèm lý do)
-        SYS->>ADMIN: 🔔 Request rejected
-    else Timeout (X giờ)
-        SYS->>SYS: Auto-approve
-        SYS->>LEAD: 🔔 Request auto-approved
-    end
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           ADMIN TẠO YÊU CẦU                                  │
+│                                                                              │
+│  ┌──────────────┐                                                           │
+│  │   Admin      │ ──► Chọn Contact ──► [Chọn Sale B hoặc bỏ trống] ──► Lý do│
+│  └──────────────┘                                                           │
+│                                                                              │
+│  📌 Nếu chọn Sale B  →  RE-ASSIGN (chuyển cho người mới)                    │
+│  📌 Nếu bỏ trống     →  UN-ASSIGN (gỡ khỏi Sale A, đưa về pool)             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         HỆ THỐNG GỬI THÔNG BÁO                               │
+│                                                                              │
+│    📧 Lead (Manager)          📧 Sale A (Owner hiện tại)                    │
+│    "Có yêu cầu cần duyệt"     "Contact đang chờ duyệt chuyển"               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                    ┌───────────────┴───────────────┐
+                    ▼                               ▼
+        ┌───────────────────┐           ┌───────────────────┐
+        │   ✅ APPROVE       │           │   ❌ REJECT        │
+        │   (Lead)           │           │   (Lead)           │
+        └───────────────────┘           └───────────────────┘
+                │                               │
+                ▼                               ▼
+┌────────────────────────────┐      ┌────────────────────────────┐
+│ RE-ASSIGN (có Sale B):     │      │ Yêu cầu bị hủy              │
+│  → Contact chuyển Sale B   │      │                             │
+│  → 📧 Sale B: "Nhận KH"    │      │ 📧 Admin: "Từ chối + Lý do" │
+│                            │      │                             │
+│ UN-ASSIGN (không có Sale B):│      │                             │
+│  → Contact về pool (new)   │      │                             │
+│  → Chạy Smart Routing lại  │      │                             │
+│  → Sale khác có thể pick   │      │                             │
+└────────────────────────────┘      └────────────────────────────┘
 ```
 
 **Quy tắc:**
@@ -236,36 +251,36 @@ sequenceDiagram
 | Ai phê duyệt? | Manager (Leader) của Team mà Sale A thuộc |
 | Cùng Team vẫn cần approve? | ✅ Có |
 | Khác Team cần 2 Lead approve? | ❌ Chỉ cần Lead của Sale A (người mất khách) |
-| Timeout auto-approve | Configurable (mặc định 24 giờ) |
-
-**Config (Admin Settings):**
-
-| Setting | Key | Default |
-|---------|-----|---------|
-| Tự động phê duyệt sau | `reassign_auto_approve_hours` | 24 (giờ) |
 
 **Database - ReassignRequest:**
 
 | Trường | Type | Mô tả |
 |--------|------|-------|
 | id | bigint | PK |
-| contact_id | bigint FK | Contact cần chuyển |
-| from_user_id | bigint FK | Sale hiện tại |
-| to_user_id | bigint FK | Sale mới |
+| contact_id | bigint FK | Contact cần xử lý |
+| from_user_id | bigint FK | Sale hiện tại (owner) |
+| to_user_id | bigint FK | Sale mới - **NULLABLE** (NULL = unassign) |
 | requested_by_id | bigint FK | Admin tạo request |
 | approved_by_id | bigint FK | Lead phê duyệt (nullable) |
-| reason | text | Lý do chuyển |
+| request_type | enum | `reassign` / `unassign` |
+| reason | text | Lý do yêu cầu (bắt buộc) |
 | rejection_reason | text | Lý do từ chối (nullable) |
-| status | enum | pending/approved/rejected/expired |
-| expires_at | datetime | Thời hạn auto-approve |
+| status | enum | `pending` / `approved` / `rejected` |
 | created_at | datetime | |
 | updated_at | datetime | |
 
+**Xử lý khi Approve:**
+
+| Request Type | Hành động |
+|--------------|-----------|
+| `reassign` | `contact.assigned_user_id = to_user_id` |
+| `unassign` | `contact.assigned_user_id = NULL`, `status = new_contact`, chạy Smart Routing |
+
 **Activity Log:**
 - Khi tạo request: `reassign_requested`
-- Khi approve: `reassign_approved`
+- Khi approve reassign: `reassign_approved`
+- Khi approve unassign: `contact_unassigned`
 - Khi reject: `reassign_rejected`
-- Khi auto-approve: `reassign_auto_approved`
 
 
 ---

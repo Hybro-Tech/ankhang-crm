@@ -1,0 +1,152 @@
+<%# TASK-052: Reassign Request Modal - Refactored from Admin namespace %>
+<%= turbo_frame_tag "reassign_modal" do %>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" 
+       data-controller="modal"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="modal-title">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 transform transition-all">
+      <%# Header %>
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <h3 id="modal-title" class="text-lg font-semibold text-gray-900">Chuyển / Gỡ phân công</h3>
+        <%= link_to contacts_path, 
+           class: "p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500", 
+           data: { turbo_frame: "_top" },
+           aria_label: "Đóng modal" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        <% end %>
+      </div>
+
+      <%# Contact Info Card %>
+      <div class="px-6 py-4">
+        <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-100">
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <span class="text-gray-500 text-xs uppercase tracking-wide">Mã KH</span>
+              <p class="font-semibold text-gray-900 mt-0.5"><%= @contact.code %></p>
+            </div>
+            <div>
+              <span class="text-gray-500 text-xs uppercase tracking-wide">Tên</span>
+              <p class="font-semibold text-gray-900 mt-0.5"><%= @contact.name %></p>
+            </div>
+            <div class="col-span-2">
+              <span class="text-gray-500 text-xs uppercase tracking-wide">Đang phụ trách</span>
+              <p class="font-semibold text-gray-900 mt-0.5">
+                <%= @contact.assigned_user&.name || "Chưa gán" %>
+                <% if @contact.assigned_user&.teams&.first %>
+                  <span class="text-gray-500 font-normal">(<%= @contact.assigned_user.teams.first.name %>)</span>
+                <% end %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <%= form_with model: [@contact, ReassignRequest.new], 
+                      data: { controller: "reassign-form" } do |f| %>
+          
+          <%# Request Type Toggle %>
+          <div class="flex rounded-lg border border-gray-200 mb-4 p-1 bg-gray-50" data-reassign-form-target="typeToggle">
+            <button type="button" 
+                    class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-md transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 bg-white text-blue-700 shadow-sm"
+                    data-action="click->reassign-form#selectReassign"
+                    data-reassign-form-target="reassignBtn"
+                    aria-pressed="true">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+              </svg>
+              <span>Chuyển cho người khác</span>
+            </button>
+            <button type="button"
+                    class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-md transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 text-gray-600 hover:bg-gray-100"
+                    data-action="click->reassign-form#selectUnassign"
+                    data-reassign-form-target="unassignBtn"
+                    aria-pressed="false">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6"></path>
+              </svg>
+              <span>Gỡ phân công</span>
+            </button>
+          </div>
+
+          <%# New Owner Select (hidden for unassign) %>
+          <div class="mb-4" data-reassign-form-target="toUserField">
+            <%= f.label :to_user_id, class: "block text-sm font-medium text-gray-700 mb-1.5" do %>
+              Chuyển cho <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.select :to_user_id, 
+                         @users.map { |u| ["#{u.name} - #{u.teams.first&.name}", u.id] },
+                         { include_blank: "-- Chọn nhân viên --" },
+                         class: "w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors cursor-pointer" %>
+          </div>
+
+          <%# Reason %>
+          <div class="mb-4">
+            <%= f.label :reason, class: "block text-sm font-medium text-gray-700 mb-1.5" do %>
+              Lý do <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_area :reason, 
+                            rows: 3,
+                            required: true,
+                            placeholder: "Nhập lý do chuyển/gỡ khách hàng...",
+                            class: "w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" %>
+          </div>
+
+          <%# Info Alert %>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0 mt-0.5">
+                <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm text-blue-800 font-medium">Cần phê duyệt</p>
+                <p class="text-sm text-blue-700 mt-0.5">
+                  Yêu cầu sẽ được gửi đến 
+                  <% if @contact.assigned_user&.teams&.first&.manager %>
+                    <strong><%= @contact.assigned_user.teams.first.manager.name %></strong>
+                  <% else %>
+                    <strong>Lead phụ trách</strong>
+                  <% end %>
+                  để phê duyệt trước khi thực hiện.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <%# Error messages %>
+          <% if @reassign_request&.errors&.any? %>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-3 mb-4" role="alert">
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0">
+                  <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <ul class="text-sm text-red-700 list-disc list-inside">
+                  <% @reassign_request.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          <% end %>
+
+          <%# Footer Actions %>
+          <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <%= link_to contacts_path, 
+               class: "px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500",
+               data: { turbo_frame: "_top" } do %>
+              Hủy bỏ
+            <% end %>
+            <%= f.submit "Gửi yêu cầu", 
+                         class: "px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed",
+                         data: { turbo_submits_with: "Đang gửi..." } %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

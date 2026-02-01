@@ -20,6 +20,16 @@ Rails.application.routes.draw do
       post :clone
     end
   end
+  # TASK-052: Teams namespace for Lead approval workflow (MUST be before resources :teams)
+  namespace :teams do
+    resources :reassign_requests, only: [:index] do
+      member do
+        post :approve
+        post :reject
+      end
+    end
+  end
+
   resources :teams
   resources :users, except: [:show]
   resources :holidays, except: [:show]
@@ -38,6 +48,8 @@ Rails.application.routes.draw do
     end
     # TASK-023: Interactions for care history
     resources :interactions, only: %i[create destroy]
+    # TASK-052: Admin can create reassign/unassign requests
+    resources :reassign_requests, only: %i[new create], controller: "reassign_requests"
   end
   resources :service_types
   resources :sources
@@ -64,6 +76,8 @@ Rails.application.routes.draw do
   # TASK-053: Admin Settings & Solid Stack Monitoring (super_admin only)
   namespace :admin do
     resource :settings, only: %i[show update]
+
+
     # Hidden Solid Stack monitoring portal (accessible via /solid)
     resources :solid, only: [:index], controller: "solid"
     # Custom-built Solid Stack monitoring dashboards with management actions
@@ -101,6 +115,7 @@ Rails.application.routes.draw do
   get "sales/workspace/tab_new_contacts", to: "sales_workspace#tab_new_contacts"
   get "sales/workspace/tab_needs_update", to: "sales_workspace#tab_needs_update"
   get "sales/workspace/tab_in_progress", to: "sales_workspace#tab_in_progress"
+  get "sales/workspace/tab_pending_requests", to: "sales_workspace#tab_pending_requests" # TASK-052
   get "sales/workspace/preview/:id", to: "sales_workspace#preview", as: :sales_workspace_preview
   get "sales/workspace/more_appointments", to: "sales_workspace#more_appointments", as: :sales_workspace_more_appointments
   get "sales/kanban", to: "sales_workspace#kanban", as: :sales_kanban
