@@ -276,28 +276,35 @@
     <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
       <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
         <h3 class="text-lg leading-6 font-semibold text-gray-900">🔔 Hoạt động hệ thống</h3>
-        <%= link_to "Xem tất cả", "#", class: "text-sm text-brand-blue hover:text-blue-800 font-medium" %>
+        <%= link_to "Xem tất cả", admin_logs_path, class: "text-sm text-brand-blue hover:text-blue-800 font-medium" %>
       </div>
       <ul class="divide-y divide-gray-200 max-h-80 overflow-y-auto">
         <% @recent_activities.each do |activity| %>
           <li class="p-4 hover:bg-gray-50 transition-colors">
             <div class="flex space-x-3">
               <div class="flex-shrink-0">
-                <% icon_class = case activity.action
-                   when 'create' then 'fa-plus-circle text-green-500'
-                   when 'update' then 'fa-edit text-blue-500'
-                   when 'delete' then 'fa-trash text-red-500'
-                   when 'login' then 'fa-sign-in-alt text-purple-500'
-                   when 'pick' then 'fa-hand-pointer text-orange-500'
+                <% 
+                  icon_class = case activity.action.to_s
+                   when /create/ then 'fa-plus-circle text-green-500'
+                   when /update/ then 'fa-edit text-yellow-500'
+                   when /destroy/, /delete/ then 'fa-trash text-red-500'
+                   when /login_failed/ then 'fa-times-circle text-red-500'
+                   when /login/ then 'fa-sign-in-alt text-blue-500'
+                   when /logout/ then 'fa-sign-out-alt text-gray-500'
+                   when /pick/ then 'fa-hand-pointer text-orange-500'
+                   when /assign/ then 'fa-user-check text-purple-500'
                    else 'fa-circle text-gray-400'
-                   end %>
+                   end 
+                %>
                 <i class="fa-solid <%= icon_class %>"></i>
               </div>
               <div class="flex-1 min-w-0">
                 <p class="text-sm text-gray-900">
-                  <span class="font-medium"><%= activity.user&.name || 'Hệ thống' %></span>
-                  <%= activity.action %>
-                  <% if activity.subject %>
+                  <span class="font-medium"><%= activity.user_name || activity.user&.name || 'Hệ thống' %></span>
+                  <span class="<%= activity.action.to_s.include?('failed') ? 'text-red-600 font-medium' : 'text-gray-600' %>">
+                    <%= activity.action %>
+                  </span>
+                  <% if activity.subject_type.present? %>
                     <span class="text-gray-500"><%= activity.subject_type.underscore.humanize %></span>
                   <% end %>
                 </p>

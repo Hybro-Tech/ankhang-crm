@@ -193,7 +193,7 @@ class DashboardController < ApplicationController
         .limit(limit)
   end
 
-  def build_recent_activities(limit = 5)
+  def build_recent_activities(limit = 10)
     ActivityLog.includes(:user, :subject)
                .order(created_at: :desc)
                .limit(limit)
