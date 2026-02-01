@@ -77,7 +77,6 @@ Rails.application.routes.draw do
   namespace :admin do
     resource :settings, only: %i[show update]
 
-
     # Hidden Solid Stack monitoring portal (accessible via /solid)
     resources :solid, only: [:index], controller: "solid"
     # Custom-built Solid Stack monitoring dashboards with management actions
