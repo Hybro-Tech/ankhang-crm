@@ -135,9 +135,11 @@ class SmartRoutingService
   end
 
   # TASK-054: Schedule the first visibility expansion job
+  # Passes current user ID for activity logging context
   def schedule_expansion_job
     interval = @contact.service_type&.visibility_expand_minutes || 2
-    SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(@contact.id)
+    user_id = Current.user&.id
+    SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(@contact.id, user_id)
     Rails.logger.info "[SmartRouting] Scheduled first expansion for contact #{@contact.id} in #{interval} minutes"
   end
 

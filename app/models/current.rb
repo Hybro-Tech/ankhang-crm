@@ -9,5 +9,5 @@
 #   Current.user_agent = request.user_agent
 #
 class Current < ActiveSupport::CurrentAttributes
-  attribute :user, :ip_address, :user_agent, :request_id
+  attribute :user, :ip_address, :user_agent, :request_id, :job_context
 end
