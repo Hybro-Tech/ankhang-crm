@@ -109,7 +109,7 @@ Rails.application.routes.draw do
     end
 
     # TASK-LOGGING: Activity Logs and User Events viewer (super_admin only)
-    resources :logs, only: [:index], controller: "logs" do
+    resources :logs, only: [:index, :show], controller: "logs" do
       collection do
         get :events
         get :archives

@@ -57,6 +57,17 @@ module Admin
       @activity_archives_count = ActivityLogArchive.count
     end
 
+    # GET /admin/logs/:id
+    # Shows single log detail in modal
+    def show
+      @log = ActivityLog.includes(:user, :subject).find(params[:id])
+
+      respond_to do |format|
+        format.html { render layout: false }
+        format.turbo_stream
+      end
+    end
+
     private
 
     def authorize_admin!
