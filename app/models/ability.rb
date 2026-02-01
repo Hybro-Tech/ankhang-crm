@@ -122,7 +122,7 @@ class Ability
     sources: "Source",
     saturday_schedules: "SaturdaySchedule",
     interactions: "Interaction",
-    reassign_requests: "ReassignRequest",  # TASK-052
+    reassign_requests: "ReassignRequest", # TASK-052
     dashboards: nil, # Symbol-only, no model class
     solid_queue: nil, # Solid Queue monitoring dashboard (super_admin only)
     solid_cache: nil, # Solid Cache monitoring dashboard (super_admin only)

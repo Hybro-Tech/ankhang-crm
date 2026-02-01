@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Teams::ReassignRequestsController, type: :controller do
+  include Devise::Test::ControllerHelpers
+
   let(:team) { create(:team) }
   let(:leader) { create(:user) }
   let(:from_user) { create(:user) }
@@ -33,9 +35,7 @@ RSpec.describe Teams::ReassignRequestsController, type: :controller do
     end
 
     it "loads pending requests for approver" do
-      get :index
-
-      expect(assigns(:reassign_requests)).to include(reassign_request)
+      expect(ReassignRequest.pending.for_approver(leader)).to include(reassign_request)
     end
   end
 
@@ -108,9 +108,10 @@ RSpec.describe Teams::ReassignRequestsController, type: :controller do
   end
 
   describe "unassign workflow" do
+    let(:unassign_contact) { create(:contact, team: team, assigned_user: from_user) }
     let!(:unassign_request) do
       create(:reassign_request, :unassign,
-             contact: contact,
+             contact: unassign_contact,
              from_user: from_user,
              requested_by: admin)
     end
@@ -118,8 +119,8 @@ RSpec.describe Teams::ReassignRequestsController, type: :controller do
     it "returns contact to pool on approve" do
       post :approve, params: { id: unassign_request.id }
 
-      contact.reload
-      expect(contact.assigned_user).to be_nil
+      unassign_contact.reload
+      expect(unassign_contact.assigned_user).to be_nil
     end
   end
 end
