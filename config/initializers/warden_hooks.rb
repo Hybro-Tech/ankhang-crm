@@ -4,10 +4,17 @@
 # Handles login success and logout
 # Failed login logging is handled by CustomFailureApp (lib/custom_failure_app.rb)
 
-# Log successful login
+# Log successful login - ONLY when user actually authenticates (not session restore)
 Warden::Manager.after_set_user do |user, auth, opts|
   scope = opts[:scope]
-  next unless scope == :user && !auth.request.env["devise.skip_trackable"]
+  event = opts[:event]
+
+  # Only log on actual authentication, NOT on session fetch (page refresh)
+  # :authentication = user just logged in with credentials
+  # :fetch = user loaded from existing session
+  # :set_user = manual set (e.g., after password change)
+  next unless scope == :user && event == :authentication
+  next if auth.request.env["devise.skip_trackable"]
 
   ActivityLog.create!(
     user: user,
