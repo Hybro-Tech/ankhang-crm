@@ -17,6 +17,8 @@
 #  index_permissions_on_code  (code) UNIQUE
 #
 class Permission < ApplicationRecord
+  include Loggable
+
   has_many :role_permissions, dependent: :destroy
   has_many :roles, through: :role_permissions
 

@@ -30,6 +30,8 @@
 # Used by Contact for service categorization and Smart Routing
 # TASK-022b: Added pick rules (max_pick_per_day, pick_cooldown_minutes)
 class ServiceType < ApplicationRecord
+  include Loggable
+
   # Associations
   belongs_to :team, optional: true
   has_many :contacts, dependent: :restrict_with_error

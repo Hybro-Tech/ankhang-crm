@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Source < ApplicationRecord
+  include Loggable
+
   has_many :contacts, dependent: :restrict_with_error
 
   validates :name, presence: true, uniqueness: true

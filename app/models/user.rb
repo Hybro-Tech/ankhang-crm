@@ -24,8 +24,14 @@
 #
 class User < ApplicationRecord
   # TASK-LOGGING: Auto-log CRUD operations
+  # Skip Devise trackable fields to avoid duplicate logs on login
+  # (login/logout already logged separately via SessionsController)
   include Loggable
-  loggable category: 'user'
+
+  loggable category: "user", skip_fields: %w[
+    sign_in_count current_sign_in_at last_sign_in_at
+    current_sign_in_ip last_sign_in_ip
+  ]
 
   # TASK-011: Devise modules
   # :lockable - khóa sau 5 lần fail (15 phút)

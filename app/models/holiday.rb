@@ -16,6 +16,8 @@
 #  index_holidays_on_date  (date) UNIQUE
 #
 class Holiday < ApplicationRecord
+  include Loggable
+
   # Validations
   validates :name, presence: true
   validates :date, presence: true, uniqueness: true

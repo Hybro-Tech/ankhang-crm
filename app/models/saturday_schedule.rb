@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SaturdaySchedule < ApplicationRecord
+  include Loggable
+
   has_many :saturday_schedule_users, dependent: :destroy
   has_many :users, through: :saturday_schedule_users
 

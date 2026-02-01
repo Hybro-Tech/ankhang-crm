@@ -3,6 +3,8 @@
 # TASK-057: Notification model for in-app notifications
 # Supports multi-channel delivery, polymorphic references, extensible metadata
 class Notification < ApplicationRecord
+  include Loggable
+
   # === Categories ===
   CATEGORIES = {
     contact: "contact",

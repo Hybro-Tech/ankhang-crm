@@ -19,6 +19,8 @@
 # TASK-053: System Settings for Smart Routing and other configs
 # Key-value store for application settings
 class Setting < ApplicationRecord
+  include Loggable
+
   # Validations
   validates :key, presence: true, uniqueness: true
 

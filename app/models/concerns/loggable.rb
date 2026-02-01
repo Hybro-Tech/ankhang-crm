@@ -33,7 +33,7 @@ module Loggable
         only: only,
         except: except,
         track_fields: track_fields,
-        skip_fields: skip_fields || default_skip_fields
+        skip_fields: (default_skip_fields + Array(skip_fields)).uniq
       }
     end
 

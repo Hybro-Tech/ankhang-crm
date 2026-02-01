@@ -3,6 +3,8 @@
 # TASK-052: ReassignRequest model for Admin re-assign/unassign workflow
 # Tracks requests to transfer contacts between sales reps with approval workflow
 class ReassignRequest < ApplicationRecord
+  include Loggable
+
   # === Enums ===
   enum :request_type, { reassign: 0, unassign: 1 }
   enum :status, { pending: 0, approved: 1, rejected: 2 }
