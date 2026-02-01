@@ -40,6 +40,9 @@
 class Contact < ApplicationRecord
   # TASK-051: State Machine for status transitions
   include StatusMachine
+  # TASK-LOGGING: Auto-log CRUD operations
+  include Loggable
+  loggable category: 'contact', skip_fields: %w[visible_to_user_ids last_expanded_at]
 
   # ============================================================================
   # Enums (SRS v2 Section 5.2 & 5.3)

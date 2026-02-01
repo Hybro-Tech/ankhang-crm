@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include CanCan::ControllerAdditions
 
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_current_attributes
 
   # TASK-012: Use separate layout for Devise auth pages
   layout :layout_by_resource
@@ -48,6 +49,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  # TASK-LOGGING: Set Current attributes for use by Loggable concern
+  def set_current_attributes
+    Current.user = current_user if user_signed_in?
+    Current.ip_address = request.remote_ip
+    Current.user_agent = request.user_agent
+    Current.request_id = request.request_id
+  end
 
   def layout_by_resource
     if devise_controller?

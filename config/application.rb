@@ -34,5 +34,8 @@ module App
     # TASK-053: Set timezone to Vietnam for working hours calculation
     config.time_zone = "Hanoi"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # TASK-LOGGING: Autoload middleware directory
+    config.autoload_paths << Rails.root.join("app/middleware")
   end
 end

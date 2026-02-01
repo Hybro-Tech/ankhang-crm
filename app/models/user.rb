@@ -23,6 +23,10 @@
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 class User < ApplicationRecord
+  # TASK-LOGGING: Auto-log CRUD operations
+  include Loggable
+  loggable category: 'user'
+
   # TASK-011: Devise modules
   # :lockable - khóa sau 5 lần fail (15 phút)
   # :timeoutable - session timeout sau 3 ngày

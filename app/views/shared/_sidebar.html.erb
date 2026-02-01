@@ -46,7 +46,7 @@
     <%= sidebar_section "Hệ thống", ["reports.view", "logs.view", "settings.manage"] %>
     <%= sidebar_link "Cài đặt", admin_settings_path, "fa-gear", permission: "settings.manage" %>
     <% if defined?(reports_path) %><%= sidebar_link "Báo cáo", reports_path, "fa-chart-pie", permission: "reports.view" %><% end %>
-    <% if defined?(logs_path) %><%= sidebar_link "Nhật ký", logs_path, "fa-list-check", permission: "logs.view" %><% end %>
+    <%= sidebar_link "Nhật ký hoạt động", admin_logs_path, "fa-list-check", permission: "logs.manage" %>
   </nav>
 
   <%# Footer (Removed as requested) %>

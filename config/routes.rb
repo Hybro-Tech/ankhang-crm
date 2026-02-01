@@ -107,6 +107,14 @@ Rails.application.routes.draw do
     resource :solid_cable, only: [:show], controller: "solid_cable" do
       delete :cleanup, on: :member
     end
+
+    # TASK-LOGGING: Activity Logs and User Events viewer (super_admin only)
+    resources :logs, only: [:index], controller: "logs" do
+      collection do
+        get :events
+        get :archives
+      end
+    end
   end
 
   # Sales Workspace (TASK-050 v2: Productivity-focused screen)

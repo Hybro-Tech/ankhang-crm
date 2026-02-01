@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_31_135524) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_01_092411) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,6 +39,26 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_31_135524) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "activity_log_archives", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "user_name", limit: 100
+    t.string "action", limit: 50, null: false
+    t.string "category", limit: 20
+    t.string "subject_type"
+    t.bigint "subject_id"
+    t.json "details"
+    t.json "record_changes"
+    t.string "ip_address", limit: 45
+    t.string "user_agent"
+    t.string "request_id"
+    t.datetime "original_created_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category", "original_created_at"], name: "idx_on_category_original_created_at_65caeb630b"
+    t.index ["original_created_at"], name: "index_activity_log_archives_on_original_created_at"
+    t.index ["user_id"], name: "index_activity_log_archives_on_user_id"
+  end
+
   create_table "activity_logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.string "action", limit: 50, null: false
@@ -49,7 +69,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_31_135524) do
     t.string "user_agent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "user_name", limit: 100
+    t.json "record_changes"
+    t.string "category", limit: 20
+    t.string "request_id"
     t.index ["action"], name: "index_activity_logs_on_action"
+    t.index ["category", "created_at"], name: "index_activity_logs_on_category_and_created_at"
+    t.index ["category"], name: "index_activity_logs_on_category"
     t.index ["subject_type", "subject_id", "created_at"], name: "index_activity_logs_on_subject_and_created_at"
     t.index ["subject_type", "subject_id"], name: "index_activity_logs_on_subject"
     t.index ["user_id", "created_at"], name: "index_activity_logs_on_user_id_and_created_at"
@@ -429,6 +455,51 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_31_135524) do
     t.index ["region"], name: "index_teams_on_region"
   end
 
+  create_table "user_event_archives", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "event_type", limit: 20
+    t.string "path", limit: 500
+    t.string "method", limit: 10
+    t.string "controller", limit: 100
+    t.string "action", limit: 50
+    t.json "params"
+    t.integer "response_status", limit: 2
+    t.integer "duration_ms"
+    t.string "ip_address", limit: 45
+    t.text "user_agent"
+    t.string "session_id", limit: 100
+    t.string "request_id", limit: 50
+    t.datetime "original_created_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_type", "original_created_at"], name: "idx_on_event_type_original_created_at_c9fec24ac9"
+    t.index ["original_created_at"], name: "index_user_event_archives_on_original_created_at"
+    t.index ["user_id"], name: "index_user_event_archives_on_user_id"
+  end
+
+  create_table "user_events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "event_type", limit: 20
+    t.string "path", limit: 500
+    t.string "method", limit: 10
+    t.string "controller", limit: 100
+    t.string "action", limit: 50
+    t.json "params"
+    t.integer "response_status", limit: 2
+    t.integer "duration_ms"
+    t.string "ip_address", limit: 45
+    t.text "user_agent"
+    t.string "session_id", limit: 100
+    t.string "request_id", limit: 50
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_user_events_on_created_at"
+    t.index ["event_type", "created_at"], name: "index_user_events_on_event_type_and_created_at"
+    t.index ["request_id"], name: "index_user_events_on_request_id"
+    t.index ["user_id", "created_at"], name: "index_user_events_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_user_events_on_user_id"
+  end
+
   create_table "user_permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "permission_id", null: false
@@ -506,6 +577,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_31_135524) do
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
   add_foreign_key "teams", "users", column: "manager_id", on_delete: :nullify
+  add_foreign_key "user_events", "users"
   add_foreign_key "user_permissions", "permissions"
   add_foreign_key "user_permissions", "users"
   add_foreign_key "user_permissions", "users", column: "created_by_id"

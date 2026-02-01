@@ -25,6 +25,9 @@
 
 # TASK-009: Team model - Phân chia nhân viên theo vùng/nhóm
 class Team < ApplicationRecord
+  # TASK-LOGGING: Auto-log CRUD operations
+  include Loggable
+  loggable category: 'team'
   # Associations
   belongs_to :manager, class_name: "User", optional: true
   has_many :team_members, dependent: :destroy

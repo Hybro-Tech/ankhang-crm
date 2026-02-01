@@ -47,6 +47,7 @@ gem "devise"       # User authentication
 # Rails 8 Solid Stack: Queue + Cable + Cache
 
 # Utilities
+gem "csv"      # CSV parsing (moved from stdlib in Ruby 3.4)
 gem "kaminari" # Pagination
 gem "web-push" # Web Push notifications via VAPID
 

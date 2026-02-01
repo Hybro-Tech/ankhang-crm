@@ -19,6 +19,9 @@
 
 # TASK-023: Interaction model for contact care history
 class Interaction < ApplicationRecord
+  # TASK-LOGGING: Auto-log CRUD operations
+  include Loggable
+  loggable category: 'interaction'
   # ============================================
   # Associations
   # ============================================

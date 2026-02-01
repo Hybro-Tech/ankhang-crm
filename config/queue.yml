@@ -8,6 +8,23 @@ default: &default
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
       polling_interval: 0.1
 
+  # TASK-LOGGING: Recurring jobs for log archiving
+  recurring:
+    archive_activity_logs:
+      class: ArchiveActivityLogsJob
+      schedule: "0 3 1 * *"  # 3:00 AM, 1st of each month
+      description: "Archive Tier 1 logs older than 6 months"
+
+    archive_user_events:
+      class: ArchiveUserEventsJob
+      schedule: "0 4 1 * *"  # 4:00 AM, 1st of each month
+      description: "Archive Tier 2 events older than 90 days"
+
+    s3_export_logs:
+      class: S3ExportLogsJob
+      schedule: "0 5 1 * *"  # 5:00 AM, 1st of each month (quarterly in future)
+      description: "Export archive data older than 1 year to S3"
+
 development:
   <<: *default
 
