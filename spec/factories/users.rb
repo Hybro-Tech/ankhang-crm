@@ -42,5 +42,58 @@ FactoryBot.define do
         user.roles << super_admin_role unless user.roles.include?(super_admin_role)
       end
     end
+
+    trait :call_center do
+      after(:create) do |user|
+        call_center_role = Role.find_or_create_by!(name: "Tổng đài") do |r|
+          r.code = RoleCodes::CALL_CENTER
+          r.dashboard_type = :call_center
+          r.is_system = true
+        end
+        call_center_role.update!(code: RoleCodes::CALL_CENTER) if call_center_role.code.blank?
+        user.roles << call_center_role unless user.roles.include?(call_center_role)
+
+        # Add contacts.create permission (find first to avoid unique constraint violation)
+        create_permission = Permission.find_by(code: "contacts.create") ||
+                            Permission.create!(code: "contacts.create", name: "Tạo Contact")
+        unless call_center_role.permissions.include?(create_permission)
+          call_center_role.permissions << create_permission
+        end
+        view_permission = Permission.find_by(code: "contacts.view") ||
+                          Permission.create!(code: "contacts.view", name: "Xem Contact")
+        call_center_role.permissions << view_permission unless call_center_role.permissions.include?(view_permission)
+      end
+    end
+
+    trait :sale do
+      after(:create) do |user|
+        sale_role = Role.find_or_create_by!(name: "Sale") do |r|
+          r.code = RoleCodes::SALE
+          r.dashboard_type = :sale
+          r.is_system = true
+        end
+        sale_role.update!(code: RoleCodes::SALE) if sale_role.code.blank?
+        user.roles << sale_role unless user.roles.include?(sale_role)
+
+        # Add relevant permissions for Sale (find first to avoid unique constraint violation)
+        %w[contacts.view contacts.edit contacts.pick].each do |perm_code|
+          perm = Permission.find_by(code: perm_code) ||
+                 Permission.create!(code: perm_code, name: perm_code.humanize)
+          sale_role.permissions << perm unless sale_role.permissions.include?(perm)
+        end
+      end
+    end
+
+    trait :cskh do
+      after(:create) do |user|
+        cskh_role = Role.find_or_create_by!(name: "CSKH") do |r|
+          r.code = RoleCodes::CSKH
+          r.dashboard_type = :cskh
+          r.is_system = true
+        end
+        cskh_role.update!(code: RoleCodes::CSKH) if cskh_role.code.blank?
+        user.roles << cskh_role unless user.roles.include?(cskh_role)
+      end
+    end
   end
 end
