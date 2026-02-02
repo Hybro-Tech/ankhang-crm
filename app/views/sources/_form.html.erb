@@ -1,12 +1,12 @@
-<%# Source Form Partial %>
+<%# Source Form Partial - UI/UX ProMax %>
 <%= form_with(model: @source, class: "space-y-6") do |f| %>
   <% if @source.errors.any? %>
-    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-      <div class="flex items-center gap-2 text-red-800 font-medium">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span>Có <%= pluralize(@source.errors.count, "lỗi") %> cần sửa:</span>
+    <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+      <div class="flex items-center text-red-800">
+        <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+        <span class="font-semibold">Có <%= @source.errors.count %> lỗi cần sửa:</span>
       </div>
-      <ul class="mt-2 ml-6 list-disc text-sm text-red-700">
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside ml-6">
         <% @source.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
@@ -14,50 +14,82 @@
     </div>
   <% end %>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <%# Tên nguồn %>
-    <div class="md:col-span-2">
-      <%= f.label :name, "Tên nguồn *", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.text_field :name, 
-          class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
-          placeholder: "VD: Facebook Ads, Google Search, Giới thiệu..." %>
+  <%# Main form card %>
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-bold text-gray-900 flex items-center">
+        <i class="fa-solid fa-bullhorn text-brand-blue mr-2"></i>
+        Thông tin nguồn khách hàng
+      </h3>
     </div>
+    
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <%# Tên nguồn %>
+        <div class="md:col-span-2">
+          <%= f.label :name, "Tên nguồn *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-tag text-gray-400"></i>
+            </div>
+            <%= f.text_field :name, 
+                class: "w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
+                placeholder: "VD: Facebook Ads, Google Search, Giới thiệu..." %>
+          </div>
+        </div>
 
-    <%# Mô tả %>
-    <div class="md:col-span-2">
-      <%= f.label :description, "Mô tả", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.text_area :description, 
-          rows: 3,
-          class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
-          placeholder: "Mô tả chi tiết về nguồn này..." %>
-    </div>
+        <%# Mô tả %>
+        <div class="md:col-span-2">
+          <%= f.label :description, "Mô tả", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute top-3 left-3 pointer-events-none">
+              <i class="fa-solid fa-align-left text-gray-400"></i>
+            </div>
+            <%= f.text_area :description, 
+                rows: 3,
+                class: "w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors resize-none",
+                placeholder: "Mô tả chi tiết về nguồn này..." %>
+          </div>
+        </div>
 
-    <%# Vị trí sắp xếp %>
-    <div>
-      <%= f.label :position, "Vị trí sắp xếp", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.number_field :position, 
-          min: 0,
-          class: "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
-          placeholder: "0" %>
-      <p class="mt-1 text-xs text-gray-500">Số nhỏ hơn sẽ hiển thị trước trong dropdown</p>
-    </div>
+        <%# Vị trí sắp xếp %>
+        <div>
+          <%= f.label :position, "Vị trí sắp xếp", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-sort text-gray-400"></i>
+            </div>
+            <%= f.number_field :position, 
+                min: 0,
+                class: "w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors",
+                placeholder: "0" %>
+          </div>
+          <p class="mt-1.5 text-xs text-gray-500">Số nhỏ hơn sẽ hiển thị trước trong dropdown</p>
+        </div>
 
-    <%# Trạng thái %>
-    <div class="md:col-span-2">
-      <div class="flex items-center gap-3">
-        <%= f.check_box :active, class: "h-4 w-4 text-brand-blue focus:ring-brand-blue border-gray-300 rounded" %>
-        <%= f.label :active, "Đang sử dụng", class: "text-sm font-medium text-gray-700" %>
+        <%# Trạng thái %>
+        <div class="flex items-center pt-8">
+          <div class="flex items-center h-5">
+            <%= f.check_box :active, class: "h-5 w-5 text-brand-blue focus:ring-brand-blue border-gray-300 rounded cursor-pointer" %>
+          </div>
+          <div class="ml-3">
+            <%= f.label :active, "Đang sử dụng", class: "text-sm font-medium text-gray-900 cursor-pointer" %>
+            <p class="text-xs text-gray-500">Bỏ chọn để ẩn nguồn khỏi dropdown</p>
+          </div>
+        </div>
       </div>
-      <p class="mt-1 text-xs text-gray-500 ml-7">Bỏ chọn để ẩn nguồn này khỏi dropdown</p>
     </div>
   </div>
 
   <%# Actions %>
-  <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-    <%= link_to sources_path, class: "px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors" do %>
-      Hủy
+  <div class="flex items-center justify-center gap-4 pt-2">
+    <%= link_to sources_path, class: "inline-flex items-center px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors" do %>
+      <i class="fa-solid fa-times mr-2"></i>
+      Hủy bỏ
     <% end %>
-    <%= f.submit @source.persisted? ? "Cập nhật" : "Tạo mới", 
-        class: "px-6 py-2.5 bg-[#0B387A] hover:bg-blue-800 text-white rounded-lg font-medium transition-colors cursor-pointer" %>
+    <button type="submit" class="inline-flex items-center px-8 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 transition-all cursor-pointer">
+      <i class="fa-solid fa-save mr-2"></i>
+      <%= @source.new_record? ? "Tạo nguồn" : "Lưu thay đổi" %>
+    </button>
   </div>
 <% end %>

@@ -1,8 +1,12 @@
-<%= form_with(model: saturday_schedule, class: "space-y-6") do |f| %>
+<%# Saturday Schedule Form Partial - UI/UX ProMax %>
+<%= form_with(model: saturday_schedule, class: "space-y-8") do |f| %>
   <% if saturday_schedule.errors.any? %>
-    <div class="bg-red-50 text-red-700 p-4 rounded-lg text-sm">
-      <h3 class="font-bold mb-2"><%= pluralize(saturday_schedule.errors.count, "lỗi") %> ngăn cản việc lưu dữ liệu:</h3>
-      <ul class="list-disc list-inside">
+    <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+      <div class="flex items-center text-red-800">
+        <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+        <span class="font-semibold">Có <%= saturday_schedule.errors.count %> lỗi cần sửa:</span>
+      </div>
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside ml-6">
         <% saturday_schedule.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
@@ -10,48 +14,91 @@
     </div>
   <% end %>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Basic Info -->
-    <div class="space-y-4">
-      <h3 class="font-semibold text-gray-900 border-b pb-2">Thông tin chung</h3>
-      
-      <div>
-        <%= f.label :date, "Ngày làm việc (Thứ 7)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <!-- Using native date input, but could be enhanced with flatpickr later -->
-        <%= f.text_field :date, class: "w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-blue focus:border-brand-blue", 
-            onchange: "validateSaturday(this)", data: { controller: "datepicker" } %>
-        <p class="text-xs text-gray-500 mt-1" id="date-helper">Chỉ được chọn ngày Thứ 7.</p>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <%# Left: Basic Info %>
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-bold text-gray-900 flex items-center">
+          <i class="fa-solid fa-calendar-week text-brand-blue mr-2"></i>
+          Thông tin lịch làm việc
+        </h3>
       </div>
+      
+      <div class="p-6 space-y-5">
+        <div>
+          <%= f.label :date, "Ngày làm việc (Thứ 7) *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-calendar-days text-gray-400"></i>
+            </div>
+            <%= f.text_field :date, 
+                class: "w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors", 
+                onchange: "validateSaturday(this)", 
+                data: { controller: "datepicker" },
+                placeholder: "DD/MM/YYYY" %>
+          </div>
+          <p class="text-xs text-gray-500 mt-1.5 flex items-center" id="date-helper">
+            <i class="fa-solid fa-info-circle mr-1"></i>
+            Chỉ được chọn ngày Thứ 7
+          </p>
+        </div>
 
-      <div>
-        <%= f.label :description, "Ghi chú / Mô tả", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_area :description, rows: 3, class: "w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-blue focus:border-brand-blue", placeholder: "Ví dụ: Trực tổng đài ca sáng..." %>
+        <div>
+          <%= f.label :description, "Ghi chú / Mô tả", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute top-3 left-3 pointer-events-none">
+              <i class="fa-solid fa-align-left text-gray-400"></i>
+            </div>
+            <%= f.text_area :description, 
+                rows: 4, 
+                class: "w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors resize-none", 
+                placeholder: "Ví dụ: Trực tổng đài ca sáng..." %>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Staff Selection -->
-    <div class="space-y-4">
-      <h3 class="font-semibold text-gray-900 border-b pb-2 flex items-center justify-between">
-        <span>Danh sách nhân viên</span>
-        <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full"><%= @teams.sum { |t| t.users.count } %> nhân sự</span>
-      </h3>
+    <%# Right: Staff Selection %>
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-bold text-gray-900 flex items-center justify-between">
+          <span class="flex items-center">
+            <i class="fa-solid fa-users text-brand-orange mr-2"></i>
+            Danh sách nhân viên
+          </span>
+          <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+            <%= @teams.sum { |t| t.users.count } %> nhân sự
+          </span>
+        </h3>
+      </div>
       
-      <div class="bg-gray-50 rounded-xl border border-gray-200 p-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+      <div class="p-4 max-h-[450px] overflow-y-auto">
         <% if @teams.any? %>
-          <div class="space-y-6">
+          <div class="space-y-5">
             <% @teams.each do |team| %>
               <% if team.users.any? %>
-                <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <h4 class="font-bold text-gray-800 text-sm italic"><%= team.name %></h4>
-                    <button type="button" class="text-xs text-brand-blue hover:underline" onclick="toggleTeam('<%= team.id %>', true)">Chọn hết</button>
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <h4 class="font-semibold text-gray-800 text-sm flex items-center">
+                      <i class="fa-solid fa-people-group text-gray-400 mr-2"></i>
+                      <%= team.name %>
+                    </h4>
+                    <button type="button" 
+                            class="text-xs text-brand-blue hover:text-blue-800 font-medium transition-colors" 
+                            onclick="toggleTeam('<%= team.id %>')">
+                      Chọn/Bỏ hết
+                    </button>
                   </div>
                   <div class="grid grid-cols-1 gap-2">
                     <% team.users.each do |user| %>
-                      <label class="flex items-center p-2 bg-white border border-gray-100 rounded hover:border-brand-blue hover:bg-blue-50/30 cursor-pointer transition">
-                        <%= check_box_tag "saturday_schedule[user_ids][]", user.id, saturday_schedule.users.include?(user), class: "team-#{team.id} rounded text-brand-blue focus:ring-brand-blue mr-3 h-4 w-4" %>
-                        <div class="flex-1">
-                          <p class="text-sm font-medium text-gray-900"><%= user.name %></p>
+                      <label class="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-brand-blue hover:bg-blue-50/30 cursor-pointer transition-all group">
+                        <%= check_box_tag "saturday_schedule[user_ids][]", user.id, 
+                            saturday_schedule.users.include?(user), 
+                            class: "team-#{team.id} rounded text-brand-blue focus:ring-brand-blue mr-3 h-5 w-5 cursor-pointer" %>
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm font-medium text-gray-900 truncate group-hover:text-brand-blue transition-colors">
+                            <%= user.name %>
+                          </p>
                           <p class="text-xs text-gray-400"><%= user.username %></p>
                         </div>
                       </label>
@@ -62,21 +109,32 @@
             <% end %>
           </div>
         <% else %>
-          <p class="text-sm text-gray-500 text-center py-4">Chưa có team/nhân viên nào trong hệ thống.</p>
+          <div class="text-center py-8 text-gray-500">
+            <i class="fa-solid fa-users-slash text-4xl text-gray-300 mb-3"></i>
+            <p class="text-sm">Chưa có team/nhân viên nào trong hệ thống.</p>
+          </div>
         <% end %>
-
-        <!-- Users with no team -->
-        <% # Ideally handle users with no team here too %>
       </div>
-      <p class="text-xs text-gray-400 text-center">Chọn nhân viên sẽ đi làm vào ngày này.</p>
+      
+      <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 text-center">
+        <p class="text-xs text-gray-500">
+          <i class="fa-solid fa-info-circle mr-1"></i>
+          Chọn nhân viên sẽ đi làm vào ngày này
+        </p>
+      </div>
     </div>
   </div>
 
-  <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100 mt-6">
-    <%= link_to "Hủy", saturday_schedules_path, class: "px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition" %>
-    <%= f.button class: "bg-[#0B387A] text-white px-6 py-2 rounded-lg shadow hover:bg-blue-900 flex items-center justify-center min-w-[120px]" do %>
-      <i class="fa-solid fa-save mr-2"></i> Lưu Lịch
+  <%# Actions %>
+  <div class="flex items-center justify-center gap-4 pt-2">
+    <%= link_to saturday_schedules_path, class: "inline-flex items-center px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors" do %>
+      <i class="fa-solid fa-times mr-2"></i>
+      Hủy bỏ
     <% end %>
+    <button type="submit" class="inline-flex items-center px-8 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 transition-all cursor-pointer">
+      <i class="fa-solid fa-save mr-2"></i>
+      <%= saturday_schedule.new_record? ? "Tạo lịch" : "Lưu thay đổi" %>
+    </button>
   </div>
 <% end %>
 
@@ -85,22 +143,22 @@
     const date = new Date(input.value);
     const day = date.getDay();
     const helper = document.getElementById('date-helper');
-    const submitBtn = document.querySelector('button[type="submit"]');
 
-    if (day !== 6 && input.value !== "") { // 6 is Saturday
-      helper.innerText = "❌ Ngày bạn chọn không phải là Thứ 7!";
+    if (day !== 6 && input.value !== "") {
+      helper.innerHTML = '<i class="fa-solid fa-times-circle mr-1"></i>Ngày bạn chọn không phải là Thứ 7!';
+      helper.classList.remove("text-gray-500");
       helper.classList.add("text-red-600");
       input.classList.add("border-red-500", "focus:border-red-500", "focus:ring-red-500");
     } else {
-      helper.innerText = "Chỉ được chọn ngày Thứ 7.";
+      helper.innerHTML = '<i class="fa-solid fa-info-circle mr-1"></i>Chỉ được chọn ngày Thứ 7';
+      helper.classList.add("text-gray-500");
       helper.classList.remove("text-red-600");
       input.classList.remove("border-red-500", "focus:border-red-500", "focus:ring-red-500");
     }
   }
 
-  function toggleTeam(teamId, checked) {
+  function toggleTeam(teamId) {
     const checkboxes = document.querySelectorAll(`.team-${teamId}`);
-    // Simple toggle logic: if all checked, uncheck all. Otherwise check all.
     const allChecked = Array.from(checkboxes).every(cb => cb.checked);
     
     checkboxes.forEach(cb => {

@@ -7,7 +7,7 @@ class RegionsController < ApplicationController
   authorize_resource
 
   def index
-    @regions = Region.ordered
+    @regions = Region.ordered.page(params[:page]).per(params[:per_page] || 10)
   end
 
   def show; end

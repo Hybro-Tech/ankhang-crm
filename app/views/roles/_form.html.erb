@@ -1,13 +1,13 @@
-<%# TASK-016: Role form partial with permission matrix %>
-<%= form_with model: role, local: true, class: "max-w-none w-full" do |f| %>
+<%# TASK-016: Role form partial with permission matrix - UI/UX ProMax %>
+<%= form_with model: role, local: true, class: "space-y-8" do |f| %>
   <%# Error messages %>
   <% if role.errors.any? %>
-    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+    <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
       <div class="flex items-center text-red-800">
         <i class="fa-solid fa-exclamation-triangle mr-2"></i>
-        <span class="font-medium">Có <%= role.errors.count %> lỗi:</span>
+        <span class="font-semibold">Có <%= role.errors.count %> lỗi cần sửa:</span>
       </div>
-      <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside ml-6">
         <% role.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
@@ -15,122 +15,169 @@
     </div>
   <% end %>
 
-  <%# Role Info Section %>
-  <div class="mb-10">
-    <h3 class="text-lg font-bold text-gray-900 border-b border-gray-200 pb-3 mb-6">Thông tin chung</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div>
-        <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1" do %>
-          Tên Vai trò <span class="text-red-500">*</span>
-        <% end %>
-        <%= f.text_field :name, 
-            class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none",
-            placeholder: "VD: Nhân viên Kinh doanh",
-            disabled: role.is_system? %>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Mã Vai trò <span class="text-red-500">*</span></label>
-        <input type="text" 
-               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none bg-gray-50 text-gray-500"
-               placeholder="VD: sale_staff"
-               value="<%= role.name&.parameterize&.underscore %>"
-               disabled>
-      </div>
-      <div class="md:col-span-2">
-        <%= f.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_area :description, rows: 2,
-            class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none",
-            placeholder: "Mô tả vai trò..." %>
-      </div>
-      <div>
-        <%= f.label :dashboard_type, "Loại Dashboard", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.select :dashboard_type, 
-            options_for_select([
-              ["Admin (Tổng quan)", "admin"],
-              ["Tổng đài (Nhập liệu)", "call_center"],
-              ["Sale (Kinh doanh)", "sale"],
-              ["CSKH (Chăm sóc KH)", "cskh"]
-            ], role.dashboard_type || "admin"),
-            {},
-            class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none" %>
-        <p class="text-xs text-gray-500 mt-1">Chọn giao diện Dashboard hiển thị cho vai trò này</p>
+  <%# Role Info Card %>
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-bold text-gray-900 flex items-center">
+        <i class="fa-solid fa-id-badge text-brand-blue mr-2"></i>
+        Thông tin vai trò
+      </h3>
+    </div>
+    
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1.5" do %>
+            Tên Vai trò <span class="text-red-500">*</span>
+          <% end %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-user-tag text-gray-400"></i>
+            </div>
+            <%= f.text_field :name, 
+                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors #{role.is_system? ? 'bg-gray-100 cursor-not-allowed' : ''}",
+                placeholder: "VD: Nhân viên Kinh doanh",
+                disabled: role.is_system? %>
+          </div>
+          <% if role.is_system? %>
+            <p class="mt-1.5 text-xs text-amber-600 flex items-center">
+              <i class="fa-solid fa-lock mr-1"></i>
+              Vai trò hệ thống - không thể đổi tên
+            </p>
+          <% end %>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Mã Vai trò</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-code text-gray-400"></i>
+            </div>
+            <input type="text" 
+                   class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 bg-gray-100 text-gray-500 font-mono cursor-not-allowed"
+                   placeholder="VD: sale_staff"
+                   value="<%= role.name&.parameterize&.underscore %>"
+                   disabled>
+          </div>
+          <p class="mt-1.5 text-xs text-gray-500">Tự động tạo từ tên vai trò</p>
+        </div>
+        
+        <div class="md:col-span-2">
+          <%= f.label :description, "Mô tả", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.text_area :description, rows: 2,
+              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors resize-none",
+              placeholder: "Mô tả chi tiết vai trò..." %>
+        </div>
+        
+        <div>
+          <%= f.label :dashboard_type, "Loại Dashboard", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-gauge-high text-gray-400"></i>
+            </div>
+            <%= f.select :dashboard_type, 
+                options_for_select([
+                  ["Admin (Tổng quan)", "admin"],
+                  ["Tổng đài (Nhập liệu)", "call_center"],
+                  ["Sale (Kinh doanh)", "sale"],
+                  ["CSKH (Chăm sóc KH)", "cskh"]
+                ], role.dashboard_type || "admin"),
+                {},
+                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none bg-white transition-colors cursor-pointer appearance-none" %>
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
+            </div>
+          </div>
+          <p class="mt-1.5 text-xs text-gray-500">Dashboard mặc định khi đăng nhập</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <%# Permission Matrix Section %>
-  <div class="mb-10" data-controller="permission-matrix">
-    <div class="mb-6">
-      <h3 class="text-lg font-bold text-gray-900">Phân quyền</h3>
-      <p class="text-gray-500 text-sm mt-1">Tick chọn quyền cho từng module</p>
+  <%# Permission Matrix Card %>
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden" data-controller="permission-matrix">
+    <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-bold text-gray-900 flex items-center">
+        <i class="fa-solid fa-shield-halved text-brand-orange mr-2"></i>
+        Ma trận phân quyền
+      </h3>
+      <p class="text-sm text-gray-500 mt-1">Tick chọn quyền cho từng module</p>
     </div>
 
-    <div class="border border-gray-200 rounded-lg overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead>
-            <tr class="bg-gray-50 border-b border-gray-200">
-              <th class="px-4 py-3 text-left font-bold text-sm text-gray-700 w-56">Module</th>
-              <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Xem</th>
-              <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Tạo</th>
-              <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Sửa</th>
-              <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Xóa</th>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-gray-50 border-b border-gray-200">
+            <th class="px-6 py-3 text-left font-bold text-sm text-gray-700 w-56">Module</th>
+            <th class="px-4 py-3 text-center font-medium text-sm text-gray-600 w-24">
+              <i class="fa-solid fa-eye mr-1"></i>Xem
+            </th>
+            <th class="px-4 py-3 text-center font-medium text-sm text-gray-600 w-24">
+              <i class="fa-solid fa-plus mr-1"></i>Tạo
+            </th>
+            <th class="px-4 py-3 text-center font-medium text-sm text-gray-600 w-24">
+              <i class="fa-solid fa-edit mr-1"></i>Sửa
+            </th>
+            <th class="px-4 py-3 text-center font-medium text-sm text-gray-600 w-24">
+              <i class="fa-solid fa-trash mr-1"></i>Xóa
+            </th>
+            <th class="px-4 py-3 text-center font-medium text-sm text-gray-600 w-24 bg-blue-50">
+              <i class="fa-solid fa-check-double mr-1"></i>Tất cả
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
+          <% permissions.keys.each do |category| %>
+            <tr class="hover:bg-blue-50/50 transition-colors" data-category="<%= category %>" data-controller="checkbox-select-all">
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <i class="<%= category_icon_class(category) %> w-8 text-lg"></i>
+                  <span class="font-medium text-gray-900"><%= category_name_vi(category) %></span>
+                </div>
+              </td>
+              
+              <% [:view, :create, :edit, :delete].each do |action| %>
+                <td class="px-4 py-4 text-center">
+                  <% if perm = find_permission_for(category, action, permissions) %>
+                    <label class="inline-flex items-center justify-center cursor-pointer w-full h-full">
+                      <input type="checkbox" 
+                             name="role[permission_ids][]" 
+                             value="<%= perm.id %>"
+                             <%= "checked" if role.permissions.include?(perm) %>
+                             data-checkbox-select-all-target="child"
+                             data-action="change->checkbox-select-all#updateParentState"
+                             class="w-5 h-5 rounded text-brand-blue focus:ring-brand-blue border-gray-300 cursor-pointer transition-colors">
+                    </label>
+                  <% else %>
+                    <span class="text-gray-300">—</span>
+                  <% end %>
+                </td>
+              <% end %>
 
-              <th class="px-3 py-3 text-center font-medium text-sm text-gray-600 w-24">Tất cả</th>
+              <td class="px-4 py-4 text-center bg-blue-50/30">
+                <label class="inline-flex items-center justify-center cursor-pointer w-full h-full">
+                  <input type="checkbox" 
+                         class="w-5 h-5 rounded text-brand-blue focus:ring-brand-blue border-gray-300 cursor-pointer transition-colors"
+                         data-checkbox-select-all-target="parent"
+                         data-action="change->checkbox-select-all#toggleChildren">
+                </label>
+              </td>
             </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200 bg-white">
-            <% permissions.keys.each do |category| %>
-              <tr class="hover:bg-blue-50 transition-colors" data-category="<%= category %>" data-controller="checkbox-select-all">
-                <td class="px-4 py-3">
-                  <div class="flex items-center">
-                    <i class="<%= category_icon_class(category) %> w-8"></i>
-                    <span class="font-medium text-gray-900"><%= category_name_vi(category) %></span>
-                  </div>
-                </td>
-                
-                <% [:view, :create, :edit, :delete].each do |action| %>
-                  <td class="px-3 py-3 text-center">
-                    <% if perm = find_permission_for(category, action, permissions) %>
-                      <label class="inline-flex items-center justify-center cursor-pointer w-full h-full">
-                        <input type="checkbox" 
-                               name="role[permission_ids][]" 
-                               value="<%= perm.id %>"
-                               <%= "checked" if role.permissions.include?(perm) %>
-                               data-checkbox-select-all-target="child"
-                               data-action="change->checkbox-select-all#updateParentState"
-                               class="w-5 h-5 rounded text-[#0B387A] focus:ring-[#0B387A] border-gray-300 permission-checkbox">
-                      </label>
-                    <% else %>
-                      <span class="text-gray-300">—</span>
-                    <% end %>
-                  </td>
-                <% end %>
-
-                <td class="px-3 py-3 text-center">
-                  <label class="inline-flex items-center justify-center cursor-pointer w-full h-full">
-                    <input type="checkbox" 
-                           class="w-5 h-5 rounded text-[#0B387A] focus:ring-[#0B387A] border-gray-300 select-all-checkbox"
-                           data-checkbox-select-all-target="parent"
-                           data-action="change->checkbox-select-all#toggleChildren">
-                  </label>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <%# Action Buttons %>
-  <div class="flex items-center justify-center space-x-4 pt-8 border-t border-gray-200">
-    <%= link_to roles_path, class: "px-8 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors" do %>
+  <div class="flex items-center justify-center gap-4 pt-2">
+    <%= link_to roles_path, class: "inline-flex items-center px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors" do %>
+      <i class="fa-solid fa-times mr-2"></i>
       Hủy bỏ
     <% end %>
-    <button type="submit" class="px-8 py-2.5 bg-[#0B387A] text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 flex items-center transition-colors cursor-pointer">
+    <button type="submit" class="inline-flex items-center px-8 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 transition-all cursor-pointer">
       <i class="fa-solid fa-save mr-2"></i>
-      Lưu Thay đổi
+      <%= role.new_record? ? "Tạo vai trò" : "Lưu thay đổi" %>
     </button>
   </div>
 <% end %>
