@@ -55,6 +55,9 @@ gem "web-push" # Web Push notifications via VAPID
 gem "aws-sdk-s3", require: false # S3 storage for production
 gem "image_processing", "~> 1.2" # Image variants (resize, crop)
 
+# Security
+gem "rack-attack" # Rate limiting & throttling
+
 # ============================================
 # Development & Test Groups
 # ============================================
@@ -68,9 +71,11 @@ end
 
 group :development do
   gem "annotate_models"
-  gem "bullet"                         # N+1 detection
-  gem "lefthook", require: false       # Git hooks manager
-  gem "rubocop-rails", require: false  # Linting
+  gem "brakeman", require: false         # Static security analysis
+  gem "bullet"                           # N+1 detection
+  gem "bundler-audit", require: false    # Gem vulnerability checking
+  gem "lefthook", require: false         # Git hooks manager
+  gem "rubocop-rails", require: false    # Linting
   gem "web-console"
 end
 
