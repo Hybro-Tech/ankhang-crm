@@ -58,8 +58,12 @@
     <div class="relative" data-controller="dropdown">
       <button type="button" data-action="click->dropdown#toggle" class="flex items-center">
         <% if user_signed_in? %>
-          <%= image_tag "https://ui-avatars.com/api/?name=#{current_user.email.first}&background=0B387A&color=fff", class: "h-8 w-8 rounded-full object-cover border border-gray-200", alt: "Avatar" %>
-          <span class="ml-3 text-sm font-medium text-gray-700 hidden sm:block"><%= current_user.email.split('@').first %></span>
+          <% if current_user.avatar.attached? %>
+            <%= image_tag current_user.avatar.variant(:thumb), class: "h-8 w-8 rounded-full object-cover border border-gray-200", alt: "Avatar" %>
+          <% else %>
+            <%= image_tag "https://ui-avatars.com/api/?name=#{URI.encode_www_form_component(current_user.name.presence || current_user.email.first)}&background=0B387A&color=fff", class: "h-8 w-8 rounded-full object-cover border border-gray-200", alt: "Avatar" %>
+          <% end %>
+          <span class="ml-3 text-sm font-medium text-gray-700 hidden sm:block"><%= current_user.name.presence || current_user.email.split('@').first %></span>
         <% else %>
           <i class="fa-solid fa-user-circle text-2xl text-gray-400"></i>
         <% end %>
