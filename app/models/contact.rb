@@ -118,6 +118,8 @@ class Contact < ApplicationRecord
   before_save :set_team_from_service_type, if: :service_type_id_changed?
   after_create :mark_as_just_created
   after_save :set_assigned_at, if: :saved_change_to_assigned_user_id?
+  # TASK-033: Send email notification when assigned
+  after_commit :send_assignment_email, if: :should_send_assignment_email?
 
   # NOTE: after_create_commit and after_update_commit callbacks are defined in Contact::Broadcastable
 
@@ -300,6 +302,18 @@ class Contact < ApplicationRecord
 
   def just_created?
     @just_created == true
+  end
+
+  # TASK-033: Check if assignment email should be sent
+  def should_send_assignment_email?
+    saved_change_to_assigned_user_id? &&
+      assigned_user_id.present? &&
+      assigned_user_id_before_last_save.blank? # Only on first assignment
+  end
+
+  # TASK-033: Send email notification for contact assignment
+  def send_assignment_email
+    EmailNotificationService.notify_contact_assigned(self)
   end
 
   # NOTE: Broadcast methods (initialize_smart_routing_and_broadcast, broadcast_contact_picked,

@@ -106,6 +106,48 @@
       </div>
     </div>
 
+    <%# TASK-033: Email Notifications Section %>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-6 py-4" style="background-color: #0B387A;">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <i class="fa-solid fa-envelope"></i>
+          Email Notifications
+        </h2>
+        <p class="text-white text-sm mt-1">Cấu hình gửi email thông báo</p>
+      </div>
+      
+      <div class="p-6">
+        <div class="flex items-center gap-4">
+          <% email_enabled = @settings.find { |s| s[:key] == 'email_notifications_enabled' }&.dig(:value) == 'true' %>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="hidden" name="settings[email_notifications_enabled]" value="false">
+            <input type="checkbox" 
+                   name="settings[email_notifications_enabled]" 
+                   id="settings_email_notifications_enabled"
+                   value="true"
+                   class="sr-only peer"
+                   <%= 'checked' if email_enabled %>>
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+          </label>
+          <div>
+            <label for="settings_email_notifications_enabled" class="text-sm font-medium text-gray-700 cursor-pointer">
+              Bật gửi Email thông báo
+            </label>
+            <p class="text-xs text-gray-500">Khi bật, hệ thống sẽ gửi email khi có sự kiện quan trọng (gán KH, yêu cầu chuyển giao...)</p>
+          </div>
+        </div>
+        
+        <% unless email_enabled %>
+        <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <p class="text-sm text-amber-700 flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Email đang <strong>TẮT</strong>. Bật để nhận thông báo qua email.
+          </p>
+        </div>
+        <% end %>
+      </div>
+    </div>
+
     <%# Submit %>
     <div class="flex justify-end">
       <button type="submit" class="px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2 text-white" style="background-color: #0B387A;">

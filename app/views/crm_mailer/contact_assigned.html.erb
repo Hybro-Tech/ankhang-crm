@@ -1,0 +1,35 @@
+<h2>Xin chào <%= @user.name %>,</h2>
+
+<p>Bạn vừa được gán một khách hàng mới trong hệ thống AnKhangCRM.</p>
+
+<div class="info-box">
+  <div class="label">Khách hàng</div>
+  <div class="value"><strong><%= @contact.name %></strong></div>
+</div>
+
+<% if @contact.phone.present? %>
+<div class="info-box">
+  <div class="label">Số điện thoại</div>
+  <div class="value"><%= @contact.phone %></div>
+</div>
+<% end %>
+
+<% if @contact.service_type.present? %>
+<div class="info-box">
+  <div class="label">Loại nhu cầu</div>
+  <div class="value"><%= @contact.service_type.name %></div>
+</div>
+<% end %>
+
+<% if @contact.source.present? %>
+<div class="info-box">
+  <div class="label">Nguồn</div>
+  <div class="value"><%= @contact.source.name %></div>
+</div>
+<% end %>
+
+<p>Vui lòng liên hệ khách hàng sớm nhất có thể.</p>
+
+<p style="text-align: center;">
+  <a href="<%= @action_url %>" class="btn-primary">Xem chi tiết khách hàng</a>
+</p>

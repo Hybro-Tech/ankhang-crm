@@ -1,0 +1,14 @@
+Xin chào <%= @approver.name %>,
+
+Có một yêu cầu chuyển giao khách hàng cần bạn phê duyệt.
+
+THÔNG TIN YÊU CẦU
+=================
+Khách hàng: <%= @contact.name %>
+Loại yêu cầu: <%= @request.request_type_label %>
+Từ: <%= @request.from_user.name %>
+<% if @request.to_user.present? %>Đến: <%= @request.to_user.name %><% end %>
+Lý do: <%= @request.reason %>
+Người yêu cầu: <%= @request.requested_by.name %>
+
+Xem và phê duyệt: <%= @action_url %>

@@ -1,0 +1,19 @@
+YÊU CẦU CHUYỂN GIAO BỊ TỪ CHỐI
+==============================
+
+Xin chào <%= @requester.name %>,
+
+Yêu cầu chuyển giao khách hàng của bạn đã bị Team Lead từ chối.
+
+THÔNG TIN
+=========
+Khách hàng: <%= @contact.name %>
+Loại yêu cầu: <%= @request.request_type_label %>
+Từ: <%= @request.from_user.name %>
+<% if @request.to_user.present? %>Đến: <%= @request.to_user.name %><% end %>
+Người từ chối: <%= @request.approved_by&.name %>
+<% if @request.rejection_reason.present? %>
+Lý do từ chối: <%= @request.rejection_reason %>
+<% end %>
+
+Quay lại danh sách: <%= @action_url %>

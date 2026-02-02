@@ -1,0 +1,14 @@
+Xin chào <%= @user.name %>,
+
+Bạn vừa được gán một khách hàng mới trong hệ thống AnKhangCRM.
+
+THÔNG TIN KHÁCH HÀNG
+====================
+Tên: <%= @contact.name %>
+<% if @contact.phone.present? %>Số điện thoại: <%= @contact.phone %><% end %>
+<% if @contact.service_type.present? %>Loại nhu cầu: <%= @contact.service_type.name %><% end %>
+<% if @contact.source.present? %>Nguồn: <%= @contact.source.name %><% end %>
+
+Vui lòng liên hệ khách hàng sớm nhất có thể.
+
+Xem chi tiết: <%= @action_url %>

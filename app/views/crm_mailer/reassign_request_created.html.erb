@@ -1,0 +1,41 @@
+<h2>Xin chào <%= @approver.name %>,</h2>
+
+<p>Có một yêu cầu chuyển giao khách hàng cần bạn phê duyệt.</p>
+
+<div class="info-box">
+  <div class="label">Khách hàng</div>
+  <div class="value"><strong><%= @contact.name %></strong></div>
+</div>
+
+<div class="info-box">
+  <div class="label">Loại yêu cầu</div>
+  <div class="value">
+    <span class="badge badge-info"><%= @request.request_type_label %></span>
+  </div>
+</div>
+
+<div class="info-box">
+  <div class="label">Từ</div>
+  <div class="value"><%= @request.from_user.name %></div>
+</div>
+
+<% if @request.to_user.present? %>
+<div class="info-box">
+  <div class="label">Đến</div>
+  <div class="value"><%= @request.to_user.name %></div>
+</div>
+<% end %>
+
+<div class="info-box">
+  <div class="label">Lý do</div>
+  <div class="value"><%= @request.reason %></div>
+</div>
+
+<div class="info-box">
+  <div class="label">Người yêu cầu</div>
+  <div class="value"><%= @request.requested_by.name %></div>
+</div>
+
+<p style="text-align: center;">
+  <a href="<%= @action_url %>" class="btn-primary">Xem và phê duyệt</a>
+</p>

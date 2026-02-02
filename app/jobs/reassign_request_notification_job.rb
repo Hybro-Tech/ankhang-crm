@@ -26,6 +26,8 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
   def notify_on_created
     notify_approver_on_created
     notify_owner_on_created
+    # TASK-033: Send email notification
+    EmailNotificationService.notify_reassign_request_created(@request)
   end
 
   def notify_approver_on_created
@@ -62,6 +64,8 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
     notify_requester_on_approved
     notify_previous_owner_on_approved
     notify_new_owner_on_approved
+    # TASK-033: Send email notification
+    EmailNotificationService.notify_reassign_approved(@request)
   end
 
   def notify_requester_on_approved
@@ -102,6 +106,8 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
             "#{@request.contact.code}. Lý do: #{@request.rejection_reason&.truncate(50)}",
       action_url: "/contacts/#{@request.contact_id}"
     )
+    # TASK-033: Send email notification
+    EmailNotificationService.notify_reassign_rejected(@request)
   end
 
   def create_notification(recipient:, title:, body:, action_url:)

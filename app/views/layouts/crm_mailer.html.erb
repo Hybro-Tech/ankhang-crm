@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+      /* Base Reset */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f4f4f4;
+      }
+
+      /* Container */
+      .email-wrapper {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .email-content {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      /* Header */
+      .email-header {
+        background: linear-gradient(135deg, #0B387A 0%, #1a5dc4 100%);
+        color: #ffffff;
+        padding: 24px;
+        text-align: center;
+      }
+
+      .email-header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .email-header .logo {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      /* Body */
+      .email-body {
+        padding: 32px 24px;
+      }
+
+      .email-body h2 {
+        color: #0B387A;
+        margin-top: 0;
+        margin-bottom: 16px;
+        font-size: 20px;
+      }
+
+      .email-body p {
+        margin: 0 0 16px;
+      }
+
+      /* Info Box */
+      .info-box {
+        background-color: #f8fafc;
+        border-left: 4px solid #0B387A;
+        padding: 16px;
+        margin: 20px 0;
+        border-radius: 0 4px 4px 0;
+      }
+
+      .info-box .label {
+        font-weight: 600;
+        color: #64748b;
+        font-size: 12px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      .info-box .value {
+        color: #1e293b;
+        font-size: 16px;
+      }
+
+      /* Button */
+      .btn-primary {
+        display: inline-block;
+        background: linear-gradient(135deg, #0B387A 0%, #1a5dc4 100%);
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 14px 28px;
+        border-radius: 6px;
+        font-weight: 600;
+        margin: 16px 0;
+      }
+
+      .btn-primary:hover {
+        background: #0B387A;
+      }
+
+      /* Footer */
+      .email-footer {
+        background-color: #f8fafc;
+        padding: 20px 24px;
+        text-align: center;
+        font-size: 13px;
+        color: #64748b;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .email-footer a {
+        color: #0B387A;
+        text-decoration: none;
+      }
+
+      /* Status Badge */
+      .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .badge-success {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+
+      .badge-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+      }
+
+      .badge-info {
+        background-color: #dbeafe;
+        color: #1e40af;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-wrapper">
+      <div class="email-content">
+        <div class="email-header">
+          <div class="logo">⚖️</div>
+          <h1>AnKhangCRM</h1>
+        </div>
+
+        <div class="email-body">
+          <%= yield %>
+        </div>
+
+        <div class="email-footer">
+          <p>
+            Email này được gửi tự động từ hệ thống AnKhangCRM.<br>
+            Vui lòng không trả lời email này.
+          </p>
+          <p>
+            &copy; <%= Time.current.year %> AnKhang Legal Services. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
