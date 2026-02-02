@@ -52,8 +52,8 @@ gem "kaminari" # Pagination
 gem "web-push" # Web Push notifications via VAPID
 
 # Active Storage
-gem "image_processing", "~> 1.2" # Image variants (resize, crop)
 gem "aws-sdk-s3", require: false # S3 storage for production
+gem "image_processing", "~> 1.2" # Image variants (resize, crop)
 
 # ============================================
 # Development & Test Groups

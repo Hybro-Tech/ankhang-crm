@@ -21,7 +21,8 @@
 class Interaction < ApplicationRecord
   # TASK-LOGGING: Auto-log CRUD operations
   include Loggable
-  loggable category: 'interaction'
+
+  loggable category: "interaction"
   # ============================================
   # Associations
   # ============================================

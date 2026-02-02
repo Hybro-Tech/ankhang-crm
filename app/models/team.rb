@@ -27,7 +27,8 @@
 class Team < ApplicationRecord
   # TASK-LOGGING: Auto-log CRUD operations
   include Loggable
-  loggable category: 'team'
+
+  loggable category: "team"
   # Associations
   belongs_to :manager, class_name: "User", optional: true
   has_many :team_members, dependent: :destroy

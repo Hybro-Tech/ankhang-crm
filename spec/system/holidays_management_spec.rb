@@ -34,7 +34,7 @@ RSpec.describe "Holidays Management", type: :system do
       end
 
       fill_in "Tên ngày lễ", with: "Edited Holiday"
-      click_button "Cập nhật"
+      click_button "Lưu thay đổi"
 
       expect(page).to have_content("Cập nhật ngày nghỉ lễ thành công")
       expect(page).to have_content("Edited Holiday")
