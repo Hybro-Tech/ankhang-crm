@@ -48,6 +48,7 @@ class Notification < ApplicationRecord
   # === Validations ===
   validates :title, presence: true
   validates :category, presence: true, inclusion: { in: CATEGORIES.values }
+  validates :notification_type, inclusion: { in: NOTIFICATION_TYPES.keys }, allow_nil: true
 
   # === Scopes ===
   scope :unread, -> { where(read: false) }

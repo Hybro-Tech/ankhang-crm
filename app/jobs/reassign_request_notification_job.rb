@@ -123,14 +123,24 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
     EmailNotificationService.notify_reassign_rejected(@request)
   end
 
-  def create_notification(recipient:, title:, body:, action_url:)
+  def create_notification(recipient:, title:, body:, action_url:, notification_type: nil)
     Notification.create!(
-      recipient: recipient,
+      user: recipient,
       title: title,
       body: body,
       notifiable: @request,
-      action_url: action_url
+      action_url: action_url,
+      notification_type: notification_type || determine_notification_type,
+      category: "approval"
     )
+  end
+
+  def determine_notification_type
+    case @request.status
+    when "approved" then "reassign_approved"
+    when "rejected" then "reassign_rejected"
+    else "reassign_requested"
+    end
   end
 
   def request_type_label

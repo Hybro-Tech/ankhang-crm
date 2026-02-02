@@ -92,15 +92,7 @@ class NotificationsController < ApplicationController
   # Broadcast badge update to user's notification stream
   def broadcast_badge_update
     unread_count = current_user.notifications.unread.count
-
-    badge_html = if unread_count.positive?
-                   display = unread_count > 9 ? "9+" : unread_count.to_s
-                   badge_class = "absolute -top-1 -right-1 flex items-center justify-center " \
-                                 "h-5 w-5 rounded-full bg-brand-red text-white text-xs font-bold ring-2 ring-white"
-                   %(<span id="notification_badge" class="#{badge_class}">#{display}</span>)
-                 else
-                   %(<span id="notification_badge" class="hidden"></span>)
-                 end
+    badge_html = helpers.notification_badge_html(unread_count)
 
     Turbo::StreamsChannel.broadcast_replace_to(
       "user_#{current_user.id}_notifications",

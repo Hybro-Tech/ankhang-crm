@@ -51,7 +51,7 @@ class NotificationService
         # Pool mode: all sales in team can see
         return if contact.team.blank?
 
-        sales = contact.team.users.joins(:roles).where(roles: { code: Role::SALE })
+        sales = contact.team.users.includes(:roles).joins(:roles).where(roles: { code: Role::SALE })
       else
         # Smart Routing: only visible users
         sales = User.where(id: visible_user_ids)
