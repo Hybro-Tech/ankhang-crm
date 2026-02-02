@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Avatar preview controller
 // Shows a preview of the selected image before saving
 export default class extends Controller {
-  static targets = ["input", "current", "preview", "status"]
+  static targets = ["input", "current", "preview"]
 
   preview () {
     const file = this.inputTarget.files[0]
@@ -31,11 +31,6 @@ export default class extends Controller {
       this.currentTarget.classList.add("hidden")
       this.previewTarget.src = e.target.result
       this.previewTarget.classList.remove("hidden")
-
-      // Show status indicator
-      if (this.hasStatusTarget) {
-        this.statusTarget.classList.remove("hidden")
-      }
     }
     reader.readAsDataURL(file)
   }

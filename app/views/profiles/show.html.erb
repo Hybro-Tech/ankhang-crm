@@ -64,9 +64,6 @@
                 <label for="avatar-input" class="text-sm text-brand-blue hover:text-blue-800 cursor-pointer font-medium">
                   <i class="fa-solid fa-upload mr-1"></i><%= t("profiles.avatar.upload") %>
                 </label>
-                <span id="avatar-status" class="hidden text-sm text-green-600" data-avatar-preview-target="status">
-                  <i class="fa-solid fa-check mr-1"></i><%= t("profiles.avatar.selected") %>
-                </span>
                 <% if @user.avatar.attached? %>
                   <%= button_to destroy_avatar_profile_path, method: :delete, 
                                 form: { data: { turbo_confirm: t("profiles.avatar.confirm_remove") } },
