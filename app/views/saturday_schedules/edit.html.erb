@@ -1,17 +1,15 @@
 <% content_for :title, "Sửa Lịch làm việc #{@saturday_schedule.date&.strftime('%d/%m/%Y')}" %>
 
-<div class="max-w-4xl mx-auto">
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-    <div class="mb-6 pb-4 border-b border-gray-100 flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">Điều chỉnh lịch làm việc</h1>
-        <p class="text-sm text-gray-500">Cập nhật danh sách nhân viên cho ngày <%= @saturday_schedule.date&.strftime('%d/%m/%Y') %></p>
-      </div>
-      <%= link_to saturday_schedules_path, class: "text-gray-500 hover:text-gray-700 text-sm" do %>
-        <i class="fa-solid fa-xmark mr-1"></i> Đóng
-      <% end %>
+<div class="w-full">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Điều chỉnh lịch làm việc</h1>
+      <p class="text-sm text-gray-500">Cập nhật danh sách nhân viên cho ngày <%= @saturday_schedule.date&.strftime('%d/%m/%Y') %></p>
     </div>
-
-    <%= render "form", saturday_schedule: @saturday_schedule %>
+    <%= link_to saturday_schedules_path, class: "text-gray-500 hover:text-gray-700 text-sm" do %>
+      <i class="fa-solid fa-xmark mr-1"></i> Đóng
+    <% end %>
   </div>
+
+  <%= render "form", saturday_schedule: @saturday_schedule %>
 </div>
