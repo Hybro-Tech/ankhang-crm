@@ -1,0 +1,215 @@
+<div class="min-h-screen bg-gray-50 flex flex-col">
+  <main class="flex-1 p-0 w-full space-y-6">
+    
+    <%# Header %>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Tổng quan</h1>
+        <p class="text-sm text-gray-500 mt-1">Thống kê nhập liệu của bạn</p>
+      </div>
+      <div class="flex items-center gap-2 text-sm text-gray-500">
+        <i class="fa-regular fa-calendar"></i>
+        <span>Tháng <%= Time.zone.now.strftime("%m/%Y") %></span>
+      </div>
+    </div>
+
+    <%# KPI Cards Section %>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <%# Card 1: Today %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-3">
+          <div class="flex-shrink-0 bg-blue-50 rounded-lg p-3">
+            <i class="fa-solid fa-calendar-day text-brand-blue text-lg"></i>
+          </div>
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Hôm nay</p>
+            <p class="text-2xl font-bold text-gray-900"><%= @kpi[:today] %></p>
+          </div>
+        </div>
+      </div>
+
+      <%# Card 2: Week %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-3">
+          <div class="flex-shrink-0 bg-orange-50 rounded-lg p-3">
+            <i class="fa-solid fa-calendar-week text-brand-orange text-lg"></i>
+          </div>
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Tuần này</p>
+            <p class="text-2xl font-bold text-gray-900"><%= @kpi[:week] %></p>
+          </div>
+        </div>
+      </div>
+
+      <%# Card 3: Target %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-3">
+          <div class="flex-shrink-0 bg-gray-100 rounded-lg p-3">
+            <i class="fa-solid fa-bullseye text-gray-600 text-lg"></i>
+          </div>
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Chỉ tiêu ngày</p>
+            <p class="text-2xl font-bold text-gray-900"><%= @kpi[:daily_target] %></p>
+          </div>
+        </div>
+      </div>
+
+      <%# Card 4: Progress Ring %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
+        <div class="flex items-center gap-4">
+          <div class="relative w-14 h-14">
+            <svg class="w-14 h-14 transform -rotate-90" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="#E5E7EB" stroke-width="3"/>
+              <circle cx="18" cy="18" r="15.9" fill="none" 
+                      stroke="<%= @kpi[:progress] >= 100 ? '#10B981' : '#0B387A' %>" 
+                      stroke-width="3"
+                      stroke-dasharray="<%= @kpi[:progress] %>, 100"
+                      stroke-linecap="round"/>
+            </svg>
+            <span class="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-900">
+              <%= @kpi[:progress] %>%
+            </span>
+          </div>
+          <div>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Tiến độ</p>
+            <p class="text-sm font-semibold <%= @kpi[:progress] >= 100 ? 'text-green-600' : 'text-gray-600' %>">
+              <%= @kpi[:today] %>/<%= @kpi[:daily_target] %> KH
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Charts Section %>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <%# 7-Day Trend Line Chart %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 lg:col-span-2">
+        <h3 class="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-chart-line text-brand-blue"></i>
+          Xu hướng 7 ngày gần đây
+        </h3>
+        <div class="relative h-56">
+          <canvas id="callCenterTrendChart"></canvas>
+        </div>
+      </div>
+
+      <%# Source Distribution Pie Chart %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <h3 class="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-chart-pie text-brand-orange"></i>
+          Phân bố nguồn KH
+        </h3>
+        <div class="relative h-56 flex justify-center">
+          <canvas id="callCenterSourceChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <%# Monthly Stats Table %>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100">
+        <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2">
+          <i class="fa-solid fa-table text-gray-500"></i>
+          Thống kê tháng này
+        </h3>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-3 gap-6 text-center">
+          <div>
+            <p class="text-3xl font-bold text-brand-blue"><%= @kpi[:month] %></p>
+            <p class="text-sm text-gray-500 mt-1">Tổng KH nhập</p>
+          </div>
+          <div>
+            <p class="text-3xl font-bold text-green-600"><%= @kpi[:total] %></p>
+            <p class="text-sm text-gray-500 mt-1">Tổng tích lũy</p>
+          </div>
+          <div>
+            <% avg_per_day = (@kpi[:month].to_f / [Date.current.day, 1].max).round(1) %>
+            <p class="text-3xl font-bold text-brand-orange"><%= avg_per_day %></p>
+            <p class="text-sm text-gray-500 mt-1">TB/ngày</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<%# Chart.js Scripts %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("turbo:load", function() {
+    // 7-Day Trend Line Chart
+    const trendCtx = document.getElementById('callCenterTrendChart');
+    if (trendCtx) {
+      new Chart(trendCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: <%= raw @chart_data[:labels].to_json %>,
+          datasets: [{
+            label: 'KH nhập',
+            data: <%= raw @chart_data[:data].to_json %>,
+            borderColor: '#0B387A',
+            backgroundColor: 'rgba(11, 56, 122, 0.1)',
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#0B387A',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { 
+              beginAtZero: true,
+              ticks: { stepSize: 1 },
+              grid: { borderDash: [2, 4] }
+            },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Source Distribution Pie Chart
+    const sourceCtx = document.getElementById('callCenterSourceChart');
+    if (sourceCtx) {
+      const sourceData = <%= raw (@source_distribution || []).to_json %>;
+      const hasData = sourceData.some(s => s.count > 0);
+      
+      new Chart(sourceCtx.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: hasData ? sourceData.map(s => s.name) : ['Chưa có dữ liệu'],
+          datasets: [{
+            data: hasData ? sourceData.map(s => s.count) : [1],
+            backgroundColor: hasData 
+              ? ['#0B387A', '#F37021', '#10B981', '#FBBF24', '#8B5CF6', '#EC4899']
+              : ['#E5E7EB'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { 
+                boxWidth: 12,
+                font: { size: 11 }
+              }
+            }
+          },
+          cutout: '55%'
+        }
+      });
+    }
+  });
+</script>

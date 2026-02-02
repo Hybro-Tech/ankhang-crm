@@ -10,20 +10,29 @@
 
   <%# Navigation Menu %>
   <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto sidebar-scroll">
-    <%# Sales Workspace - For Sales role %>
     <%= sidebar_link "Workspace", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
 
-    <%# Dashboard - Always visible %>
-    <%# TASK-Refine: Link explicitly to dashboard_index_path to avoid root redirect for Sales %>
-    <%= link_to dashboard_index_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_index_path) || (current_user.call_center_staff? && current_page?(root_path)) || (!current_user.sale_staff? && current_page?(root_path)) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
-      <i class="fa-solid fa-chart-line w-6 <%= current_page?(dashboard_index_path) || (current_user.call_center_staff? && current_page?(root_path)) || (!current_user.sale_staff? && current_page?(root_path)) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
-      <span>Tổng quan</span>
+    <%# Call Center Menu - Tổng đài role specific %>
+    <% if current_user.call_center_staff? %>
+      <%# Tổng đài - Main input page %>
+      <%= link_to dashboard_index_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_index_path) || current_page?(root_path) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
+        <i class="fa-solid fa-headset w-6 <%= current_page?(dashboard_index_path) || current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
+        <span>Tổng đài</span>
+      <% end %>
+      <%# Tổng quan - Statistics page %>
+      <%= link_to call_center_overview_path, class: "flex items-center px-4 py-3 #{current_page?(call_center_overview_path) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
+        <i class="fa-solid fa-chart-line w-6 <%= current_page?(call_center_overview_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
+        <span>Tổng quan</span>
+      <% end %>
+    <% else %>
+      <%# Dashboard - For other roles (Admin, Sale, CSKH) %>
+      <%= link_to dashboard_index_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_index_path) || (!current_user.sale_staff? && current_page?(root_path)) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
+        <i class="fa-solid fa-chart-line w-6 <%= current_page?(dashboard_index_path) || (!current_user.sale_staff? && current_page?(root_path)) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
+        <span>Tổng quan</span>
+      <% end %>
     <% end %>
 
     <%= sidebar_link "Pipeline (Kanban)", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
-
-    <%# Call Center Statistics - For Tổng Đài role %>
-    <%= sidebar_link "Thống kê nhập liệu", call_center_stats_path, "fa-chart-simple", permission: "dashboards.view_call_center" %>
 
     <%# Kinh doanh section %>
     <%= sidebar_section "Kinh doanh", ["contacts.view", "service_types.view", "sources.view"] %>

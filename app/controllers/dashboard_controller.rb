@@ -23,6 +23,15 @@ class DashboardController < ApplicationController
     render :index
   end
 
+  def call_center_overview
+    authorize! :view_call_center, :dashboards
+    @dashboard_view = "call_center_overview"
+    load_call_center_kpi
+    load_call_center_chart_data
+    load_call_center_source_distribution
+    render :index
+  end
+
   def call_center_stats
     authorize! :view_call_center, :dashboards
     @period = params[:period] || "month"
@@ -61,6 +70,10 @@ class DashboardController < ApplicationController
       load_call_center_stats
       load_call_center_recent_contacts
       prepare_inline_form
+      # TASK-037/38: Add charts for Call Center Dashboard
+      load_call_center_kpi
+      load_call_center_chart_data
+      load_call_center_source_distribution
     when "sale"
       load_sale_stats
       load_sales_data
@@ -248,6 +261,20 @@ class DashboardController < ApplicationController
       labels: date_range.map { |d| d.strftime("%d/%m") },
       data: date_range.map { |date| scope.where(created_at: date.all_day).count }
     }
+  end
+
+  # TASK-037/38: Source distribution for pie chart
+  def load_call_center_source_distribution
+    scope = current_user.created_contacts.where(created_at: Time.zone.now.beginning_of_month..)
+    @source_distribution = Source.active
+                                 .left_joins(:contacts)
+                                 .where(contacts: { id: scope.select(:id) })
+                                 .or(Source.active.where.missing(:contacts))
+                                 .group("sources.id", "sources.name")
+                                 .select("sources.name, COUNT(contacts.id) as contacts_count")
+                                 .order(contacts_count: :desc)
+                                 .limit(6)
+                                 .map { |s| { name: s.name, count: s.contacts_count.to_i } }
   end
 
   def load_call_center_contacts_list

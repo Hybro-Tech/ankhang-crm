@@ -1,5 +1,7 @@
 <% if @dashboard_view == "call_center" %>
   <%= render "call_center_dashboard" %>
+<% elsif @dashboard_view == "call_center_overview" %>
+  <%= render "call_center_overview" %>
 <% elsif @dashboard_view == "sale" %>
   <%= render "sale_dashboard" %>
 <% elsif @dashboard_view == "cskh" %>

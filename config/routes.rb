@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
   get "dashboard/index"
   get "dashboard/call_center"
+  get "dashboard/call_center_overview", to: "dashboard#call_center_overview", as: :call_center_overview
   get "dashboard/call_center_stats", to: "dashboard#call_center_stats", as: :call_center_stats
 
   # Hidden System Monitoring Portal (super_admin only)
