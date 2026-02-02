@@ -82,3 +82,73 @@ vi:
     cancel: "Hủy"
     delete_title: "Xác nhận xóa"
     delete_confirm: "Xóa"
+  # TASK-PROFILE: Profile page translations
+  dashboard:
+    title: "Tổng quan"
+  # TASK-REGION: Region management translations
+  regions:
+    title: "Quản lý Vùng/Miền"
+    new: "Thêm vùng/miền"
+    edit: "Sửa vùng/miền"
+    created: "Vùng/miền đã được tạo thành công."
+    updated: "Vùng/miền đã được cập nhật."
+    deleted: "Vùng/miền đã được xóa."
+    cannot_delete: "Không thể xóa vùng/miền đang có nhân viên hoặc team."
+    status_updated: "Trạng thái vùng/miền đã được cập nhật."
+    fields:
+      name: "Tên vùng/miền"
+      code: "Mã"
+      description: "Mô tả"
+      position: "Thứ tự"
+      active: "Hoạt động"
+      users_count: "Số nhân viên"
+      teams_count: "Số team"
+  profiles:
+    title: "Hồ sơ cá nhân"
+    account_settings: "Cài đặt tài khoản"
+    personal_info: "Thông tin cá nhân"
+    security: "Bảo mật"
+    activity_history: "Lịch sử hoạt động"
+    save_info: "Lưu thông tin"
+    change_password: "Đổi mật khẩu"
+    password_hint: "Tối thiểu 6 ký tự"
+    no_activity: "Chưa có lịch sử hoạt động."
+    fields:
+      name: "Họ và tên"
+      email: "Email"
+      phone: "Số điện thoại"
+      role: "Vai trò"
+      current_password: "Mật khẩu hiện tại"
+      new_password: "Mật khẩu mới"
+      password_confirmation: "Xác nhận mật khẩu mới"
+      region: "Vùng / Miền"
+      address: "Địa chỉ chi tiết"
+    placeholders:
+      select_region: "-- Chọn vùng/miền --"
+      address: "Nhập địa chỉ chi tiết (số nhà, đường, quận/huyện, tỉnh/thành phố)"
+    update:
+      success: "Thông tin cá nhân đã được cập nhật."
+      error: "Có lỗi xảy ra khi cập nhật thông tin."
+    password:
+      success: "Mật khẩu đã được thay đổi thành công."
+      error: "Có lỗi xảy ra khi đổi mật khẩu."
+      current_invalid: "Mật khẩu hiện tại không đúng."
+      confirmation_mismatch: "Mật khẩu xác nhận không khớp."
+      too_short: "Mật khẩu mới phải có ít nhất 6 ký tự."
+    activity:
+      time: "Thời gian"
+      action: "Hành động"
+      path: "Đường dẫn"
+      ip: "Địa chỉ IP"
+      showing: "Hiển thị %{from} - %{to} trong tổng số %{total}"
+    pagination:
+      prev: "Trước"
+      next: "Sau"
+    avatar:
+      upload: "Tải ảnh lên"
+      remove: "Xóa ảnh"
+      selected: "Đã chọn ảnh (ấn Lưu để áp dụng)"
+      success: "Ảnh đại diện đã được cập nhật."
+      error: "Có lỗi xảy ra khi tải ảnh lên."
+      removed: "Ảnh đại diện đã được xóa."
+      confirm_remove: "Bạn có chắc muốn xóa ảnh đại diện không?"

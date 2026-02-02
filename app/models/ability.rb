@@ -122,11 +122,12 @@ class Ability
     sources: "Source",
     saturday_schedules: "SaturdaySchedule",
     interactions: "Interaction",
-    reassign_requests: "ReassignRequest", # TASK-052
-    dashboards: nil, # Symbol-only, no model class
-    solid_queue: nil, # Solid Queue monitoring dashboard (super_admin only)
-    solid_cache: nil, # Solid Cache monitoring dashboard (super_admin only)
-    solid_cable: nil  # Solid Cable monitoring dashboard (super_admin only)
+    reassign_requests: "ReassignRequest",
+    regions: "Region", # TASK-REGION: Region management
+    dashboards: nil,
+    solid_queue: nil,
+    solid_cache: nil,
+    solid_cable: nil
   }.freeze
 
   def subject_to_model_class(subject)

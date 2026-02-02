@@ -69,11 +69,13 @@
       <%# User dropdown %>
       <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
         <% if user_signed_in? %>
-          <%= link_to "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
+          <%= link_to profile_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
             <i class="fa-solid fa-user mr-2 text-gray-400"></i> Hồ sơ cá nhân
           <% end %>
-          <%= link_to "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
-            <i class="fa-solid fa-gear mr-2 text-gray-400"></i> Cài đặt
+          <% if current_user.super_admin? %>
+            <%= link_to admin_settings_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
+              <i class="fa-solid fa-gear mr-2 text-gray-400"></i> Cài đặt hệ thống
+            <% end %>
           <% end %>
           
           <%# TASK-056: Web Push subscription toggle %>

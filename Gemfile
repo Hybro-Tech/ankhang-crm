@@ -51,6 +51,10 @@ gem "csv"      # CSV parsing (moved from stdlib in Ruby 3.4)
 gem "kaminari" # Pagination
 gem "web-push" # Web Push notifications via VAPID
 
+# Active Storage
+gem "image_processing", "~> 1.2" # Image variants (resize, crop)
+gem "aws-sdk-s3", require: false # S3 storage for production
+
 # ============================================
 # Development & Test Groups
 # ============================================

@@ -1,11 +1,11 @@
-<%= form_with model: user, local: true, class: "max-w-none w-full" do |f| %>
+<%= form_with model: user, local: true, class: "space-y-8" do |f| %>
   <% if user.errors.any? %>
-    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+    <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
       <div class="flex items-center text-red-800">
         <i class="fa-solid fa-exclamation-triangle mr-2"></i>
-        <span class="font-medium">Có <%= user.errors.count %> lỗi:</span>
+        <span class="font-semibold">Có <%= user.errors.count %> lỗi cần sửa:</span>
       </div>
-      <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside ml-6">
         <% user.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
@@ -13,94 +13,182 @@
     </div>
   <% end %>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-    <div class="space-y-6">
-      <h3 class="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Thông tin tài khoản</h3>
+  <%# Main 2-column grid - equal width columns %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    
+    <%# LEFT COLUMN: Account Info %>
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-bold text-gray-900 flex items-center">
+          <i class="fa-solid fa-user-circle text-brand-blue mr-2"></i>
+          Thông tin tài khoản
+        </h3>
+      </div>
       
-      <div>
-        <%= f.label :name, "Họ và tên", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_field :name, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none" %>
-      </div>
-
-      <div>
-        <%= f.label :email, "Email", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.email_field :email, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none" %>
-      </div>
-
-      <div>
-        <%= f.label :username, "Username", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_field :username, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none" %>
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
+      <div class="p-6 space-y-5">
         <div>
-          <%= f.label :password, "Mật khẩu", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <div class="relative" data-controller="password-toggle">
-            <%= f.password_field :password, 
-                class: "w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-[#0B387A] outline-none", 
-                placeholder: user.new_record? ? "" : "Để trống nếu không đổi",
-                data: { password_toggle_target: "input" } %>
-            <button type="button" 
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
-                    data-action="click->password-toggle#toggle">
-              <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
-            </button>
-          </div>
+          <%= f.label :name, "Họ và tên *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.text_field :name, 
+              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+              placeholder: "Nguyễn Văn A" %>
         </div>
+
         <div>
-          <%= f.label :password_confirmation, "Xác nhận mật khẩu", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <div class="relative" data-controller="password-toggle">
-            <%= f.password_field :password_confirmation, 
-                class: "w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-[#0B387A] outline-none",
-                data: { password_toggle_target: "input" } %>
-            <button type="button" 
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
-                    data-action="click->password-toggle#toggle">
-              <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
-            </button>
+          <%= f.label :email, "Email *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.email_field :email, 
+              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+              placeholder: "email@example.com" %>
+        </div>
+
+        <div>
+          <%= f.label :username, "Username", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.text_field :username, 
+              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+              placeholder: "username" %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <%= f.label :password, "Mật khẩu", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+            <div class="relative" data-controller="password-toggle">
+              <%= f.password_field :password, 
+                  class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-10 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors", 
+                  placeholder: user.new_record? ? "••••••••" : "Để trống nếu không đổi",
+                  data: { password_toggle_target: "input" } %>
+              <button type="button" 
+                      class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                      data-action="click->password-toggle#toggle">
+                <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <%= f.label :password_confirmation, "Xác nhận", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+            <div class="relative" data-controller="password-toggle">
+              <%= f.password_field :password_confirmation, 
+                  class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-10 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                  placeholder: "••••••••",
+                  data: { password_toggle_target: "input" } %>
+              <button type="button" 
+                      class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                      data-action="click->password-toggle#toggle">
+                <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="space-y-6">
-      <h3 class="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Phân quyền & Tổ chức</h3>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Vai trò (Role)</label>
-        <%= f.collection_select :role_ids, Role.all, :id, :name, 
-            { include_blank: "Chọn vai trò" }, 
-            { class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none bg-white", 
-              multiple: false, 
-              name: "user[role_ids][]" } %>
+    <%# RIGHT COLUMN: Role & Organization %>
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-bold text-gray-900 flex items-center">
+          <i class="fa-solid fa-sitemap text-brand-orange mr-2"></i>
+          Phân quyền & Tổ chức
+        </h3>
       </div>
-
-      <div>
-        <%= f.label :team_ids, "Thuộc Team", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <div class="border border-gray-300 rounded-lg px-4 py-2 bg-white max-h-32 overflow-y-auto">
-          <%= f.collection_check_boxes :team_ids, Team.all, :id, :name do |b| %>
-            <label class="flex items-center mb-1 cursor-pointer hover:bg-gray-50 p-1 rounded -mx-1">
-              <%= b.check_box(class: "h-4 w-4 text-[#0B387A] rounded border-gray-300 focus:ring-[#0B387A] mr-2 cursor-pointer") %>
-              <span class="text-sm text-gray-700 font-medium"><%= b.text %></span>
-            </label>
-          <% end %>
+      
+      <div class="p-6 space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Vai trò (Role) *</label>
+          <%= f.collection_select :role_ids, Role.all, :id, :name, 
+              { include_blank: "-- Chọn vai trò --" }, 
+              { class: "w-full", 
+                multiple: false, 
+                name: "user[role_ids][]",
+                data: { controller: "tom-select", tom_select_placeholder_value: "Tìm và chọn vai trò..." } } %>
         </div>
-      </div>
 
-      <div>
-        <%= f.label :status, "Trạng thái", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.select :status, User.statuses.keys.map { |k| [k.titleize, k] }, {}, { class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#0B387A] outline-none bg-white" } %>
+        <div>
+          <%= f.label :team_ids, "Thuộc Team", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.select :team_ids, 
+              Team.all.map { |t| [t.name, t.id] }, 
+              {}, 
+              { class: "w-full",
+                multiple: true,
+                data: { controller: "tom-select", tom_select_multiple_value: true, tom_select_placeholder_value: "Tìm và chọn team..." } } %>
+          <p class="mt-1.5 text-xs text-gray-500 flex items-center">
+            <i class="fa-solid fa-info-circle mr-1"></i>
+            Có thể chọn nhiều team
+          </p>
+        </div>
+
+        <div>
+          <%= f.label :status, "Trạng thái", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.select :status, 
+              User.statuses.keys.map { |k| [k.titleize, k] }, 
+              {}, 
+              { class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none bg-white transition-colors cursor-pointer" } %>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="flex items-center justify-center space-x-4 pt-8 border-t border-gray-200">
-    <%= link_to users_path, class: "px-8 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors" do %>
+  <%# CONTACT INFO SECTION - Full width %>
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-bold text-gray-900 flex items-center">
+        <i class="fa-solid fa-address-card text-green-600 mr-2"></i>
+        Thông tin liên hệ
+      </h3>
+    </div>
+    
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= f.label :phone, "Số điện thoại", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-phone text-gray-400"></i>
+            </div>
+            <%= f.text_field :phone, 
+                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors", 
+                placeholder: "0912 345 678" %>
+          </div>
+        </div>
+
+        <div>
+          <%= f.label :region_id, "Vùng / Miền", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-map-marker-alt text-gray-400"></i>
+            </div>
+            <%= f.select :region_id, 
+                Region.for_select, 
+                { include_blank: "-- Chọn vùng/miền --", selected: user.region_id },
+                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none bg-white transition-colors cursor-pointer appearance-none" %>
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <%= f.label :address, "Địa chỉ chi tiết", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute top-3 left-3 pointer-events-none">
+              <i class="fa-solid fa-location-dot text-gray-400"></i>
+            </div>
+            <%= f.text_area :address, 
+                rows: 2, 
+                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none resize-none transition-colors", 
+                placeholder: "Số nhà, đường, quận/huyện, tỉnh/thành phố" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# ACTION BUTTONS %>
+  <div class="flex items-center justify-center gap-4 pt-6">
+    <%= link_to users_path, class: "inline-flex items-center px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors" do %>
+      <i class="fa-solid fa-times mr-2"></i>
       Hủy bỏ
     <% end %>
-    <button type="submit" class="px-8 py-2.5 bg-[#0B387A] text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 flex items-center transition-colors cursor-pointer">
+    <button type="submit" class="inline-flex items-center px-8 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 transition-all cursor-pointer">
       <i class="fa-solid fa-save mr-2"></i>
-      Lưu Thay đổi
+      <%= user.new_record? ? "Tạo nhân viên" : "Lưu thay đổi" %>
     </button>
   </div>
 <% end %>

@@ -41,13 +41,14 @@
     <%= sidebar_link "Nguồn khách hàng", sources_path, "fa-share-nodes", permission: "sources.view" %>
 
     <%# Tổ chức section %>
-    <%= sidebar_section "Tổ chức", ["teams.view", "roles.view", "employees.view", "holidays.manage", "saturday_schedules.manage"] %>
+    <%= sidebar_section "Tổ chức", ["teams.view", "roles.view", "employees.view", "regions.view", "holidays.manage", "saturday_schedules.manage"] %>
     <%= sidebar_link "Đội nhóm", teams_path, "fa-user-group", permission: "teams.view" %>
     <% if current_user.team_leader? %>
       <%= sidebar_link "Yêu cầu chờ duyệt", teams_reassign_requests_path, "fa-user-clock", permission: nil %>
     <% end %>
     <%= sidebar_link "Phân quyền", roles_path, "fa-user-shield", permission: "roles.view" %>
     <%= sidebar_link "Nhân viên", users_path, "fa-id-card", permission: "employees.view" %>
+    <%= sidebar_link "Vùng/Miền", regions_path, "fa-map-location-dot", permission: "regions.view" %>
     <%= sidebar_link "Lịch nghỉ lễ", holidays_path, "fa-calendar-days", permission: "holidays.manage" %>
     <%= sidebar_link "Lịch Thứ 7", saturday_schedules_path, "fa-calendar-check", permission: "saturday_schedules.manage" %>
 

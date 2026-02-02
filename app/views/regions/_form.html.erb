@@ -1,0 +1,51 @@
+<%# TASK-REGION: Region form partial %>
+<%= form_with model: @region, local: true, class: "space-y-6" do |f| %>
+  <% if @region.errors.any? %>
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+      <ul class="list-disc list-inside">
+        <% @region.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <%# Name %>
+    <div>
+      <%= f.label :name, t("regions.fields.name"), class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :name, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-blue focus:border-brand-blue sm:text-sm", placeholder: "VD: Bắc, Trung, Nam" %>
+    </div>
+
+    <%# Code %>
+    <div>
+      <%= f.label :code, t("regions.fields.code"), class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :code, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-blue focus:border-brand-blue sm:text-sm font-mono", placeholder: "VD: bac, trung, nam" %>
+      <p class="mt-1 text-xs text-gray-500">Chỉ cho phép chữ thường và dấu gạch dưới</p>
+    </div>
+
+    <%# Position %>
+    <div>
+      <%= f.label :position, t("regions.fields.position"), class: "block text-sm font-medium text-gray-700" %>
+      <%= f.number_field :position, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-blue focus:border-brand-blue sm:text-sm", min: 0 %>
+    </div>
+
+    <%# Active %>
+    <div class="flex items-center pt-6">
+      <%= f.check_box :active, class: "h-4 w-4 text-brand-blue focus:ring-brand-blue border-gray-300 rounded" %>
+      <%= f.label :active, t("regions.fields.active"), class: "ml-2 block text-sm text-gray-900" %>
+    </div>
+  </div>
+
+  <%# Description %>
+  <div>
+    <%= f.label :description, t("regions.fields.description"), class: "block text-sm font-medium text-gray-700" %>
+    <%= f.text_area :description, rows: 3, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-blue focus:border-brand-blue sm:text-sm", placeholder: "Mô tả thêm về vùng/miền này (tùy chọn)" %>
+  </div>
+
+  <%# Actions %>
+  <div class="flex justify-end gap-3 pt-4 border-t">
+    <%= link_to "Hủy", regions_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue" %>
+    <%= f.submit class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue cursor-pointer" %>
+  </div>
+<% end %>

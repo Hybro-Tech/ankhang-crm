@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_01_092411) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -214,6 +214,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_092411) do
     t.index ["from_user_id"], name: "index_reassign_requests_on_from_user_id"
     t.index ["requested_by_id"], name: "index_reassign_requests_on_requested_by_id"
     t.index ["to_user_id"], name: "index_reassign_requests_on_to_user_id"
+  end
+
+  create_table "regions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.string "code", limit: 20, null: false
+    t.text "description"
+    t.integer "position", default: 0
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_regions_on_active"
+    t.index ["code"], name: "index_regions_on_code", unique: true
+    t.index ["name"], name: "index_regions_on_name", unique: true
+    t.index ["position"], name: "index_regions_on_position"
   end
 
   create_table "role_permissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -543,7 +557,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_01_092411) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
+    t.bigint "region_id"
+    t.text "address"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["region_id"], name: "index_users_on_region_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true

@@ -15,10 +15,25 @@ Rails.application.routes.draw do
     passwords: "users/passwords"
   }
 
+  # TASK-PROFILE: User profile management
+  resource :profile, only: %i[show update] do
+    member do
+      patch :update_password
+      delete :destroy_avatar
+    end
+  end
+
   # Roles management (TASK-016)
   resources :roles do
     member do
       post :clone
+    end
+  end
+
+  # TASK-REGION: Region management for Admin
+  resources :regions do
+    member do
+      patch :toggle_active
     end
   end
   # TASK-052: Teams namespace for Lead approval workflow (MUST be before resources :teams)

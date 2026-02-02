@@ -82,6 +82,37 @@ class User < ApplicationRecord
   # TASK-056: Web Push Subscriptions
   has_many :push_subscriptions, dependent: :destroy
 
+  # TASK-REGION: User's region/area for business purposes
+  belongs_to :region, optional: true
+
+  # TASK-PROFILE: Avatar attachment via Active Storage
+  has_one_attached :avatar do |attachable|
+    attachable.variant :thumb, resize_to_fill: [100, 100]
+    attachable.variant :medium, resize_to_fill: [200, 200]
+  end
+
+  # Avatar validation
+  validate :avatar_format_and_size
+
+  def avatar_format_and_size
+    return unless avatar.attached?
+
+    unless avatar.content_type.in?(%w[image/jpeg image/png image/gif image/webp])
+      errors.add(:avatar, "phải là file ảnh (JPEG, PNG, GIF, WEBP)")
+    end
+
+    return unless avatar.byte_size > 5.megabytes
+
+    errors.add(:avatar, "không được lớn hơn 5MB")
+  end
+
+  # Helper to get avatar URL or default
+  def avatar_url(variant: :medium)
+    return unless avatar.attached?
+
+    avatar.variant(variant)
+  end
+
   # TASK-011: Allow login with username or email
   # Override Devise's find_for_database_authentication
   def self.find_for_database_authentication(warden_conditions)
