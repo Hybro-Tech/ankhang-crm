@@ -98,6 +98,24 @@
 
 ---
 
+### 🔔 PHASE C: NOTIFICATION IMPROVEMENTS (Backlog - Future Sprint)
+
+> **Ngày thêm**: 02/02/2026  
+> **Nguồn**: Code Review Session
+
+| # | Feature | Mô tả | Effort | Priority |
+|---|---------|-------|--------|----------|
+| 1 | Delete/Archive | Xóa notifications cũ, archive > 30 ngày | 1h | 🟡 Medium |
+| 2 | Filter by Category | Lọc theo Contact/Deal/System/Approval | 30m | 🟡 Medium |
+| 3 | Notification Settings | User preferences (bật/tắt loại thông báo) | 2h | 🟢 Low |
+| 4 | Web Push | Desktop push notifications với sound | 4h | 🟢 Low |
+| 5 | Real-time List Update | Turbo Stream append notification mới vào list | 1h | 🟡 Medium |
+| 6 | Bulk Actions | Chọn nhiều để delete/mark as read | 1h | 🟢 Low |
+
+**Total Effort:** ~10 hours
+
+---
+
 ## 🔵 SPRINT 5 - PRODUCTION PREP (Sau khi hoàn thành Phase A)
 
 | # | Priority | Task | Mô tả | Effort |
