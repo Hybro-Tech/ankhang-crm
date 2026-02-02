@@ -7,9 +7,20 @@ class NotificationsController < ApplicationController
 
   # GET /notifications
   def index
-    authorize! :view, :notifications
-    @notifications = current_user.notifications.recent.page(params[:page]).per(20)
+    # All authenticated users can view their own notifications
+    base_scope = current_user.notifications.recent
+    @total_count = base_scope.count
     @unread_count = current_user.notifications.unread.count
+
+    # Apply filter
+    filtered_scope = case params[:filter]
+                     when "unread" then base_scope.unread
+                     when "read" then base_scope.where(read: true)
+                     else base_scope
+                     end
+
+    @notifications = filtered_scope.page(params[:page]).per(20)
+    @grouped_notifications = group_notifications_by_date(@notifications)
 
     # Mark all as seen when viewing full list
     mark_all_as_seen
@@ -96,5 +107,31 @@ class NotificationsController < ApplicationController
       target: "notification_badge",
       html: badge_html
     )
+  end
+
+  # Group notifications by date for display
+  def group_notifications_by_date(notifications)
+    today = Time.zone.today
+    start_of_week = today.beginning_of_week
+
+    groups = {
+      "Hôm nay" => [],
+      "Tuần này" => [],
+      "Cũ hơn" => []
+    }
+
+    notifications.each do |notification|
+      date = notification.created_at.to_date
+      if date == today
+        groups["Hôm nay"] << notification
+      elsif date >= start_of_week
+        groups["Tuần này"] << notification
+      else
+        groups["Cũ hơn"] << notification
+      end
+    end
+
+    # Remove empty groups
+    groups.reject { |_, v| v.empty? }
   end
 end

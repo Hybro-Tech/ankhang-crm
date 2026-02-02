@@ -46,16 +46,15 @@ RSpec.describe NotificationsController, type: :controller do
       end
     end
 
-    context "when user lacks permission" do
-      let(:no_perm_role) { create(:role, name: "NoNotifPerms", code: "no_notif_perms") }
-      let(:no_perm_user) { create(:user, roles: [no_perm_role]) }
+    context "when user has any role (no special permission needed)" do
+      let(:basic_role) { create(:role, name: "BasicRole", code: "basic_role") }
+      let(:basic_user) { create(:user, roles: [basic_role]) }
 
-      before { sign_in no_perm_user }
+      before { sign_in basic_user }
 
-      it "denies access" do
+      it "allows access to own notifications" do
         get :index
-        # Expect either forbidden or redirect
-        expect(response.status).to be_in([403, 302])
+        expect(response).to have_http_status(:success)
       end
     end
 

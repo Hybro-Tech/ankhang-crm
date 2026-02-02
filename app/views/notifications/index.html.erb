@@ -1,38 +1,95 @@
-<%# TASK-057: Full notifications list page %>
-<div class="max-w-3xl mx-auto py-6 px-4">
-  <%# Header %>
-  <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">Thông báo</h1>
-    <% if @unread_count > 0 %>
-      <%= link_to mark_all_as_read_notifications_path,
-                  method: :post,
-                  class: "px-4 py-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg",
-                  data: { turbo_method: :post } do %>
-        <i class="fas fa-check-double mr-1"></i>
-        Đánh dấu tất cả đã đọc (<%= @unread_count %>)
+<%# TASK-057: Full notifications list page - Redesigned with CRM best practices %>
+<div class="flex flex-col gap-6">
+  <%# Header with stats %>
+  <div class="mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Thông báo</h1>
+        <p class="text-sm text-gray-500 mt-1">
+          <% if @unread_count > 0 %>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              <%= @unread_count %> chưa đọc
+            </span>
+          <% else %>
+            Tất cả đã đọc
+          <% end %>
+        </p>
+      </div>
+      <% if @unread_count > 0 %>
+        <%= link_to mark_all_as_read_notifications_path,
+                    method: :post,
+                    class: "inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer",
+                    data: { turbo_method: :post } do %>
+          <i class="fas fa-check-double mr-2"></i>
+          Đánh dấu tất cả đã đọc
+        <% end %>
       <% end %>
-    <% end %>
+    </div>
   </div>
-  
-  <%# Notifications list %>
-  <div class="bg-white rounded-lg shadow">
+
+  <%# Filter Tabs %>
+  <div class="mb-4 border-b border-gray-200">
+    <nav class="flex gap-4" aria-label="Tabs">
+      <%= link_to notifications_path,
+                  class: "pb-3 px-1 text-sm font-medium border-b-2 transition-colors #{params[:filter].blank? ? 'border-brand-blue text-brand-blue' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" do %>
+        Tất cả
+        <span class="ml-1 text-xs text-gray-400">(<%= @total_count %>)</span>
+      <% end %>
+      <%= link_to notifications_path(filter: 'unread'),
+                  class: "pb-3 px-1 text-sm font-medium border-b-2 transition-colors #{params[:filter] == 'unread' ? 'border-brand-blue text-brand-blue' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" do %>
+        Chưa đọc
+        <% if @unread_count > 0 %>
+          <span class="ml-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white">
+            <%= @unread_count %>
+          </span>
+        <% end %>
+      <% end %>
+      <%= link_to notifications_path(filter: 'read'),
+                  class: "pb-3 px-1 text-sm font-medium border-b-2 transition-colors #{params[:filter] == 'read' ? 'border-brand-blue text-brand-blue' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}" do %>
+        Đã đọc
+      <% end %>
+    </nav>
+  </div>
+
+  <%# Notifications list grouped by date %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <% if @notifications.any? %>
       <div id="notifications_list">
-        <%= render @notifications %>
+        <% @grouped_notifications.each do |group_name, notifications| %>
+          <%# Group header %>
+          <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider"><%= group_name %></h3>
+          </div>
+          <%# Notifications in group %>
+          <% notifications.each do |notification| %>
+            <%= render notification %>
+          <% end %>
+        <% end %>
       </div>
     <% else %>
-      <div class="py-16 text-center text-gray-500">
-        <i class="fas fa-bell-slash text-5xl mb-4 text-gray-300"></i>
-        <p class="text-lg">Không có thông báo</p>
-        <p class="text-sm mt-1">Thông báo mới sẽ xuất hiện ở đây</p>
+      <%# Empty state %>
+      <div class="py-16 text-center">
+        <div class="mx-auto w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <i class="fas fa-bell-slash text-2xl text-gray-400"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-1">Không có thông báo</h3>
+        <p class="text-sm text-gray-500">
+          <% if params[:filter] == 'unread' %>
+            Bạn đã đọc tất cả thông báo!
+          <% elsif params[:filter] == 'read' %>
+            Chưa có thông báo đã đọc nào
+          <% else %>
+            Thông báo mới sẽ xuất hiện ở đây
+          <% end %>
+        </p>
       </div>
     <% end %>
   </div>
-  
+
   <%# Pagination %>
-  <% if @notifications.any? %>
-    <div class="mt-6">
-      <%= paginate @notifications %>
+  <% if @notifications.any? && @notifications.total_pages > 1 %>
+    <div class="mt-6 flex justify-center">
+      <%= paginate @notifications, theme: 'tailwind' %>
     </div>
   <% end %>
 </div>

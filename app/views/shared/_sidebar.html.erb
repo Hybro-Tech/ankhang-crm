@@ -10,7 +10,9 @@
 
   <%# Navigation Menu %>
   <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto sidebar-scroll">
-    <%= sidebar_link "Workspace", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
+    <% unless current_user.admin? %>
+      <%= sidebar_link "Workspace", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
+    <% end %>
 
     <%# Call Center Menu - Tổng đài role specific %>
     <% if current_user.call_center_staff? %>
@@ -32,7 +34,9 @@
       <% end %>
     <% end %>
 
-    <%= sidebar_link "Pipeline (Kanban)", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
+    <% unless current_user.admin? %>
+      <%= sidebar_link "Pipeline (Kanban)", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
+    <% end %>
 
     <%# Kinh doanh section %>
     <%= sidebar_section "Kinh doanh", ["contacts.view", "service_types.view", "sources.view"] %>

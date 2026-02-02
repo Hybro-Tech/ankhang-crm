@@ -198,6 +198,10 @@ class User < ApplicationRecord
     roles.exists?(dashboard_type: :cskh)
   end
 
+  def admin?
+    primary_dashboard_type == "admin"
+  end
+
   # TASK-052: Check if user is a Team Leader (Manager)
   def team_leader?
     managed_team.present?
