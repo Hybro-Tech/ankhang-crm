@@ -125,6 +125,13 @@
 | 3 | 🔴 Critical | TASK-045 | Backup & Monitoring (Sentry, S3) | 3 SP |
 | 4 | 🟢 Medium | TASK-046 | Tài liệu & Bàn giao | 3 SP |
 | 5 | 🔴 Critical | TASK-042 | UAT & Fixes | 5 SP |
+| 6 | 🔴 Critical | **TASK-047** | **Test Coverage: Jobs/Services/Mailers** | 4 SP |
+
+> **TASK-047 Details** (Thêm 02/02/2026):
+> - Viết RSpec tests cho tất cả Jobs (đặc biệt `ReassignRequestNotificationJob`)
+> - Viết RSpec tests cho tất cả Services chưa có test
+> - Viết RSpec tests cho Mailers
+> - Mục tiêu: phát hiện bugs như `recipient → user` trước khi deploy
 
 ---
 
