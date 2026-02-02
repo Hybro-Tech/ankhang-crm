@@ -35,7 +35,7 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
 
     create_notification(
       recipient: @request.approver,
-      title: "Yêu cầu #{request_type_label} cần duyệt",
+      title: I18n.t("reassign_notifications.pending_approval", type: request_type_label),
       body: build_created_approver_body,
       action_url: "/teams/reassign_requests"
     )
@@ -44,20 +44,26 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
   def notify_owner_on_created
     create_notification(
       recipient: @request.from_user,
-      title: "Có yêu cầu #{request_type_label.downcase} KH của bạn",
+      title: I18n.t("reassign_notifications.request_on_your_contact", type: request_type_label.downcase),
       body: build_created_owner_body,
       action_url: "/contacts/#{@request.contact_id}"
     )
   end
 
   def build_created_approver_body
-    "#{@request.requested_by.name} yêu cầu #{request_type_label.downcase} " \
-      "KH #{@request.contact.code} - #{@request.contact.name}"
+    I18n.t("reassign_notifications.request_created_body",
+           requester: @request.requested_by.name,
+           type: request_type_label.downcase,
+           code: @request.contact.code,
+           name: @request.contact.name)
   end
 
   def build_created_owner_body
-    "#{@request.requested_by.name} đã tạo yêu cầu #{request_type_label.downcase} " \
-      "cho #{@request.contact.code}. Lý do: #{@request.reason.truncate(50)}"
+    I18n.t("reassign_notifications.request_reason_body",
+           requester: @request.requested_by.name,
+           type: request_type_label.downcase,
+           code: @request.contact.code,
+           reason: @request.reason.truncate(50))
   end
 
   def notify_on_approved
@@ -71,8 +77,11 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
   def notify_requester_on_approved
     create_notification(
       recipient: @request.requested_by,
-      title: "Yêu cầu #{request_type_label} đã được duyệt",
-      body: "#{@request.approved_by&.name} đã duyệt yêu cầu cho #{@request.contact.code} - #{@request.contact.name}",
+      title: I18n.t("reassign_notifications.request_approved", type: request_type_label),
+      body: I18n.t("reassign_notifications.approved_body",
+                   approver: @request.approved_by&.name,
+                   code: @request.contact.code,
+                   name: @request.contact.name),
       action_url: "/contacts/#{@request.contact_id}"
     )
   end
@@ -80,7 +89,7 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
   def notify_previous_owner_on_approved
     create_notification(
       recipient: @request.from_user,
-      title: "KH #{@request.contact.code} đã được #{action_label}",
+      title: I18n.t("reassign_notifications.contact_transferred", code: @request.contact.code, action: action_label),
       body: approved_body_for_from_user,
       action_url: "/contacts/#{@request.contact_id}"
     )
@@ -91,8 +100,10 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
 
     create_notification(
       recipient: @request.to_user,
-      title: "Bạn được gán KH mới",
-      body: "#{@request.contact.code} - #{@request.contact.name} đã được chuyển cho bạn",
+      title: I18n.t("reassign_notifications.new_assignment"),
+      body: I18n.t("reassign_notifications.new_assignment_body",
+                   code: @request.contact.code,
+                   name: @request.contact.name),
       action_url: "/contacts/#{@request.contact_id}"
     )
   end
@@ -101,9 +112,11 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
     # Notify Admin (requester)
     create_notification(
       recipient: @request.requested_by,
-      title: "Yêu cầu #{request_type_label} bị từ chối",
-      body: "#{@request.approved_by&.name} đã từ chối yêu cầu cho " \
-            "#{@request.contact.code}. Lý do: #{@request.rejection_reason&.truncate(50)}",
+      title: I18n.t("reassign_notifications.request_rejected", type: request_type_label),
+      body: I18n.t("reassign_notifications.rejected_body",
+                   approver: @request.approved_by&.name,
+                   code: @request.contact.code,
+                   reason: @request.rejection_reason&.truncate(50)),
       action_url: "/contacts/#{@request.contact_id}"
     )
     # TASK-033: Send email notification
@@ -121,18 +134,22 @@ class ReassignRequestNotificationJob < ApplicationJob # rubocop:disable Metrics/
   end
 
   def request_type_label
-    @request.reassign? ? "Chuyển KH" : "Gỡ KH"
+    @request.reassign? ? I18n.t("reassign_notifications.type_reassign") : I18n.t("reassign_notifications.type_unassign")
   end
 
   def action_label
-    @request.reassign? ? "chuyển đi" : "gỡ phân công"
+    if @request.reassign?
+      I18n.t("reassign_notifications.action_reassign")
+    else
+      I18n.t("reassign_notifications.action_unassign")
+    end
   end
 
   def approved_body_for_from_user
     if @request.reassign?
-      "Khách hàng đã được chuyển cho #{@request.to_user&.name}"
+      I18n.t("reassign_notifications.transferred_to", name: @request.to_user&.name)
     else
-      "Khách hàng đã được gỡ phân công và đưa về pool"
+      I18n.t("reassign_notifications.unassigned")
     end
   end
 end

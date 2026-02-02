@@ -281,8 +281,8 @@ class Contact < ApplicationRecord
   def set_assigned_at
     return unless assigned_user_id.present? && assigned_at.blank?
 
-    # Using update instead of update_column to follow Rails validations
-    update(assigned_at: Time.current)
+    # Using update_column to skip callbacks and avoid potential loops
+    update_column(:assigned_at, Time.current) # rubocop:disable Rails/SkipsModelValidations
   end
 
   # Check validation: Must have at least one contact info

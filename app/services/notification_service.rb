@@ -86,15 +86,7 @@ class NotificationService
     private
 
     def default_title(type, _notifiable)
-      case type
-      when "contact_created" then "Khách hàng mới"
-      when "contact_picked" then "Đã nhận khách"
-      when "contact_assigned" then "Được gán khách mới"
-      when "reassign_requested" then "Yêu cầu chuyển giao"
-      when "reassign_approved" then "Đã phê duyệt chuyển giao"
-      when "reassign_rejected" then "Từ chối chuyển giao"
-      else "Thông báo"
-      end
+      I18n.t("notifications.types.#{type}.title", default: I18n.t("notifications.default_title"))
     end
 
     def default_body(type, notifiable)
@@ -102,11 +94,13 @@ class NotificationService
 
       case type
       when "contact_created"
-        "#{notifiable.name} - #{notifiable.service_type&.name}"
+        I18n.t("notifications.types.contact_created.body",
+               name: notifiable.name,
+               service_type: notifiable.service_type&.name)
       when "contact_picked"
-        "#{notifiable.name} đã được nhận"
+        I18n.t("notifications.types.contact_picked.body", name: notifiable.name)
       when "contact_assigned"
-        "Bạn được gán khách: #{notifiable.name}"
+        I18n.t("notifications.types.contact_assigned.body", name: notifiable.name)
       end
     end
 

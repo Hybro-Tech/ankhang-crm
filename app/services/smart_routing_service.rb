@@ -259,13 +259,11 @@ class SmartRoutingService
                                 )
                                 .count
 
-    kpi_html = '<span id="kpi_new_contacts" class="inline-flex items-center justify-center ' \
-               "w-8 h-8 rounded-full bg-blue-100 text-brand-blue font-bold\">#{new_contacts_count}</span>"
-
     Turbo::StreamsChannel.broadcast_replace_to(
       "user_#{user.id}_contacts",
       target: "kpi_new_contacts",
-      html: kpi_html
+      partial: "shared/kpi_badge",
+      locals: { count: new_contacts_count }
     )
   rescue StandardError => e
     Rails.logger.error("[SmartRouting] Failed to broadcast KPI to user #{user.id}: #{e.message}")

@@ -21,7 +21,7 @@ class PickEligibilityService
 
   def check
     # Check 1: Contact must be pickable
-    return Result.new(eligible: false, reason: "Khách hàng này đã được nhận") unless @contact.pickable?
+    return Result.new(eligible: false, reason: I18n.t("pick_eligibility.already_picked")) unless @contact.pickable?
 
     # Check 2: Daily limit per service type
     limit_result = check_daily_limit
@@ -49,11 +49,11 @@ class PickEligibilityService
     if picked_today >= max_per_day
       Result.new(
         eligible: false,
-        reason: "Bạn đã nhận đủ #{max_per_day} khách #{@service_type&.name} trong ngày"
+        reason: I18n.t("pick_eligibility.daily_limit_reached", max: max_per_day, type: @service_type&.name)
       )
     else
       remaining = max_per_day - picked_today
-      Result.new(eligible: true, reason: "Còn #{remaining} lượt")
+      Result.new(eligible: true, reason: I18n.t("pick_eligibility.remaining_picks", remaining: remaining))
     end
   end
 
@@ -75,7 +75,7 @@ class PickEligibilityService
       wait_time = cooldown_minutes - minutes_since_last_pick
       Result.new(
         eligible: false,
-        reason: "Vui lòng chờ #{wait_time} phút nữa trước khi nhận khách tiếp"
+        reason: I18n.t("pick_eligibility.cooldown_active", minutes: wait_time)
       )
     else
       Result.new(eligible: true, reason: nil)

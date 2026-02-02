@@ -75,6 +75,50 @@ vi:
       email: "Email"
       meeting: "Gặp mặt"
       appointment: "Lịch hẹn"
+  # TASK-AUDIT: Notifications I18n
+  notifications:
+    default_title: "Thông báo"
+    types:
+      contact_created:
+        title: "Khách hàng mới"
+        body: "%{name} - %{service_type}"
+      contact_picked:
+        title: "Đã nhận khách"
+        body: "%{name} đã được nhận"
+      contact_assigned:
+        title: "Được gán khách mới"
+        body: "Bạn được gán khách: %{name}"
+      reassign_requested:
+        title: "Yêu cầu chuyển giao"
+      reassign_approved:
+        title: "Đã phê duyệt chuyển giao"
+      reassign_rejected:
+        title: "Từ chối chuyển giao"
+  # TASK-AUDIT: Pick Eligibility I18n
+  pick_eligibility:
+    already_picked: "Khách hàng này đã được nhận"
+    daily_limit_reached: "Bạn đã nhận đủ %{max} khách %{type} trong ngày"
+    remaining_picks: "Còn %{remaining} lượt"
+    cooldown_active: "Vui lòng chờ %{minutes} phút nữa trước khi nhận khách tiếp"
+  # TASK-AUDIT: Reassign Notifications I18n
+  reassign_notifications:
+    pending_approval: "Yêu cầu %{type} cần duyệt"
+    request_on_your_contact: "Có yêu cầu %{type} KH của bạn"
+    request_created_body: "%{requester} yêu cầu %{type} KH %{code} - %{name}"
+    request_reason_body: "%{requester} đã tạo yêu cầu %{type} cho %{code}. Lý do: %{reason}"
+    request_approved: "Yêu cầu %{type} đã được duyệt"
+    approved_body: "%{approver} đã duyệt yêu cầu cho %{code} - %{name}"
+    contact_transferred: "KH %{code} đã được %{action}"
+    transferred_to: "Khách hàng đã được chuyển cho %{name}"
+    unassigned: "Khách hàng đã được gỡ phân công và đưa về pool"
+    new_assignment: "Bạn được gán KH mới"
+    new_assignment_body: "%{code} - %{name} đã được chuyển cho bạn"
+    request_rejected: "Yêu cầu %{type} bị từ chối"
+    rejected_body: "%{approver} đã từ chối yêu cầu cho %{code}. Lý do: %{reason}"
+    type_reassign: "Chuyển KH"
+    type_unassign: "Gỡ KH"
+    action_reassign: "chuyển đi"
+    action_unassign: "gỡ phân công"
   # Custom Confirm Dialog
   confirm_dialog:
     title: "Xác nhận"

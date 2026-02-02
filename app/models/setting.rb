@@ -92,7 +92,14 @@ class Setting < ApplicationRecord
     "saturday_hours_end" => { value: "11:30", description: "Giờ kết thúc làm việc Thứ 7" },
     "timezone" => { value: "Hanoi", description: "Múi giờ hệ thống" },
     "call_center_daily_target" => { value: "50", description: "Chỉ tiêu liên hệ hàng ngày của Call Center" },
-    "email_notifications_enabled" => { value: "false", description: "Bật/tắt gửi email thông báo" }
+    "email_notifications_enabled" => { value: "false", description: "Bật/tắt gửi email thông báo" },
+    # TASK-AUDIT: Centralized configuration for dashboard and monitoring
+    "dashboard_trend_days" => { value: "7", description: "Số ngày hiển thị trend trên Dashboard" },
+    "dashboard_top_limit" => { value: "5", description: "Số top performers hiển thị" },
+    "kanban_column_limit" => { value: "20", description: "Giới hạn contacts mỗi cột Kanban" },
+    "notification_dropdown_limit" => { value: "20", description: "Số notifications trong dropdown" },
+    "monitoring_window_hours" => { value: "24", description: "Khoảng thời gian monitoring (giờ)" },
+    "stale_contact_days" => { value: "7", description: "Số ngày contact bị coi là cũ" }
   }.freeze
 
   # Call Center Settings
@@ -103,6 +110,31 @@ class Setting < ApplicationRecord
   # TASK-033: Email Notifications toggle
   def self.email_notifications_enabled?
     get("email_notifications_enabled", "false") == "true"
+  end
+
+  # TASK-AUDIT: Centralized configuration accessors
+  def self.dashboard_trend_days
+    get("dashboard_trend_days", 7).to_i
+  end
+
+  def self.dashboard_top_limit
+    get("dashboard_top_limit", 5).to_i
+  end
+
+  def self.kanban_column_limit
+    get("kanban_column_limit", 20).to_i
+  end
+
+  def self.notification_dropdown_limit
+    get("notification_dropdown_limit", 20).to_i
+  end
+
+  def self.monitoring_window_hours
+    get("monitoring_window_hours", 24).to_i
+  end
+
+  def self.stale_contact_days
+    get("stale_contact_days", 7).to_i
   end
 
   # Available timezones for dropdown
