@@ -14,20 +14,19 @@
       <%= sidebar_link "Workspace", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
     <% end %>
 
-    <%# TASK-RBAC: Call Center Menu - permission-based %>
-    <% if can_access?("dashboards.view_call_center") %>
-      <%# Tổng đài - Main input page %>
-      <%= link_to dashboard_index_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_index_path) || current_page?(root_path) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
-        <i class="fa-solid fa-headset w-6 <%= current_page?(dashboard_index_path) || current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
-        <span>Tổng đài</span>
+    <%# Dashboard menus based on role's dashboard_type %>
+    <% if current_user.call_center_staff? %>
+      <%# Call Center: Workspace (input) + Tổng quan (stats) %>
+      <%= link_to dashboard_call_center_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_call_center_path) || current_page?(root_path) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
+        <i class="fa-solid fa-headset w-6 <%= current_page?(dashboard_call_center_path) || current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
+        <span>Workspace</span>
       <% end %>
-      <%# Tổng quan - Statistics page %>
       <%= link_to call_center_overview_path, class: "flex items-center px-4 py-3 #{current_page?(call_center_overview_path) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
         <i class="fa-solid fa-chart-line w-6 <%= current_page?(call_center_overview_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
         <span>Tổng quan</span>
       <% end %>
     <% else %>
-      <%# Dashboard - For other roles (Admin, Sale, CSKH) %>
+      <%# Admin, Sale, CSKH: Tổng quan (dashboard overview) %>
       <%= link_to dashboard_index_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_index_path) || (!current_user.sale_staff? && current_page?(root_path)) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
         <i class="fa-solid fa-chart-line w-6 <%= current_page?(dashboard_index_path) || (!current_user.sale_staff? && current_page?(root_path)) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
         <span>Tổng quan</span>
@@ -35,7 +34,7 @@
     <% end %>
 
     <% unless current_user.admin? %>
-      <%= sidebar_link "Pipeline (Kanban)", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
+      <%= sidebar_link "Kanban", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
     <% end %>
 
     <%# Kinh doanh section %>
