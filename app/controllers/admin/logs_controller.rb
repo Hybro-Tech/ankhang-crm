@@ -5,6 +5,9 @@
 # Access: super_admin only
 module Admin
   class LogsController < ApplicationController
+    include LogsFiltering
+    include LogsExporting
+
     before_action :authenticate_user!
     before_action :authorize_admin!
 
@@ -72,93 +75,6 @@ module Admin
 
     def authorize_admin!
       authorize! :manage, :logs
-    end
-
-    def filtered_activity_logs
-      logs = ActivityLog.all
-
-      # Category filter
-      logs = logs.where(category: params[:category]) if params[:category].present?
-
-      # User filter
-      logs = logs.where(user_id: params[:user_id]) if params[:user_id].present?
-
-      # Action filter
-      logs = logs.where("action LIKE ?", "%#{params[:action_filter]}%") if params[:action_filter].present?
-
-      # Date range filter
-      apply_date_filter(logs)
-    end
-
-    # rubocop:disable Metrics/AbcSize
-    def filtered_user_events
-      events = UserEvent.all
-
-      # Event type filter
-      events = events.where(event_type: params[:event_type]) if params[:event_type].present?
-
-      # User filter
-      events = events.where(user_id: params[:user_id]) if params[:user_id].present?
-
-      # Path filter
-      events = events.where("path LIKE ?", "%#{params[:path]}%") if params[:path].present?
-
-      # Status filter
-      events = events.where(response_status: params[:status]) if params[:status].present?
-
-      # Date range filter
-      apply_date_filter(events)
-    end
-    # rubocop:enable Metrics/AbcSize
-
-    def apply_date_filter(scope)
-      scope = scope.where(created_at: Date.parse(params[:date_from]).beginning_of_day..) if params[:date_from].present?
-      scope = scope.where(created_at: ..Date.parse(params[:date_to]).end_of_day) if params[:date_to].present?
-      scope
-    end
-
-    def export_activity_logs_csv
-      require "csv"
-
-      CSV.generate(headers: true) do |csv|
-        csv << %w[ID User Action Category Subject IP CreatedAt]
-
-        filtered_activity_logs.find_each do |log|
-          csv << [
-            log.id,
-            log.user_name || log.user&.name,
-            log.action,
-            log.category,
-            "#{log.subject_type}##{log.subject_id}",
-            log.ip_address,
-            log.created_at.strftime("%Y-%m-%d %H:%M:%S")
-          ]
-        end
-      end
-    end
-
-    def export_user_events_csv
-      require "csv"
-
-      CSV.generate(headers: true) do |csv|
-        csv << %w[ID User EventType Path Method Controller Action Status Duration IP CreatedAt]
-
-        filtered_user_events.find_each do |event|
-          csv << [
-            event.id,
-            event.user_id,
-            event.event_type,
-            event.path,
-            event.method,
-            event.controller,
-            event.action,
-            event.response_status,
-            event.duration_ms,
-            event.ip_address,
-            event.created_at.strftime("%Y-%m-%d %H:%M:%S")
-          ]
-        end
-      end
     end
   end
 end
