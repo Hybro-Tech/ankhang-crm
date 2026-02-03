@@ -60,7 +60,7 @@
 
 | # | Task | Mô tả | Effort | Status |
 |---|------|-------|--------|--------|
-| 5 | **TASK-033** | Email Notifications (ActionMailer + Solid Queue) | 3 SP | 🔵 Ready |
+| 5 | **TASK-033** | Email Notifications (ActionMailer + Solid Queue) | 3 SP | ✅ Done |
 
 **Scope:**
 - Contact assigned notification
