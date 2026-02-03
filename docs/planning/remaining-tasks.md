@@ -120,7 +120,7 @@
 
 | # | Priority | Task | Mô tả | Effort |
 |---|----------|------|-------|--------|
-| 1 | 🔴 Critical | TASK-043 | Kiểm tra Bảo mật (Brakeman, OWASP) | 3 SP |
+| 1 | 🔴 Critical | TASK-043 | Kiểm tra Bảo mật (Brakeman, OWASP) | ✅ Done |
 | 2 | 🔴 Critical | TASK-044 | Cài đặt Server Production | 5 SP |
 | 3 | 🔴 Critical | TASK-045 | Backup & Monitoring (Sentry, S3) | 3 SP |
 | 4 | 🟢 Medium | TASK-046 | Tài liệu & Bàn giao | 3 SP |
