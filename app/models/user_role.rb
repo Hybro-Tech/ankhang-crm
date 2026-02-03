@@ -28,6 +28,15 @@ class UserRole < ApplicationRecord
   belongs_to :role
 
   validates :user_id, uniqueness: { scope: :role_id, message: "đã có vai trò này" }
+
+  # TASK-RBAC: Invalidate user's permission cache when role assignment changes
+  after_commit :invalidate_user_permission_cache
+
+  private
+
+  def invalidate_user_permission_cache
+    user&.invalidate_permission_cache
+  end
 end
 
 #------------------------------------------------------------------------------

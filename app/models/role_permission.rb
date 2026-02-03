@@ -28,6 +28,15 @@ class RolePermission < ApplicationRecord
   belongs_to :permission
 
   validates :role_id, uniqueness: { scope: :permission_id, message: "đã có quyền này" }
+
+  # TASK-RBAC: Invalidate permission cache for all users with this role
+  after_commit :invalidate_role_users_cache
+
+  private
+
+  def invalidate_role_users_cache
+    role&.users&.find_each(&:invalidate_permission_cache)
+  end
 end
 
 #------------------------------------------------------------------------------

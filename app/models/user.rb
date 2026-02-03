@@ -25,8 +25,9 @@
 class User < ApplicationRecord
   # TASK-LOGGING: Auto-log CRUD operations
   # Skip Devise trackable fields to avoid duplicate logs on login
-  # (login/logout already logged separately via SessionsController)
   include Loggable
+  # TASK-RBAC: Authorization methods with caching
+  include UserAuthorization
 
   loggable category: "user", skip_fields: %w[
     sign_in_count current_sign_in_at last_sign_in_at
@@ -137,76 +138,8 @@ class User < ApplicationRecord
   end
 
   # ============================================================================
-  # TASK-015: Authorization Helpers
+  # Authorization Helpers (moved to UserAuthorization concern)
   # ============================================================================
-
-  # Check if user has specific role
-  def has_role?(role_name)
-    roles.exists?(name: role_name)
-  end
-
-  # Check if user has role by code (preferred for system checks)
-  def has_role_code?(role_code)
-    roles.exists?(code: role_code)
-  end
-
-  # Check if user is Super Admin
-  def super_admin?
-    has_role_code?(Role::SUPER_ADMIN)
-  end
-
-  # Get all effective permission codes (roles + overrides)
-  # Used for view helpers and authorization checks
-  def effective_permission_codes
-    return Permission.pluck(:code) if super_admin?
-
-    # Get permissions from roles
-    role_codes = roles.eager_load(:permissions).flat_map { |r| r.permissions.pluck(:code) }
-
-    # Apply user-level overrides
-    granted_codes = user_permissions.where(granted: true)
-                                    .joins(:permission)
-                                    .pluck("permissions.code")
-    denied_codes = user_permissions.where(granted: false)
-                                   .joins(:permission)
-                                   .pluck("permissions.code")
-
-    ((role_codes + granted_codes) - denied_codes).uniq
-  end
-
-  # Check specific permission by code
-  def can_access?(permission_code)
-    effective_permission_codes.include?(permission_code)
-  end
-  alias has_permission? can_access?
-
-  # Get primary dashboard type from user's first role (ordered by id for determinism)
-  # Defaults to "admin" if no role assigned
-  def primary_dashboard_type
-    roles.order(:id).first&.dashboard_type || "admin"
-  end
-
-  # TASK-Refine: Robust Role Checks (Enum-based)
-  def call_center_staff?
-    roles.exists?(dashboard_type: :call_center)
-  end
-
-  def sale_staff?
-    roles.exists?(dashboard_type: :sale)
-  end
-
-  def cskh_staff?
-    roles.exists?(dashboard_type: :cskh)
-  end
-
-  def admin?
-    primary_dashboard_type == "admin"
-  end
-
-  # TASK-052: Check if user is a Team Leader (Manager)
-  def team_leader?
-    managed_team.present?
-  end
 end
 
 #------------------------------------------------------------------------------
