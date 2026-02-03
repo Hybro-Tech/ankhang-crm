@@ -77,9 +77,10 @@ class SalesWorkspaceController < ApplicationController
   private
 
   def authorize_sale_user
-    # Allow Sale, Admin, and Team Leaders (use enum-based checks for stability)
-    return if current_user.sale_staff? || current_user.super_admin? || current_user.team_leader?
-
+    # TASK-RBAC: Use CanCanCan authorization instead of role checks
+    # Permission defined in Ability#define_feature_access
+    authorize! :access, :sales_workspace
+  rescue CanCan::AccessDenied
     redirect_to root_path, alert: "Bạn không có quyền truy cập khu vực này."
   end
 

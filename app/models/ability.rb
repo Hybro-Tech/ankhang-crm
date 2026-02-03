@@ -6,6 +6,11 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
+    # TASK-RBAC: Define aliases FIRST (before loading permissions)
+    alias_action :view, to: :read
+    alias_action :edit, :pick, to: :update
+    alias_action :create, :read, :update, :destroy, to: :crud
+
     # Guest users have no permissions
     return unless user
 
@@ -21,10 +26,11 @@ class Ability
     # Apply user-level overrides (grant/deny)
     apply_user_overrides(user)
 
-    # Alias :view to :read (index, show) so standard controllers work
-    alias_action :view, to: :read
-    alias_action :edit, :pick, to: :update
-    alias_action :create, :read, :update, :destroy, to: :crud
+    # TASK-RBAC: Define data-level access rules
+    define_contact_access(user)
+
+    # TASK-RBAC: Define feature access rules
+    define_feature_access(user)
   end
 
   private
@@ -125,6 +131,7 @@ class Ability
     reassign_requests: "ReassignRequest",
     regions: "Region", # TASK-REGION: Region management
     dashboards: nil,
+    sales_workspace: nil, # TASK-RBAC: Feature permission
     solid_queue: nil,
     solid_cache: nil,
     solid_cable: nil
@@ -137,5 +144,33 @@ class Ability
     class_name.constantize
   rescue NameError
     nil
+  end
+
+  # TASK-RBAC: Define data-level access rules for Contacts
+  # Uses CanCanCan conditions to enable accessible_by filtering
+  def define_contact_access(user)
+    # contacts.view_all = See all contacts
+    if user.has_permission?("contacts.view_all")
+      can :read, Contact
+      return
+    end
+
+    # contacts.view_team = See contacts in user's teams
+    can :read, Contact, team_id: user.team_ids if user.has_permission?("contacts.view_team")
+
+    # contacts.view_own = See only assigned or created contacts
+    return unless user.has_permission?("contacts.view_own")
+
+    can :read, Contact, assigned_user_id: user.id
+    can :read, Contact, created_by_id: user.id
+  end
+
+  # TASK-RBAC: Define feature access rules
+  def define_feature_access(user)
+    # Sales Workspace access
+    can :access, :sales_workspace if user.has_permission?("sales_workspace.access")
+
+    # Reassign request approval (permission OR team leader)
+    can :approve, ReassignRequest if user.has_permission?("reassign_requests.approve") || user.team_leader?
   end
 end

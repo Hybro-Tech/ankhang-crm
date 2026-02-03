@@ -16,6 +16,13 @@ permissions_data = [
   { code: "contacts.create", name: "Tạo", category: "Khách hàng", description: "Tạo khách hàng mới" },
   { code: "contacts.edit", name: "Sửa", category: "Khách hàng", description: "Chỉnh sửa thông tin khách hàng" },
   { code: "contacts.delete", name: "Xóa", category: "Khách hàng", description: "Xóa khách hàng" },
+  # TASK-RBAC: Data filtering permissions
+  { code: "contacts.view_all", name: "Xem tất cả KH", category: "Khách hàng",
+    description: "Xem tất cả khách hàng trong hệ thống" },
+  { code: "contacts.view_team", name: "Xem KH trong team", category: "Khách hàng",
+    description: "Xem khách hàng trong team của mình" },
+  { code: "contacts.view_own", name: "Xem KH của mình", category: "Khách hàng",
+    description: "Chỉ xem khách hàng được gán hoặc tạo" },
 
   # Nhân viên (Employees/Users)
   { code: "employees.view", name: "Xem", category: "Nhân viên", description: "Xem danh sách nhân viên" },
@@ -69,6 +76,11 @@ permissions_data = [
     description: "Xem dashboard và workspace Sale" },
   { code: "dashboards.view_cskh", name: "Xem CSKH", category: "Dashboard", description: "Xem dashboard CSKH" },
   { code: "dashboards.view_admin", name: "Xem Admin", category: "Dashboard", description: "Xem dashboard Admin" },
+  # TASK-RBAC: Feature access permissions
+  { code: "sales_workspace.access", name: "Truy cập Workspace", category: "Dashboard",
+    description: "Truy cập Sales Workspace" },
+  { code: "reassign_requests.approve", name: "Duyệt yêu cầu chuyển", category: "Yêu cầu",
+    description: "Duyệt yêu cầu chuyển giao khách hàng" },
 
   # Reports & Logs (System)
   { code: "reports.view", name: "Xem", category: "Báo cáo", description: "Xem báo cáo" },
@@ -131,23 +143,27 @@ Rails.logger.debug "➡️ Assigning Permissions..."
 # Super Admin: All permissions (also has can :manage, :all in Ability)
 roles["Super Admin"].permissions = Permission.all
 
-# Tổng Đài - Contact CRUD for data entry + Call Center dashboard
+# Tổng Đài - Contact CRUD for data entry + Call Center dashboard + view_own
 td_codes = %w[
   contacts.view contacts.create contacts.edit
+  contacts.view_own
   dashboards.view_call_center
 ]
 roles["Tổng Đài"].permissions = Permission.where(code: td_codes)
 
-# Sale - Contact access + Sales dashboard/workspace
+# Sale - Contact access + Sales dashboard/workspace + view_own + workspace access
 sale_codes = %w[
   contacts.view contacts.edit
+  contacts.view_own
   dashboards.view_sales
+  sales_workspace.access
 ]
 roles["Sale"].permissions = Permission.where(code: sale_codes)
 
-# CSKH - Contact access for care + CSKH dashboard
+# CSKH - Contact access for care + CSKH dashboard + view_team (can see team contacts)
 cskh_codes = %w[
   contacts.view contacts.edit
+  contacts.view_team
   dashboards.view_cskh
 ]
 roles["CSKH"].permissions = Permission.where(code: cskh_codes)

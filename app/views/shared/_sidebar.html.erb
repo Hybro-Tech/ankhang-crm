@@ -14,8 +14,8 @@
       <%= sidebar_link "Workspace", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
     <% end %>
 
-    <%# Call Center Menu - Tổng đài role specific %>
-    <% if current_user.call_center_staff? %>
+    <%# TASK-RBAC: Call Center Menu - permission-based %>
+    <% if can_access?("dashboards.view_call_center") %>
       <%# Tổng đài - Main input page %>
       <%= link_to dashboard_index_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_index_path) || current_page?(root_path) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
         <i class="fa-solid fa-headset w-6 <%= current_page?(dashboard_index_path) || current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
@@ -47,7 +47,8 @@
     <%# Tổ chức section %>
     <%= sidebar_section "Tổ chức", ["teams.view", "roles.view", "employees.view", "regions.view", "holidays.manage", "saturday_schedules.manage"] %>
     <%= sidebar_link "Đội nhóm", teams_path, "fa-user-group", permission: "teams.view" %>
-    <% if current_user.team_leader? %>
+    <%# TASK-RBAC: Show for team leaders OR users with approve permission %>
+    <% if current_user.team_leader? || can_access?("reassign_requests.approve") %>
       <%= sidebar_link "Yêu cầu chờ duyệt", teams_reassign_requests_path, "fa-user-clock", permission: nil %>
     <% end %>
     <%= sidebar_link "Phân quyền", roles_path, "fa-user-shield", permission: "roles.view" %>

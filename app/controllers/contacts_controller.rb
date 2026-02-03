@@ -211,21 +211,11 @@ class ContactsController < ApplicationController
   end
 
   def base_contacts_query
-    query = @contacts.includes(:service_type, :team, :assigned_user, :creator)
-
-    # TASK-Refine: Sort by newest first
-    query = query.order(created_at: :desc)
-
-    # TASK-052: Admin sees ALL contacts (no filter)
-    return query if current_user.super_admin?
-
-    # TASK-Refine: Filter by creator if user is Call Center (Tổng Đài)
-    query = query.where(created_by_id: current_user.id) if current_user.call_center_staff?
-
-    # TASK-Refine: Filter by assigned user if user is Sale
-    query = query.where(assigned_user_id: current_user.id) if current_user.sale_staff?
-
-    query
+    # TASK-RBAC: Use accessible_by for permission-based filtering
+    # This uses rules defined in Ability#define_contact_access
+    Contact.accessible_by(current_ability)
+           .includes(:service_type, :team, :assigned_user, :creator)
+           .order(created_at: :desc)
   end
 
   def apply_filters(query)

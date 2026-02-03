@@ -178,6 +178,7 @@ class User < ApplicationRecord
   def can_access?(permission_code)
     effective_permission_codes.include?(permission_code)
   end
+  alias has_permission? can_access?
 
   # Get primary dashboard type from user's first role (ordered by id for determinism)
   # Defaults to "admin" if no role assigned
