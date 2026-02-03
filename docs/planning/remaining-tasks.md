@@ -116,6 +116,42 @@
 
 ---
 
+### 🎨 PHASE D: UI/UX IMPROVEMENTS - PRO MAX (Backlog)
+
+> **Ngày thêm**: 03/02/2026  
+> **Nguồn**: UI/UX Review Session - Sidebar & Admin Experience
+
+#### D1. Sidebar Restructure ✅
+| # | Feature | Mô tả | Effort | Priority | Status |
+|---|---------|-------|--------|----------|--------|
+| 1 | Sidebar Groups | Tái cấu trúc theo Workspace/CRM/Insights/Tổ chức/Quản trị | 30m | 🔴 Critical | ✅ Done |
+
+#### D2. Quick Access Features
+| # | Feature | Mô tả | Effort | Priority | Status |
+|---|---------|-------|--------|----------|--------|
+| 1 | **Global Search (Cmd+K)** | Command palette tìm kiếm contacts/users/actions | 4h | 🔴 Critical | 🔵 TODO |
+| 2 | **Quick Action Button (+)** | Nút tạo nhanh ở top sidebar | 1h | 🔴 Critical | 🔵 TODO |
+| 3 | **Keyboard Shortcuts** | Cmd+N (new), Cmd+R (report), Cmd+/ (sidebar) | 2h | 🟡 Medium | 🔵 TODO |
+
+#### D3. Sidebar Enhancements
+| # | Feature | Mô tả | Effort | Priority | Status |
+|---|---------|-------|--------|----------|--------|
+| 1 | **Collapsible Sidebar** | Thu gọn sidebar + localStorage persist | 3h | 🟡 High | 🔵 TODO |
+| 2 | **Badge for Pending** | Badge số lượng "Yêu cầu chờ duyệt" | 30m | 🟡 Medium | 🔵 TODO |
+| 3 | **User Footer** | Profile + Settings section ở cuối sidebar | 1h | 🟡 Medium | 🔵 TODO |
+| 4 | **Sticky Section Headers** | Section headers fixed khi scroll | 30m | 🟢 Low | 🔵 TODO |
+
+#### D4. Visual Polish
+| # | Feature | Mô tả | Effort | Priority | Status |
+|---|---------|-------|--------|----------|--------|
+| 1 | **Dark Mode Toggle** | Chế độ tối cho sidebar & toàn app | 4h | 🟢 Low | 🔵 TODO |
+| 2 | **Micro-animations** | Hover effects, active indicator animations | 2h | 🟢 Low | 🔵 TODO |
+| 3 | **Icon Migration** | FontAwesome → Heroicons/Lucide (optional) | 3h | 🔵 Optional | 🔵 TODO |
+
+**Total Effort:** ~21 hours
+
+---
+
 ## 🔵 SPRINT 5 - PRODUCTION PREP (Sau khi hoàn thành Phase A)
 
 | # | Priority | Task | Mô tả | Effort |
@@ -169,5 +205,5 @@ TUẦN 3+ (17/02 onwards):
 
 ---
 
-> **Cập nhật lần cuối:** 01/02/2026  
+> **Cập nhật lần cuối:** 03/02/2026  
 > **Phê duyệt bởi:** User

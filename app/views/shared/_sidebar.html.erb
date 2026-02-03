@@ -1,69 +1,82 @@
-<%# Sidebar Navigation %>
+<%# Sidebar Navigation - Pro Max Structure %>
+<%# Groups: Workspace → Core CRM → Tổ chức (Nhân sự + Vùng/Lịch) → Quản trị → Báo cáo & Logs %>
 <aside id="sidebar" class="w-64 bg-brand-blue text-white flex flex-col flex-shrink-0 shadow-xl z-50 fixed lg:relative h-full sidebar-transition -translate-x-full lg:translate-x-0" data-controller="sidebar">
   <%# Logo %>
   <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
     <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
-    <%= link_to (current_user.sale_staff? ? sales_workspace_path : root_path), class: "font-bold text-xl tracking-wide text-white hover:text-gray-200" do %>
-      AnKhangCRM
-    <% end %>
+    <% logo_path = current_user.sale_staff? ? sales_workspace_path : root_path %>
+    <%= link_to "AnKhangCRM", logo_path, class: "font-bold text-xl tracking-wide text-white hover:text-gray-200" %>
   </div>
 
   <%# Navigation Menu %>
-  <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto sidebar-scroll">
+  <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto sidebar-scroll">
+    
+    <%# SECTION 1: WORKSPACE %>
+    <%= sidebar_section "Workspace", ["dashboards.view_sales", "dashboards.view_admin"] %>
+    
+    <% if current_user.call_center_staff? %>
+      <% cc_active = current_page?(dashboard_call_center_path) || current_page?(root_path) %>
+      <% cc_class = cc_active ? "bg-white text-[#0B387A] rounded-lg shadow-md font-bold" : "text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium" %>
+      <% cc_icon_class = cc_active ? "text-brand-orange" : "text-blue-300" %>
+      <a href="<%= dashboard_call_center_path %>" class="flex items-center px-4 py-2.5 <%= cc_class %>">
+        <i class="fa-solid fa-headset w-6 <%= cc_icon_class %>"></i>
+        <span>Call Center</span>
+      </a>
+      
+      <% overview_active = current_page?(call_center_overview_path) %>
+      <% overview_class = overview_active ? "bg-white text-[#0B387A] rounded-lg shadow-md font-bold" : "text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium" %>
+      <% overview_icon_class = overview_active ? "text-brand-orange" : "text-blue-300" %>
+      <a href="<%= call_center_overview_path %>" class="flex items-center px-4 py-2.5 <%= overview_class %>">
+        <i class="fa-solid fa-chart-line w-6 <%= overview_icon_class %>"></i>
+        <span>Tổng quan</span>
+      </a>
+    <% else %>
+      <% dash_active = current_page?(dashboard_index_path) || (!current_user.sale_staff? && current_page?(root_path)) %>
+      <% dash_class = dash_active ? "bg-white text-[#0B387A] rounded-lg shadow-md font-bold" : "text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium" %>
+      <% dash_icon_class = dash_active ? "text-brand-orange" : "text-blue-300" %>
+      <a href="<%= dashboard_index_path %>" class="flex items-center px-4 py-2.5 <%= dash_class %>">
+        <i class="fa-solid fa-chart-line w-6 <%= dash_icon_class %>"></i>
+        <span>Tổng quan</span>
+      </a>
+    <% end %>
+    
     <% unless current_user.admin? %>
       <%= sidebar_link "Workspace", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
-    <% end %>
-
-    <%# Dashboard menus based on role's dashboard_type %>
-    <% if current_user.call_center_staff? %>
-      <%# Call Center: Workspace (input) + Tổng quan (stats) %>
-      <%= link_to dashboard_call_center_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_call_center_path) || current_page?(root_path) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
-        <i class="fa-solid fa-headset w-6 <%= current_page?(dashboard_call_center_path) || current_page?(root_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
-        <span>Workspace</span>
-      <% end %>
-      <%= link_to call_center_overview_path, class: "flex items-center px-4 py-3 #{current_page?(call_center_overview_path) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
-        <i class="fa-solid fa-chart-line w-6 <%= current_page?(call_center_overview_path) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
-        <span>Tổng quan</span>
-      <% end %>
-    <% else %>
-      <%# Admin, Sale, CSKH: Tổng quan (dashboard overview) %>
-      <%= link_to dashboard_index_path, class: "flex items-center px-4 py-3 #{current_page?(dashboard_index_path) || (!current_user.sale_staff? && current_page?(root_path)) ? 'bg-white text-[#0B387A] rounded-lg shadow-md font-bold' : 'text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium'}" do %>
-        <i class="fa-solid fa-chart-line w-6 <%= current_page?(dashboard_index_path) || (!current_user.sale_staff? && current_page?(root_path)) ? 'text-brand-orange' : 'text-blue-300' %>"></i>
-        <span>Tổng quan</span>
-      <% end %>
-    <% end %>
-
-    <% unless current_user.admin? %>
       <%= sidebar_link "Kanban", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
     <% end %>
 
-    <%# Kinh doanh section %>
+    <%# SECTION 2: CORE CRM - Kinh doanh %>
     <%= sidebar_section "Kinh doanh", ["contacts.view", "service_types.view", "sources.view"] %>
     <%= sidebar_link "Khách hàng", contacts_path, "fa-address-book", permission: "contacts.view" %>
     <%= sidebar_link "Loại nhu cầu", service_types_path, "fa-layer-group", permission: "service_types.view" %>
     <%= sidebar_link "Nguồn khách hàng", sources_path, "fa-share-nodes", permission: "sources.view" %>
 
-    <%# Tổ chức section %>
-    <%= sidebar_section "Tổ chức", ["teams.view", "roles.view", "employees.view", "regions.view", "holidays.manage", "saturday_schedules.manage"] %>
+    <%# SECTION 3: TỔ CHỨC - Nhân sự %>
+    <%= sidebar_section "Nhân sự", ["teams.view", "employees.view"] %>
     <%= sidebar_link "Đội nhóm", teams_path, "fa-user-group", permission: "teams.view" %>
-    <%# TASK-RBAC: Show for team leaders OR users with approve permission %>
     <% if current_user.team_leader? || can_access?("reassign_requests.approve") %>
       <%= sidebar_link "Yêu cầu chờ duyệt", teams_reassign_requests_path, "fa-user-clock", permission: nil %>
     <% end %>
-    <%= sidebar_link "Phân quyền", roles_path, "fa-user-shield", permission: "roles.view" %>
     <%= sidebar_link "Nhân viên", users_path, "fa-id-card", permission: "employees.view" %>
+
+    <%# SECTION 4: TỔ CHỨC - Vùng & Lịch %>
+    <%= sidebar_section "Vùng & Lịch", ["regions.view", "holidays.manage", "saturday_schedules.manage"] %>
     <%= sidebar_link "Vùng/Miền", regions_path, "fa-map-location-dot", permission: "regions.view" %>
     <%= sidebar_link "Lịch nghỉ lễ", holidays_path, "fa-calendar-days", permission: "holidays.manage" %>
     <%= sidebar_link "Lịch Thứ 7", saturday_schedules_path, "fa-calendar-check", permission: "saturday_schedules.manage" %>
 
-    <%# Hệ thống section - Admin only %>
-    <%= sidebar_section "Hệ thống", ["reports.view", "logs.view", "settings.manage"] %>
-    <%= sidebar_link "Cài đặt", admin_settings_path, "fa-gear", permission: "settings.manage" %>
-    <% if defined?(reports_path) %><%= sidebar_link "Báo cáo", reports_path, "fa-chart-pie", permission: "reports.view" %><% end %>
-    <%= sidebar_link "Nhật ký hoạt động", admin_logs_path, "fa-list-check", permission: "logs.manage" %>
-  </nav>
+    <%# SECTION 5: QUẢN TRỊ %>
+    <%= sidebar_section "Quản trị", ["roles.view", "settings.manage"] %>
+    <%= sidebar_link "Phân quyền", roles_path, "fa-user-shield", permission: "roles.view" %>
+    <%= sidebar_link "Cài đặt hệ thống", admin_settings_path, "fa-gear", permission: "settings.manage" %>
 
-  <%# Footer (Removed as requested) %>
+    <%# SECTION 6: BÁO CÁO & LOGS - Bottom %>
+    <%= sidebar_section "Báo cáo & Logs", ["reports.view", "logs.view"] %>
+    <% if defined?(reports_path) %>
+      <%= sidebar_link "Báo cáo", reports_path, "fa-chart-pie", permission: "reports.view" %>
+    <% end %>
+    <%= sidebar_link "Nhật ký hoạt động", admin_logs_path, "fa-list-check", permission: "logs.view" %>
+  </nav>
 </aside>
 
 <%# Mobile overlay %>
