@@ -78,17 +78,31 @@ module UserAuthorization
   end
 
   def compute_effective_permissions
-    # Get permissions from roles
-    role_codes = roles.eager_load(:permissions).flat_map { |r| r.permissions.pluck(:code) }
-
-    # Apply user-level overrides
-    granted_codes = user_permissions.where(granted: true)
-                                    .joins(:permission)
-                                    .pluck("permissions.code")
-    denied_codes = user_permissions.where(granted: false)
-                                   .joins(:permission)
-                                   .pluck("permissions.code")
+    role_codes = extract_role_permission_codes
+    granted_codes, denied_codes = extract_user_override_codes
 
     ((role_codes + granted_codes) - denied_codes).uniq
   end
+
+  # TASK-PERF: Extract role permission codes using pre-loaded associations when available
+  def extract_role_permission_codes
+    return roles.flat_map { |r| r.permissions.map(&:code) } if roles.loaded?
+
+    roles.eager_load(:permissions).flat_map { |r| r.permissions.pluck(:code) }
+  end
+
+  # TASK-PERF: Extract user override codes using pre-loaded associations when available
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def extract_user_override_codes
+    if user_permissions.loaded?
+      granted = user_permissions.select(&:granted?).filter_map { |up| up.permission&.code }
+      denied = user_permissions.reject(&:granted?).filter_map { |up| up.permission&.code }
+    else
+      granted = user_permissions.where(granted: true).joins(:permission).pluck("permissions.code")
+      denied = user_permissions.where(granted: false).joins(:permission).pluck("permissions.code")
+    end
+
+    [granted, denied]
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 end

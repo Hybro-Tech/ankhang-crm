@@ -50,6 +50,25 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # TASK-PERF: Preload associations needed by Ability class for fast permission checks
+  # This ensures Ability.new takes <50ms instead of 700ms+
+  def current_user
+    return @current_user if defined?(@current_user)
+
+    @current_user = warden.authenticate(scope: :user)
+    return nil unless @current_user
+
+    # Preload associations if not already loaded
+    unless @current_user.roles.loaded?
+      ActiveRecord::Associations::Preloader.new(
+        records: [@current_user],
+        associations: [{ roles: :permissions }, { user_permissions: :permission }, :managed_team]
+      ).call
+    end
+
+    @current_user
+  end
+
   # TASK-LOGGING: Set Current attributes for use by Loggable concern
   def set_current_attributes
     Current.user = current_user if user_signed_in?

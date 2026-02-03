@@ -3,6 +3,7 @@
 # TASK-015: CanCanCan Ability class with dynamic RBAC
 # Loads permissions from database (roles + user overrides)
 # TASK-RBAC: Refactored to use concerns for cleaner code
+# TASK-PERF: Optimized for performance - memoization and batched queries
 class Ability
   include CanCan::Ability
   include PermissionMapping
@@ -17,35 +18,59 @@ class Ability
     # Guest users have no permissions
     return unless user
 
+    # TASK-PERF: Store user reference and cache super_admin status
+    @user = user
+    @is_super_admin = user.super_admin?
+
     # Super Admin = All permissions
-    if user.super_admin?
+    if @is_super_admin
       can :manage, :all
       return
     end
 
+    # TASK-PERF: Preload associations for better performance
+    preload_user_associations
+
     # Load permissions from roles
-    load_role_permissions(user)
+    load_role_permissions
 
     # Apply user-level overrides (grant/deny)
-    apply_user_overrides(user)
+    apply_user_overrides
 
     # TASK-RBAC: Define data-level access rules
-    define_contact_access(user)
+    define_contact_access(@user)
 
     # TASK-RBAC: Define feature access rules
-    define_feature_access(user)
+    define_feature_access(@user)
   end
 
   private
 
-  def load_role_permissions(user)
-    user.roles.eager_load(:permissions).find_each do |role|
+  # TASK-PERF: Preload all needed associations in one query (if not already loaded)
+  def preload_user_associations
+    # Skip if already loaded (e.g., from controller eager loading)
+    return if @user.roles.loaded? && @user.user_permissions.loaded?
+
+    ActiveRecord::Associations::Preloader.new(
+      records: [@user],
+      associations: [
+        { roles: :permissions },
+        { user_permissions: :permission },
+        :managed_team
+      ]
+    ).call
+  end
+
+  # TASK-PERF: Use each instead of find_each - better for small datasets
+  def load_role_permissions
+    @user.roles.each do |role|
       role.permissions.each { |perm| apply_permission(perm) }
     end
   end
 
-  def apply_user_overrides(user)
-    user.user_permissions.eager_load(:permission).find_each do |user_perm|
+  # TASK-PERF: Use each instead of find_each
+  def apply_user_overrides
+    @user.user_permissions.each do |user_perm|
       if user_perm.granted?
         apply_permission(user_perm.permission)
       else
