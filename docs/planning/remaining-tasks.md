@@ -36,9 +36,9 @@
 
 | # | Task | Mô tả | Effort | Status |
 |---|------|-------|--------|--------|
-| 1 | **TASK-037** | KPI Cards trên Admin Dashboard | 3 SP | 🔵 Ready |
-| 2 | **TASK-038** | Biểu đồ Dashboard (Charts) | 5 SP | 🔵 Ready |
-| 3 | **TASK-039** | Bảng Top Performers (Real Data) | 2 SP | 🔵 Ready |
+| 1 | **TASK-037** | KPI Cards trên Admin Dashboard | 3 SP | ✅ Done |
+| 2 | **TASK-038** | Biểu đồ Dashboard (Charts) | 5 SP | ✅ Done |
+| 3 | **TASK-039** | Bảng Top Performers (Real Data) | 2 SP | ✅ Done |
 
 **Dependencies:** ✅ None - Backend logic có sẵn trong `DashboardController`  
 **Wireframe:** `docs/ui-design/wireframes/dashboard.html`
@@ -49,7 +49,7 @@
 
 | # | Task | Mô tả | Effort | Status |
 |---|------|-------|--------|--------|
-| 4 | **TASK-040** | Activity Logs Viewer (List, Filter, Diff) | 5 SP | 🔵 Ready |
+| 4 | **TASK-040** | Activity Logs Viewer (List, Filter, Diff) | 5 SP | ✅ Done |
 
 **Dependencies:** ✅ None - `ActivityLog` model đã hoàn chỉnh  
 **Wireframe:** `docs/ui-design/wireframes/logs.html`
