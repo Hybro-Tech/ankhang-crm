@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 # TASK-066: Smart Routing Service - 3-Layer Distribution System
-# Layer 1: Fair Random within Team (T+0)
-# Layer 2: Regional Pool (T+REGIONAL_EXPAND_MINUTES)
-# Layer 3: National Pool (T+VISIBILITY_EXPAND_MINUTES)
+# Layer 1: Sale with ServiceType config (T+0)
+# Layer 2: Regional Pool (T+ROUTING_EXPAND_MINUTES)
+# Layer 3: National Pool (T+2*ROUTING_EXPAND_MINUTES)
+# When contact is picked, all pending jobs are cancelled (checked in job)
 # rubocop:disable Metrics/ClassLength
 class SmartRoutingService
   include NotificationBadgeHelper
 
-  # ENV defaults
-  DEFAULT_REGIONAL_EXPAND_MINUTES = 2
-  DEFAULT_VISIBILITY_EXPAND_MINUTES = 4
+  # ENV default - single interval for all layer expansions
+  DEFAULT_ROUTING_EXPAND_MINUTES = 2
 
   # Initialize visibility when contact is created
   # @param contact [Contact] The newly created contact
@@ -245,17 +245,18 @@ class SmartRoutingService
   # ============================================================================
 
   def schedule_layer2_expansion
-    interval = ENV.fetch("REGIONAL_EXPAND_MINUTES", DEFAULT_REGIONAL_EXPAND_MINUTES).to_i
-    user_id = Current.user&.id
-    SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(@contact.id, user_id)
-    Rails.logger.info "[SmartRouting] Scheduled Layer 2 for contact #{@contact.id} in #{interval} minutes"
+    schedule_next_expansion("Layer 2")
   end
 
   def schedule_layer3_expansion
-    interval = ENV.fetch("VISIBILITY_EXPAND_MINUTES", DEFAULT_VISIBILITY_EXPAND_MINUTES).to_i
+    schedule_next_expansion("Layer 3")
+  end
+
+  def schedule_next_expansion(layer_name)
+    interval = ENV.fetch("ROUTING_EXPAND_MINUTES", DEFAULT_ROUTING_EXPAND_MINUTES).to_i
     user_id = Current.user&.id
     SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(@contact.id, user_id)
-    Rails.logger.info "[SmartRouting] Scheduled Layer 3 for contact #{@contact.id} in #{interval} minutes"
+    Rails.logger.info "[SmartRouting] Scheduled #{layer_name} for contact #{@contact.id} in #{interval} minutes"
   end
 
   # ============================================================================
