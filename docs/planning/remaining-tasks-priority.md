@@ -9,7 +9,7 @@
 
 | # | Task | Mô tả | SP | Status |
 |---|------|-------|-----|--------|
-| 1 | TASK-060 | Remove Pick Rules từ ServiceType | 2 | [ ] |
+| 1 | TASK-060 | Remove Pick Rules từ ServiceType | 2 | [x] |
 | 2 | TASK-064 | Simplify Contact Status (10→4) | 5 | [ ] |
 | 3 | TASK-065 | ENV PICK_COOLDOWN_MINUTES | 1 | [ ] |
 | 4 | TASK-067 | Update PickEligibilityService | 3 | [ ] |

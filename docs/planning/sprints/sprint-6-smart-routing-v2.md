@@ -14,7 +14,7 @@
 | **Epic**         | Database       |
 | **Story Points** | 2              |
 | **Priority**     | 🔴 Critical     |
-| **Status**       | Backlog        |
+| **Status**       | ✅ Done        |
 
 **Description:**
 Xóa các columns không còn sử dụng trong ServiceType.
