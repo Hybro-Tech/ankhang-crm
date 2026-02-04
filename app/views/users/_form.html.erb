@@ -1,6 +1,9 @@
-<%= form_with model: user, local: true, class: "space-y-8" do |f| %>
+<%# User Form - Tab-Based Layout (UI/UX ProMax) %>
+<%= form_with model: user, local: true, class: "h-full flex flex-col" do |f| %>
+  
+  <%# Error Messages %>
   <% if user.errors.any? %>
-    <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+    <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
       <div class="flex items-center text-red-800">
         <i class="fa-solid fa-exclamation-triangle mr-2"></i>
         <span class="font-semibold">Có <%= user.errors.count %> lỗi cần sửa:</span>
@@ -13,182 +16,349 @@
     </div>
   <% end %>
 
-  <%# Main 2-column grid - equal width columns %>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <%# Main Container with Tabs %>
+  <div class="flex-1 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col" data-controller="tabs">
     
-    <%# LEFT COLUMN: Account Info %>
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-bold text-gray-900 flex items-center">
-          <i class="fa-solid fa-user-circle text-brand-blue mr-2"></i>
-          Thông tin tài khoản
-        </h3>
-      </div>
+    <%# Tab Navigation %>
+    <div class="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+      <nav class="flex -mb-px px-6" aria-label="Tabs">
+        <button type="button"
+                data-tabs-target="tab"
+                data-tab-index="0"
+                data-action="click->tabs#switch"
+                class="py-4 px-6 text-sm font-semibold border-b-2 transition-colors text-brand-blue border-brand-blue">
+          <i class="fa-solid fa-user mr-2"></i>
+          Thông tin cơ bản
+        </button>
+        <button type="button"
+                data-tabs-target="tab"
+                data-tab-index="1"
+                data-action="click->tabs#switch"
+                class="py-4 px-6 text-sm font-semibold border-b-2 transition-colors text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300">
+          <i class="fa-solid fa-shield-halved mr-2"></i>
+          Phân quyền & Bảo mật
+        </button>
+        <% if @service_types.present? %>
+          <button type="button"
+                  data-tabs-target="tab"
+                  data-tab-index="2"
+                  data-action="click->tabs#switch"
+                  class="py-4 px-6 text-sm font-semibold border-b-2 transition-colors text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300">
+            <i class="fa-solid fa-gauge-high mr-2"></i>
+            Giới hạn Pick
+            <% if user.user_service_type_limits.any? %>
+              <span class="ml-2 bg-brand-blue text-white text-xs px-2 py-0.5 rounded-full"><%= user.user_service_type_limits.size %></span>
+            <% end %>
+          </button>
+        <% end %>
+      </nav>
+    </div>
+
+    <%# Tab Panels %>
+    <div class="flex-1 overflow-auto p-6">
       
-      <div class="p-6 space-y-5">
-        <div>
-          <%= f.label :name, "Họ và tên *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <%= f.text_field :name, 
-              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
-              placeholder: "Nguyễn Văn A" %>
-        </div>
+      <%# TAB 1: Basic Info %>
+      <div data-tabs-target="panel" class="">
+        <div class="space-y-6">
+          
+          <%# Row 1: Name + Email %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <%= f.label :name, "Họ và tên *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <i class="fa-solid fa-user"></i>
+                </span>
+                <%= f.text_field :name, 
+                    class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                    placeholder: "Nguyễn Văn A" %>
+              </div>
+            </div>
+            <div>
+              <%= f.label :email, "Email *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <i class="fa-solid fa-envelope"></i>
+                </span>
+                <%= f.email_field :email, 
+                    class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                    placeholder: "email@example.com" %>
+              </div>
+            </div>
+          </div>
 
-        <div>
-          <%= f.label :email, "Email *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <%= f.email_field :email, 
-              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
-              placeholder: "email@example.com" %>
-        </div>
+          <%# Row 2: Username + Phone %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <%= f.label :username, "Tên đăng nhập", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <i class="fa-solid fa-at"></i>
+                </span>
+                <%= f.text_field :username, 
+                    class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                    placeholder: "username" %>
+              </div>
+            </div>
+            <div>
+              <%= f.label :phone, "Số điện thoại", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <i class="fa-solid fa-phone"></i>
+                </span>
+                <%= f.telephone_field :phone, 
+                    class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                    placeholder: "0912 345 678" %>
+              </div>
+            </div>
+          </div>
 
-        <div>
-          <%= f.label :username, "Username", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <%= f.text_field :username, 
-              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
-              placeholder: "username" %>
-        </div>
+          <%# Row 3: Region + Status %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Vùng/Miền</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 z-10">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                </span>
+                <%= f.collection_select :region_id, Region.all, :id, :name, 
+                    { include_blank: "-- Chọn vùng/miền --" }, 
+                    { class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors bg-white appearance-none cursor-pointer" } %>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Trạng thái</label>
+              <%= f.select :status, 
+                  [["🟢 Đang hoạt động", "active"], ["🔴 Ngừng hoạt động", "inactive"], ["⏸️ Tạm khóa", "suspended"]], 
+                  {}, 
+                  { class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors bg-white appearance-none cursor-pointer" } %>
+            </div>
+          </div>
 
-        <div class="grid grid-cols-2 gap-4">
+          <%# Row 4: Address (full width) %>
           <div>
-            <%= f.label :password, "Mật khẩu", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-            <div class="relative" data-controller="password-toggle">
-              <%= f.password_field :password, 
-                  class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-10 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors", 
-                  placeholder: user.new_record? ? "••••••••" : "Để trống nếu không đổi",
-                  data: { password_toggle_target: "input" } %>
+            <%= f.label :address, "Địa chỉ chi tiết", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+            <div class="relative">
+              <span class="absolute top-3 left-0 pl-3 flex items-start text-gray-400">
+                <i class="fa-solid fa-location-dot"></i>
+              </span>
+              <%= f.text_area :address,
+                  rows: 2,
+                  class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors resize-none",
+                  placeholder: "Số nhà, đường, quận/huyện, tỉnh/thành phố" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%# TAB 2: Permissions & Security %>
+      <div data-tabs-target="panel" class="hidden">
+        <div class="space-y-6">
+          
+          <%# Role %>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Vai trò (Role) *</label>
+            <p class="text-sm text-gray-500 mb-2">Quyết định những gì nhân viên có thể xem và thao tác trong hệ thống</p>
+            <%= f.collection_select :role_ids, Role.all, :id, :name, 
+                { include_blank: "-- Chọn vai trò --" }, 
+                { class: "w-full", 
+                  multiple: false, 
+                  name: "user[role_ids][]",
+                  data: { controller: "tom-select", tom_select_placeholder_value: "Tìm và chọn vai trò..." } } %>
+          </div>
+
+          <%# Teams %>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Thuộc Team</label>
+            <p class="text-sm text-gray-500 mb-2">Có thể chọn nhiều team. Nhân viên sẽ nhận contact được route đến các team này.</p>
+            <%= f.collection_select :team_ids, Team.all, :id, :name, 
+                {}, 
+                { class: "w-full",
+                  multiple: true,
+                  data: { controller: "tom-select", tom_select_placeholder_value: "Tìm và chọn team..." } } %>
+          </div>
+
+          <%# Password Section - Collapsible %>
+          <div class="border border-gray-200 rounded-lg overflow-hidden" data-controller="collapse">
+            <button type="button" 
+                    class="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+                    data-action="click->collapse#toggle">
+              <div class="flex items-center">
+                <i class="fa-solid fa-key text-gray-400 mr-3"></i>
+                <span class="font-medium text-gray-700"><%= user.new_record? ? "Đặt mật khẩu *" : "Đổi mật khẩu" %></span>
+              </div>
+              <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" data-collapse-target="icon"></i>
+            </button>
+            <div class="<%= 'hidden' unless user.new_record? %> p-4 border-t border-gray-200 bg-white" data-collapse-target="content">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <%= f.label :password, "Mật khẩu mới", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+                  <div class="relative" data-controller="password-toggle">
+                    <%= f.password_field :password, 
+                        class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-10 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors", 
+                        placeholder: user.new_record? ? "••••••••" : "Để trống nếu không đổi",
+                        data: { password_toggle_target: "input" } %>
+                    <button type="button" 
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                            data-action="click->password-toggle#toggle">
+                      <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <%= f.label :password_confirmation, "Xác nhận mật khẩu", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+                  <div class="relative" data-controller="password-toggle">
+                    <%= f.password_field :password_confirmation, 
+                        class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-10 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                        placeholder: "••••••••",
+                        data: { password_toggle_target: "input" } %>
+                    <button type="button" 
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                            data-action="click->password-toggle#toggle">
+                      <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <% unless user.new_record? %>
+                <p class="mt-3 text-sm text-gray-500">
+                  <i class="fa-solid fa-info-circle mr-1"></i>
+                  Để trống cả hai ô nếu không muốn thay đổi mật khẩu.
+                </p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%# TAB 3: Service Type Limits %>
+      <% if @service_types.present? %>
+        <div data-tabs-target="panel" class="hidden">
+          <div class="" 
+               data-controller="nested-form" 
+               data-nested-form-index-value="<%= user.user_service_type_limits.size %>">
+            
+            <div class="mb-6">
+              <h3 class="text-lg font-bold text-gray-900">Giới hạn Pick theo Loại nhu cầu</h3>
+              <p class="mt-1 text-sm text-gray-500">Thêm các loại nhu cầu mà nhân viên này được phép pick từ Smart Routing.</p>
+            </div>
+
+            <%# Add new limit row %>
+            <div class="flex items-center gap-3 mb-4 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+              <div class="flex-1">
+                <select data-nested-form-target="serviceTypeSelect" 
+                        data-controller="tom-select"
+                        data-tom-select-placeholder-value="Tìm và chọn loại nhu cầu..."
+                        class="w-full">
+                  <option value="">-- Chọn loại nhu cầu để thêm --</option>
+                  <% existing_ids = user.user_service_type_limits.map(&:service_type_id) %>
+                  <% @service_types.each do |st| %>
+                    <option value="<%= st.id %>" <%= 'disabled' if existing_ids.include?(st.id) %>>
+                      <%= st.name %>
+                    </option>
+                  <% end %>
+                </select>
+              </div>
               <button type="button" 
-                      class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
-                      data-action="click->password-toggle#toggle">
-                <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
+                      data-action="click->nested-form#add"
+                      class="inline-flex items-center px-4 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium transition-colors">
+                <i class="fa-solid fa-plus mr-2"></i>
+                Thêm
               </button>
             </div>
-          </div>
-          <div>
-            <%= f.label :password_confirmation, "Xác nhận", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-            <div class="relative" data-controller="password-toggle">
-              <%= f.password_field :password_confirmation, 
-                  class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 pr-10 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
-                  placeholder: "••••••••",
-                  data: { password_toggle_target: "input" } %>
-              <button type="button" 
-                      class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
-                      data-action="click->password-toggle#toggle">
-                <i class="fa-solid fa-eye" data-password-toggle-target="icon"></i>
-              </button>
+
+            <%# Existing limits container %>
+            <div data-nested-form-target="container" class="space-y-3">
+              <% if user.user_service_type_limits.any? %>
+                <%= f.fields_for :user_service_type_limits, user.user_service_type_limits.includes(:service_type).sort_by { |l| l.service_type&.name.to_s } do |limit_form| %>
+                  <% service_type = limit_form.object.service_type %>
+                  <div class="nested-fields flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+                       data-service-type-id="<%= service_type&.id %>">
+                    <%= limit_form.hidden_field :id %>
+                    <%= limit_form.hidden_field :service_type_id %>
+                    <%= limit_form.hidden_field :_destroy, value: false %>
+                    
+                    <div class="flex items-center flex-1 min-w-0">
+                      <i class="fa-solid fa-folder text-brand-blue mr-3"></i>
+                      <span class="font-medium text-gray-900 truncate"><%= service_type&.name || "N/A" %></span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                      <label class="text-sm text-gray-500">Giới hạn/Ngày:</label>
+                      <%= limit_form.number_field :max_pick_per_day,
+                          min: 1,
+                          max: 100,
+                          class: "w-20 text-center border border-gray-300 rounded-lg py-2 px-3 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                          placeholder: "10" %>
+                    </div>
+                    
+                    <button type="button" 
+                            data-action="click->nested-form#remove"
+                            class="inline-flex items-center px-3 py-2 text-red-600 hover:text-white hover:bg-red-600 border border-red-200 hover:border-red-600 rounded-lg transition-colors"
+                            title="Xoá">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+
+            <%# Empty state %>
+            <div class="empty-state <%= 'hidden' if user.user_service_type_limits.any? %> text-center py-8 text-gray-400">
+              <i class="fa-solid fa-inbox text-4xl mb-3"></i>
+              <p>Chưa có loại nhu cầu nào được thêm.</p>
+              <p class="text-sm mt-1">Nhân viên này sẽ không nhận được contact từ Smart Routing.</p>
+            </div>
+
+            <%# Template for new items %>
+            <template data-nested-form-target="template">
+              <div class="nested-fields flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+                   data-service-type-id="SERVICE_TYPE_ID">
+                <input type="hidden" name="user[user_service_type_limits_attributes][NEW_RECORD][service_type_id]" value="SERVICE_TYPE_ID">
+                
+                <div class="flex items-center flex-1 min-w-0">
+                  <i class="fa-solid fa-folder text-brand-blue mr-3"></i>
+                  <span class="font-medium text-gray-900 truncate">SERVICE_TYPE_NAME</span>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                  <label class="text-sm text-gray-500">Giới hạn/Ngày:</label>
+                  <input type="number" 
+                         name="user[user_service_type_limits_attributes][NEW_RECORD][max_pick_per_day]" 
+                         value="10" 
+                         min="1" 
+                         max="100"
+                         class="w-20 text-center border border-gray-300 rounded-lg py-2 px-3 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors">
+                </div>
+                
+                <button type="button" 
+                        data-action="click->nested-form#remove"
+                        class="inline-flex items-center px-3 py-2 text-red-600 hover:text-white hover:bg-red-600 border border-red-200 hover:border-red-600 rounded-lg transition-colors"
+                        title="Xoá">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </template>
+
+            <div class="mt-4 bg-blue-50 text-blue-800 text-sm p-3 rounded-lg flex items-start gap-2">
+              <i class="fa-solid fa-info-circle mt-0.5"></i>
+              <span>
+                <strong>Lưu ý:</strong> Nhân viên chỉ nhận được contact từ Smart Routing cho các loại nhu cầu đã thêm ở đây.
+              </span>
             </div>
           </div>
         </div>
-      </div>
+      <% end %>
     </div>
 
-    <%# RIGHT COLUMN: Role & Organization %>
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-bold text-gray-900 flex items-center">
-          <i class="fa-solid fa-sitemap text-brand-orange mr-2"></i>
-          Phân quyền & Tổ chức
-        </h3>
-      </div>
-      
-      <div class="p-6 space-y-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Vai trò (Role) *</label>
-          <%= f.collection_select :role_ids, Role.all, :id, :name, 
-              { include_blank: "-- Chọn vai trò --" }, 
-              { class: "w-full", 
-                multiple: false, 
-                name: "user[role_ids][]",
-                data: { controller: "tom-select", tom_select_placeholder_value: "Tìm và chọn vai trò..." } } %>
-        </div>
-
-        <div>
-          <%= f.label :team_ids, "Thuộc Team", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <%= f.select :team_ids, 
-              Team.all.map { |t| [t.name, t.id] }, 
-              {}, 
-              { class: "w-full",
-                multiple: true,
-                data: { controller: "tom-select", tom_select_multiple_value: true, tom_select_placeholder_value: "Tìm và chọn team..." } } %>
-          <p class="mt-1.5 text-xs text-gray-500 flex items-center">
-            <i class="fa-solid fa-info-circle mr-1"></i>
-            Có thể chọn nhiều team
-          </p>
-        </div>
-
-        <div>
-          <%= f.label :status, "Trạng thái", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <%= f.select :status, 
-              User.statuses.keys.map { |k| [k.titleize, k] }, 
-              {}, 
-              { class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none bg-white transition-colors cursor-pointer" } %>
-        </div>
-      </div>
+    <%# Sticky Footer Buttons %>
+    <div class="border-t border-gray-200 bg-gray-50 px-6 py-4 flex items-center justify-center gap-4">
+      <%= link_to users_path, class: "inline-flex items-center px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-100 font-medium transition-colors" do %>
+        <i class="fa-solid fa-times mr-2"></i>
+        Hủy bỏ
+      <% end %>
+      <%= f.submit user.new_record? ? "Tạo nhân viên" : "Lưu thay đổi",
+          class: "inline-flex items-center px-8 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium transition-colors shadow-lg shadow-blue-500/30 cursor-pointer" %>
     </div>
-  </div>
-
-  <%# CONTACT INFO SECTION - Full width %>
-  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-    <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
-      <h3 class="text-lg font-bold text-gray-900 flex items-center">
-        <i class="fa-solid fa-address-card text-green-600 mr-2"></i>
-        Thông tin liên hệ
-      </h3>
-    </div>
-    
-    <div class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <%= f.label :phone, "Số điện thoại", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fa-solid fa-phone text-gray-400"></i>
-            </div>
-            <%= f.text_field :phone, 
-                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors", 
-                placeholder: "0912 345 678" %>
-          </div>
-        </div>
-
-        <div>
-          <%= f.label :region_id, "Vùng / Miền", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fa-solid fa-map-marker-alt text-gray-400"></i>
-            </div>
-            <%= f.select :region_id, 
-                Region.for_select, 
-                { include_blank: "-- Chọn vùng/miền --", selected: user.region_id },
-                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none bg-white transition-colors cursor-pointer appearance-none" %>
-            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <i class="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
-            </div>
-          </div>
-        </div>
-
-        <div class="md:col-span-2">
-          <%= f.label :address, "Địa chỉ chi tiết", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <div class="relative">
-            <div class="absolute top-3 left-3 pointer-events-none">
-              <i class="fa-solid fa-location-dot text-gray-400"></i>
-            </div>
-            <%= f.text_area :address, 
-                rows: 2, 
-                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none resize-none transition-colors", 
-                placeholder: "Số nhà, đường, quận/huyện, tỉnh/thành phố" %>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <%# ACTION BUTTONS %>
-  <div class="flex items-center justify-center gap-4 pt-2">
-    <%= link_to users_path, class: "inline-flex items-center px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors" do %>
-      <i class="fa-solid fa-times mr-2"></i>
-      Hủy bỏ
-    <% end %>
-    <button type="submit" class="inline-flex items-center px-8 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 transition-all cursor-pointer">
-      <i class="fa-solid fa-save mr-2"></i>
-      <%= user.new_record? ? "Tạo nhân viên" : "Lưu thay đổi" %>
-    </button>
   </div>
 <% end %>

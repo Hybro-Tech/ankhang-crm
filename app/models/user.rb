@@ -88,6 +88,7 @@ class User < ApplicationRecord
 
   # TASK-062: Per-service-type pick limits
   has_many :user_service_type_limits, dependent: :destroy
+  accepts_nested_attributes_for :user_service_type_limits, allow_destroy: true, reject_if: :all_blank
 
   # TASK-PROFILE: Avatar attachment via Active Storage
   has_one_attached :avatar do |attachable|

@@ -2,9 +2,11 @@
 
 # TASK-017: Users CRUD controller
 # Manages employee accounts, roles assignment, and account status
+# TASK-070: Added per-user service type limit configuration (dynamic nested form)
 class UsersController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
+  before_action :load_service_types, only: %i[new edit create update]
 
   def index
     @users = User.accessible_by(current_ability).includes(:roles, :teams)
@@ -26,8 +28,6 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-
-    # Set default password if not provided for new users (optional strategy, but for now we require it)
 
     if @user.save
       redirect_to users_path, notice: "Tạo nhân viên thành công."
@@ -61,9 +61,14 @@ class UsersController < ApplicationController
 
   private
 
+  def load_service_types
+    @service_types = ServiceType.active.ordered
+  end
+
   def user_params
     params.expect(user: [:name, :email, :username, :password, :password_confirmation, :status,
                          :phone, :region_id, :address,
-                         { role_ids: [], team_ids: [] }])
+                         { role_ids: [], team_ids: [],
+                           user_service_type_limits_attributes: %i[id service_type_id max_pick_per_day _destroy] }])
   end
 end
