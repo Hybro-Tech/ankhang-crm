@@ -30,8 +30,8 @@
               <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold"><%= @kpis[:appointments_today] %></span>
               <span class="text-gray-600">Hẹn hôm nay</span>
             </div>
-            <%# TASK-052: Pending Requests KPI for Team Leaders %>
-            <% if current_user.team_leader? && @kpis[:pending_requests].to_i > 0 %>
+            <%# TASK-052: Pending Requests KPI for Team Leaders - always show for team leaders %>
+            <% if current_user.team_leader? %>
               <div class="flex items-center space-x-2 text-sm">
                 <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 font-bold"><%= @kpis[:pending_requests] %></span>
                 <span class="text-gray-600">Chờ duyệt</span>
@@ -89,8 +89,8 @@
                 </span>
               </span>
             </button>
-            <%# TASK-052: Pending Requests Tab for Team Leaders %>
-            <% if current_user.team_leader? && @kpis[:pending_requests].to_i > 0 %>
+            <%# TASK-052: Pending Requests Tab for Team Leaders - always show for team leaders %>
+            <% if current_user.team_leader? %>
               <button type="button"
                       class="workspace-tab group relative min-w-0 flex-1 overflow-hidden py-4 px-6 text-sm font-medium text-center border-b-2 focus:z-10 transition-colors"
                       data-workspace-tabs-target="tab"
