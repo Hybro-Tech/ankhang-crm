@@ -75,6 +75,9 @@ class Contact < ApplicationRecord
   belongs_to :assigned_user, class_name: "User", optional: true, inverse_of: :assigned_contacts
   belongs_to :creator, class_name: "User", foreign_key: :created_by_id, inverse_of: :created_contacts
 
+  # TASK-063: Province association for regional routing
+  belongs_to :province, optional: true
+
   # TASK-023: Care History / Interactions
   has_many :interactions, dependent: :destroy
 

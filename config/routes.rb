@@ -36,6 +36,13 @@ Rails.application.routes.draw do
       patch :toggle_active
     end
   end
+
+  # TASK-061: Province management for Admin
+  resources :provinces do
+    member do
+      patch :toggle_active
+    end
+  end
   # TASK-052: Teams namespace for Lead approval workflow (MUST be before resources :teams)
   namespace :teams do
     resources :reassign_requests, only: [:index] do

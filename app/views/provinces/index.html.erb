@@ -1,0 +1,127 @@
+<%# TASK-068: Province management index page %>
+<div class="flex flex-col gap-6">
+  <%# Header %>
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900"><%= t("provinces.title") %></h1>
+      <p class="text-sm text-gray-500 mt-1">Quản lý danh sách 63 tỉnh thành Việt Nam</p>
+    </div>
+    <%= link_to new_province_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-brand-blue hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue" do %>
+      <i class="fa-solid fa-plus mr-2"></i>
+      <%= t("provinces.new") %>
+    <% end %>
+  </div>
+
+  <%# Filter tabs %>
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div class="flex gap-2">
+      <%= link_to provinces_path, class: "px-4 py-2 rounded-lg text-sm font-medium #{params[:active].blank? ? 'bg-brand-blue text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" do %>
+        Tất cả (<%= Province.count %>)
+      <% end %>
+      <%= link_to provinces_path(active: true), class: "px-4 py-2 rounded-lg text-sm font-medium #{params[:active] == 'true' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" do %>
+        Hoạt động (<%= Province.active.count %>)
+      <% end %>
+      <%= link_to provinces_path(active: false), class: "px-4 py-2 rounded-lg text-sm font-medium #{params[:active] == 'false' ? 'bg-gray-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" do %>
+        Ngừng hoạt động (<%= Province.where(active: false).count %>)
+      <% end %>
+    </div>
+  </div>
+
+  <%# Provinces Table %>
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            #
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Tên tỉnh/thành
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Mã
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Vùng miền
+          </th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Trạng thái
+          </th>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Hành động
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @provinces.each do |province| %>
+          <tr class="<%= province.active? ? '' : 'bg-gray-50 opacity-60' %>">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <%= province.position %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900"><%= province.name %></div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-2 inline-flex text-xs leading-5 font-mono rounded bg-gray-100 text-gray-800">
+                <%= province.code %>
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <% province.regions.each do |region| %>
+                <span class="px-2 py-1 mr-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                  <%= region.name %>
+                </span>
+              <% end %>
+              <% if province.regions.empty? %>
+                <span class="text-gray-400 italic">Chưa gán</span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <% if province.active? %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Hoạt động
+                </span>
+              <% else %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                  Ngừng
+                </span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <div class="flex justify-end gap-2">
+                <%= link_to edit_province_path(province), class: "text-brand-blue hover:text-blue-900" do %>
+                  <i class="fa-solid fa-pen-to-square"></i>
+                <% end %>
+                
+                <%= button_to toggle_active_province_path(province), method: :patch, 
+                              class: "text-yellow-600 hover:text-yellow-800",
+                              form: { data: { turbo_confirm: province.active? ? "Ngừng hoạt động tỉnh/thành này?" : "Kích hoạt lại tỉnh/thành này?" } } do %>
+                  <i class="fa-solid fa-<%= province.active? ? 'toggle-on' : 'toggle-off' %>"></i>
+                <% end %>
+                
+                <% unless province.contacts.exists? %>
+                  <%= button_to province_path(province), method: :delete,
+                                class: "text-red-600 hover:text-red-900",
+                                form: { data: { turbo_confirm: t("confirm_dialog.delete_message") } } do %>
+                    <i class="fa-solid fa-trash"></i>
+                  <% end %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @provinces.empty? %>
+          <tr>
+            <td colspan="6" class="px-6 py-10 text-center text-gray-500">
+              <i class="fa-solid fa-map text-4xl text-gray-300 mb-3"></i>
+              <p>Không tìm thấy tỉnh/thành nào.</p>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <%# Pagination %>
+    <%= render "shared/pagination", collection: @provinces, entry_name: "tỉnh/thành" %>
+  </div>
+</div>

@@ -86,6 +86,9 @@ class User < ApplicationRecord
   # TASK-REGION: User's region/area for business purposes
   belongs_to :region, optional: true
 
+  # TASK-062: Per-service-type pick limits
+  has_many :user_service_type_limits, dependent: :destroy
+
   # TASK-PROFILE: Avatar attachment via Active Storage
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_fill: [100, 100]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_04_084700) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -103,13 +103,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
     t.bigint "source_id"
     t.json "visible_to_user_ids"
     t.datetime "last_expanded_at"
+    t.bigint "province_id"
+    t.string "address"
+    t.datetime "last_interaction_at"
     t.index ["assigned_user_id", "status"], name: "index_contacts_on_assignee_and_status"
     t.index ["assigned_user_id"], name: "index_contacts_on_assigned_user_id"
     t.index ["code"], name: "index_contacts_on_code", unique: true
     t.index ["created_by_id"], name: "index_contacts_on_created_by_id"
     t.index ["last_expanded_at"], name: "index_contacts_on_last_expanded_at"
+    t.index ["last_interaction_at"], name: "index_contacts_on_last_interaction_at"
     t.index ["next_appointment"], name: "index_contacts_on_next_appointment"
     t.index ["phone"], name: "index_contacts_on_phone", unique: true
+    t.index ["province_id"], name: "index_contacts_on_province_id"
     t.index ["service_type_id"], name: "index_contacts_on_service_type_id"
     t.index ["source_id"], name: "index_contacts_on_source_id"
     t.index ["status", "team_id"], name: "index_contacts_on_status_and_team"
@@ -180,6 +185,29 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
     t.string "name"
     t.string "category"
     t.index ["code"], name: "index_permissions_on_code", unique: true
+  end
+
+  create_table "province_regions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "province_id", null: false
+    t.bigint "region_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["province_id", "region_id"], name: "index_province_regions_on_province_id_and_region_id", unique: true
+    t.index ["province_id"], name: "index_province_regions_on_province_id"
+    t.index ["region_id"], name: "index_province_regions_on_region_id"
+  end
+
+  create_table "provinces", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.string "code", limit: 20, null: false
+    t.integer "position", default: 0
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_provinces_on_active"
+    t.index ["code"], name: "index_provinces_on_code", unique: true
+    t.index ["name"], name: "index_provinces_on_name", unique: true
+    t.index ["position"], name: "index_provinces_on_position"
   end
 
   create_table "push_subscriptions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -277,10 +305,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
     t.integer "position", default: 0, null: false, comment: "For ordering in dropdowns"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "max_pick_per_day", default: 20, null: false
-    t.integer "pick_cooldown_minutes", default: 5, null: false
-    t.integer "visibility_expand_minutes", default: 2, null: false
-    t.boolean "use_smart_routing", default: true, null: false
     t.index ["active"], name: "index_service_types_on_active"
     t.index ["name"], name: "index_service_types_on_name", unique: true
     t.index ["team_id"], name: "index_service_types_on_team_id"
@@ -537,6 +561,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
     t.index ["user_id"], name: "index_user_roles_on_user_id"
   end
 
+  create_table "user_service_type_limits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "service_type_id", null: false
+    t.integer "max_pick_per_day", default: 10, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service_type_id"], name: "index_user_service_type_limits_on_service_type_id"
+    t.index ["user_id", "service_type_id"], name: "idx_user_service_type_limits_unique", unique: true
+    t.index ["user_id"], name: "index_user_service_type_limits_on_user_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -569,6 +604,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "activity_logs", "users"
+  add_foreign_key "contacts", "provinces"
   add_foreign_key "contacts", "service_types"
   add_foreign_key "contacts", "sources"
   add_foreign_key "contacts", "teams", on_delete: :nullify
@@ -577,6 +613,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
   add_foreign_key "interactions", "contacts"
   add_foreign_key "interactions", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "province_regions", "provinces"
+  add_foreign_key "province_regions", "regions"
   add_foreign_key "push_subscriptions", "users"
   add_foreign_key "reassign_requests", "contacts"
   add_foreign_key "reassign_requests", "users", column: "approved_by_id"
@@ -600,4 +638,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_080226) do
   add_foreign_key "user_permissions", "users", column: "created_by_id"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
+  add_foreign_key "user_service_type_limits", "service_types"
+  add_foreign_key "user_service_type_limits", "users"
 end

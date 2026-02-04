@@ -147,6 +147,22 @@ vi:
       active: "Hoạt động"
       users_count: "Số nhân viên"
       teams_count: "Số team"
+  # TASK-061: Province management translations
+  provinces:
+    title: "Quản lý Tỉnh/Thành"
+    new: "Thêm tỉnh/thành"
+    edit: "Sửa tỉnh/thành"
+    created: "Tỉnh/thành đã được tạo thành công."
+    updated: "Tỉnh/thành đã được cập nhật."
+    deleted: "Tỉnh/thành đã được xóa."
+    cannot_delete: "Không thể xóa tỉnh/thành đang có khách hàng."
+    status_updated: "Trạng thái tỉnh/thành đã được cập nhật."
+    fields:
+      name: "Tên tỉnh/thành"
+      code: "Mã"
+      position: "Thứ tự"
+      active: "Hoạt động"
+      regions: "Vùng miền"
   profiles:
     title: "Hồ sơ cá nhân"
     account_settings: "Cài đặt tài khoản"

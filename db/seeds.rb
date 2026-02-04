@@ -183,6 +183,12 @@ teams_data.each do |t|
   end
 end
 
+# TASK-061: Seed Regions and Provinces
+Rails.logger.debug "➡️ Seeding Regions..."
+Region.seed_defaults!
+Rails.logger.debug "➡️ Seeding Provinces (63 provinces)..."
+load Rails.root.join("db/seeds/provinces.rb")
+
 # 6. Create Service Types (TASK-019 prerequisite)
 Rails.logger.debug "➡️ Creating Service Types (Loại nhu cầu)..."
 teams_lookup = Team.all.index_by(&:name)

@@ -32,6 +32,10 @@ class Region < ApplicationRecord
   has_many :users, dependent: :nullify
   has_many :teams, foreign_key: :region, primary_key: :name, dependent: :nullify, inverse_of: false
 
+  # TASK-061: Province associations (many-to-many)
+  has_many :province_regions, dependent: :destroy
+  has_many :provinces, through: :province_regions
+
   # Validations
   validates :name, presence: true, uniqueness: true, length: { maximum: 100 }
   validates :code, presence: true, uniqueness: true, length: { maximum: 20 },

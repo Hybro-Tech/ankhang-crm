@@ -39,7 +39,8 @@ class SmartRoutingExpandJob < ApplicationJob
   end
 
   def schedule_next_expansion(contact, user_id)
-    interval = contact.service_type&.visibility_expand_minutes || 2
+    # TASK-060: Read from ENV instead of service_type column
+    interval = ENV.fetch("VISIBILITY_EXPAND_MINUTES", 2).to_i
     self.class.set(wait: interval.minutes).perform_later(contact.id, user_id)
     Rails.logger.info "[SmartRouting] Scheduled next expansion for contact #{contact.id} in #{interval} minutes"
   end

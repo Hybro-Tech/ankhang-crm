@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 # TASK-053: Smart Routing Service
+# TASK-060: Updated to use ENV variables instead of ServiceType columns
 # Handles progressive visibility for new contacts during working hours
 # rubocop:disable Metrics/ClassLength
 class SmartRoutingService
   include NotificationBadgeHelper
+
+  # Default visibility expand interval in minutes (from ENV or fallback)
+  DEFAULT_VISIBILITY_EXPAND_MINUTES = 2
 
   # Initialize visibility when contact is created
   # @param contact [Contact] The newly created contact
@@ -15,14 +19,16 @@ class SmartRoutingService
 
   # Expand visibility for contacts that have been waiting
   # Called by background job
-  # Now reads visibility_expand_minutes from each contact's service_type
+  # TASK-060: Now reads VISIBILITY_EXPAND_MINUTES from ENV
   def self.expand_all_pending
+    interval_minutes = ENV.fetch("VISIBILITY_EXPAND_MINUTES", DEFAULT_VISIBILITY_EXPAND_MINUTES).to_i
+
     Contact.status_new_contact
            .where(assigned_user_id: nil)
            .where.not(visible_to_user_ids: nil)
            .includes(:service_type)
            .find_each do |contact|
-             interval = (contact.service_type&.visibility_expand_minutes || 2).minutes.ago
+             interval = interval_minutes.minutes.ago
              next if contact.last_expanded_at && contact.last_expanded_at > interval
 
              new(contact).expand_visibility
@@ -51,8 +57,8 @@ class SmartRoutingService
   # Set initial visibility when contact is created
   # rubocop:disable Naming/PredicateMethod
   def apply_initial_visibility
-    # Check if service type has smart routing disabled → Pool mode → notify all sales
-    unless use_smart_routing?
+    # Outside working hours → Pool mode → notify all sales
+    unless should_apply_routing?
       notify_all_sales_in_team
       return false
     end
@@ -137,9 +143,10 @@ class SmartRoutingService
   end
 
   # TASK-054: Schedule the first visibility expansion job
+  # TASK-060: Uses ENV for interval instead of service_type column
   # Passes current user ID for activity logging context
   def schedule_expansion_job
-    interval = @contact.service_type&.visibility_expand_minutes || 2
+    interval = ENV.fetch("VISIBILITY_EXPAND_MINUTES", DEFAULT_VISIBILITY_EXPAND_MINUTES).to_i
     user_id = Current.user&.id
     SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(@contact.id, user_id)
     Rails.logger.info "[SmartRouting] Scheduled first expansion for contact #{@contact.id} in #{interval} minutes"
@@ -173,9 +180,10 @@ class SmartRoutingService
         .first
   end
 
-  # Check if service type has smart routing enabled
+  # TASK-060: Smart routing is always enabled (3-layer system)
+  # Kept for backward compatibility - always returns true
   def use_smart_routing?
-    @contact.service_type&.use_smart_routing != false
+    true
   end
 
   # TASK-057: Send notification to user when contact becomes visible to them

@@ -241,7 +241,7 @@ class ContactsController < ApplicationController
   def contact_params
     params.expect(
       contact: %i[name phone email zalo_link zalo_id zalo_qr
-                  service_type_id source_id status
+                  service_type_id source_id status province_id address
                   team_id assigned_user_id next_appointment notes]
     )
   end
