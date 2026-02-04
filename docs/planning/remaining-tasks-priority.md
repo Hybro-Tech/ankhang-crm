@@ -10,9 +10,9 @@
 | # | Task | Mô tả | SP | Status |
 |---|------|-------|-----|--------|
 | 1 | TASK-060 | Remove Pick Rules từ ServiceType | 2 | [x] |
-| 2 | TASK-064 | Simplify Contact Status (10→4) | 5 | [ ] |
-| 3 | TASK-065 | ENV PICK_COOLDOWN_MINUTES | 1 | [ ] |
-| 4 | TASK-067 | Update PickEligibilityService | 3 | [ ] |
+| 2 | TASK-064 | Simplify Contact Status (10→4) | 5 | [x] |
+| 3 | TASK-065 | ENV PICK_COOLDOWN_MINUTES | 1 | [x] |
+| 4 | TASK-067 | Update PickEligibilityService | 3 | [x] |
 
 ---
 
@@ -20,11 +20,11 @@
 
 | # | Task | Mô tả | SP | Status |
 |---|------|-------|-----|--------|
-| 5 | TASK-061 | Provinces & ProvinceRegions Tables | 3 | [ ] |
-| 6 | TASK-063 | Add Province to Contact | 2 | [ ] |
-| 7 | TASK-068 | Province CRUD Admin | 3 | [ ] |
-| 8 | TASK-069 | Region → Provinces Selection | 3 | [ ] |
-| 9 | TASK-071 | Call Center Province Dropdown | 2 | [ ] |
+| 5 | TASK-061 | Provinces & ProvinceRegions Tables | 3 | [x] |
+| 6 | TASK-063 | Add Province to Contact | 2 | [x] |
+| 7 | TASK-068 | Province CRUD Admin | 3 | [x] |
+| 8 | TASK-069 | Region → Provinces Selection | 3 | [x] |
+| 9 | TASK-071 | Call Center Province Dropdown | 2 | [x] |
 
 ---
 

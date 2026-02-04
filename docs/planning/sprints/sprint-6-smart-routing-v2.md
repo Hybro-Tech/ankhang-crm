@@ -37,7 +37,7 @@ Xóa các columns không còn sử dụng trong ServiceType.
 | **Epic**         | Database   |
 | **Story Points** | 3          |
 | **Priority**     | 🔴 Critical |
-| **Status**       | Backlog    |
+| **Status**       | ✅ Done    |
 
 **Description:**
 Tạo bảng Province (63 tỉnh) và ProvinceRegion (join table many-to-many).
@@ -63,7 +63,7 @@ Tạo bảng Province (63 tỉnh) và ProvinceRegion (join table many-to-many).
 | **Epic**         | Database   |
 | **Story Points** | 3          |
 | **Priority**     | 🔴 Critical |
-| **Status**       | Backlog    |
+| **Status**       | ✅ Done    |
 
 **Description:**
 Bảng mới lưu giới hạn pick theo từng nhân viên + loại nhu cầu.
@@ -88,7 +88,7 @@ Bảng mới lưu giới hạn pick theo từng nhân viên + loại nhu cầu.
 | **Epic**         | Database   |
 | **Story Points** | 2          |
 | **Priority**     | 🔴 Critical |
-| **Status**       | Backlog    |
+| **Status**       | ✅ Done    |
 
 **Description:**
 Thêm province_id và address vào Contact.
@@ -113,7 +113,7 @@ Thêm province_id và address vào Contact.
 | **Epic**         | Database   |
 | **Story Points** | 5          |
 | **Priority**     | 🔴 Critical |
-| **Status**       | Backlog    |
+| **Status**       | ✅ Done    |
 
 **Description:**
 Đơn giản hóa enum status từ 10 xuống 4 trạng thái.
@@ -146,7 +146,7 @@ Thêm province_id và address vào Contact.
 | **Epic**         | Smart Routing |
 | **Story Points** | 1          |
 | **Priority**     | 🟡 High     |
-| **Status**       | Backlog    |
+| **Status**       | ✅ Done     |
 
 **Description:**
 Fix cứng cooldown = 5 phút qua ENV.
@@ -201,7 +201,7 @@ Viết lại SmartRoutingService theo cơ chế 3 lớp mới.
 | **Epic**         | Smart Routing |
 | **Story Points** | 3          |
 | **Priority**     | 🔴 Critical |
-| **Status**       | Backlog    |
+| **Status**       | ✅ Done    |
 
 **Description:**
 Cập nhật service kiểm tra điều kiện pick theo logic mới.
