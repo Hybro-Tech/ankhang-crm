@@ -169,7 +169,7 @@ Fix cứng cooldown = 5 phút qua ENV.
 | **Epic**         | Smart Routing |
 | **Story Points** | 8          |
 | **Priority**     | 🔴 Critical |
-| **Status**       | Backlog    |
+| **Status**       | ✅ Done    |
 
 **Description:**
 Viết lại SmartRoutingService theo cơ chế 3 lớp mới.

@@ -32,7 +32,7 @@
 
 | # | Task | Mô tả | SP | Status |
 |---|------|-------|-----|--------|
-| 10 | TASK-066 | Refactor SmartRouting (3 Layers) | 8 | [ ] |
+| 10 | TASK-066 | Refactor SmartRouting (3 Layers) | 8 | [x] |
 
 ---
 
