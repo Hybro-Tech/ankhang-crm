@@ -51,8 +51,8 @@ class SmartRoutingService
     @contact = contact
   end
 
-  # Layer 1: Set initial visibility to random Sale in Team
-  # rubocop:disable Metrics/MethodLength, Naming/PredicateMethod
+  # Layer 1: Set initial visibility to random Sale with UserServiceTypeLimit for this service_type
+  # rubocop:disable Naming/PredicateMethod
   def apply_initial_visibility
     # Outside working hours → Skip to National Pool (Layer 3)
     unless should_apply_routing?
@@ -60,17 +60,10 @@ class SmartRoutingService
       return false
     end
 
-    team = @contact.service_type&.team
-    unless team
-      # No team configured → Skip to Regional Pool (Layer 2)
-      switch_to_regional_pool
-      return false
-    end
-
-    # Get first random sale from team
-    first_sale = random_sale_from_team(team)
+    # Get random sale who is configured for this service_type
+    first_sale = random_sale_for_service_type
     unless first_sale
-      # No sales in team → Skip to Regional Pool
+      # No sales configured for this service_type → Skip to Regional Pool (Layer 2)
       switch_to_regional_pool
       return false
     end
@@ -88,10 +81,11 @@ class SmartRoutingService
     # Schedule Layer 2 expansion
     schedule_layer2_expansion
 
-    Rails.logger.info "[SmartRouting] Layer 1: Contact #{@contact.id} → User #{first_sale.id} (Team: #{team.name})"
+    st_name = @contact.service_type&.name || "Unknown"
+    Rails.logger.info "[SmartRouting] Layer 1: Contact #{@contact.id} → User #{first_sale.id} (#{st_name})"
     true
   end
-  # rubocop:enable Metrics/MethodLength, Naming/PredicateMethod
+  # rubocop:enable Naming/PredicateMethod
 
   # Expand visibility based on current layer
   def expand_visibility
@@ -210,13 +204,18 @@ class SmartRoutingService
       @contact.assigned_user_id.nil?
   end
 
-  def random_sale_from_team(team)
+  # Find random active Sale who has UserServiceTypeLimit for this contact's service_type
+  def random_sale_for_service_type
+    service_type_id = @contact.service_type_id
+    return nil unless service_type_id
+
     sale_role = Role.find_by(code: Role::SALE)
     return nil unless sale_role
 
-    team.users
-        .joins(:user_roles)
+    # Find users who have a limit configured for this service type
+    User.joins(:user_roles, :user_service_type_limits)
         .where(user_roles: { role_id: sale_role.id })
+        .where(user_service_type_limits: { service_type_id: service_type_id })
         .where(status: :active)
         .order("RAND()")
         .first

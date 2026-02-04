@@ -50,24 +50,6 @@
                 rows: 3,
                 class: "block w-full border border-gray-300 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors resize-none",
                 placeholder: "Mô tả chi tiết về loại nhu cầu này..." %>
-          </div>
-        </div>
-
-        <%# TASK-066: Team mặc định cho Smart Routing Layer 1 %>
-        <div>
-          <%= f.label :team_id, "Team phụ trách *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fa-solid fa-users text-gray-400"></i>
-            </div>
-            <%= f.collection_select :team_id, @teams, :id, :name,
-                { include_blank: "-- Chọn team --" },
-                { class: "block w-full border border-gray-300 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors appearance-none bg-white" } %>
-          </div>
-          <p class="mt-1.5 text-xs text-gray-500 flex items-center">
-            <i class="fa-solid fa-info-circle mr-1"></i>
-            Khách hàng có nhu cầu này sẽ ưu tiên phân phối cho Team được chọn
-          </p>
         </div>
 
         <%# Vị trí sắp xếp %>

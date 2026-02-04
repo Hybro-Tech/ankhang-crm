@@ -8,8 +8,7 @@ class ServiceTypesController < ApplicationController
   before_action :authorize_admin!
 
   def index
-    @service_types = ServiceType.includes(:team)
-                                .ordered
+    @service_types = ServiceType.ordered
                                 .page(params[:page])
                                 .per(params[:per_page] || 10)
   end
@@ -18,12 +17,9 @@ class ServiceTypesController < ApplicationController
 
   def new
     @service_type = ServiceType.new
-    load_form_data
   end
 
-  def edit
-    load_form_data
-  end
+  def edit; end
 
   def create
     @service_type = ServiceType.new(service_type_params)
@@ -31,7 +27,6 @@ class ServiceTypesController < ApplicationController
     if @service_type.save
       redirect_to service_types_path, notice: t(".success")
     else
-      load_form_data
       render :new, status: :unprocessable_content
     end
   end
@@ -40,7 +35,6 @@ class ServiceTypesController < ApplicationController
     if @service_type.update(service_type_params)
       redirect_to service_types_path, notice: t(".success")
     else
-      load_form_data
       render :edit, status: :unprocessable_content
     end
   end
@@ -65,11 +59,7 @@ class ServiceTypesController < ApplicationController
   end
 
   def service_type_params
-    # TASK-066: Re-added team_id for 3-layer routing
-    params.expect(service_type: %i[name description team_id active position])
-  end
-
-  def load_form_data
-    @teams = Team.order(:name)
+    # TASK-066: Removed team_id - Layer 1 uses UserServiceTypeLimit
+    params.expect(service_type: %i[name description active position])
   end
 end
