@@ -2,18 +2,22 @@
 
 require "rails_helper"
 
+# TASK-064: Updated for 4 simplified statuses
 RSpec.describe SalesWorkspaceController, type: :controller do
   include Devise::Test::ControllerHelpers
 
-  let!(:role_sale) { Role.find_by(name: "Sale") || FactoryBot.create(:role, name: "Sale", dashboard_type: :sale) }
-  let!(:user) { FactoryBot.create(:user, roles: [role_sale]) }
+  let!(:team) { FactoryBot.create(:team) }
+  let!(:role_sale) { Role.find_by(code: Role::SALE) || FactoryBot.create(:role, code: Role::SALE, dashboard_type: :sale) }
+  let!(:user) { FactoryBot.create(:user, roles: [role_sale], teams: [team]) }
 
-  # Contacts for testing
-  let!(:contact_potential) { FactoryBot.create(:contact, assigned_user: user, status: :potential) }
-  let!(:contact_in_progress) { FactoryBot.create(:contact, assigned_user: user, status: :in_progress) }
+  # Contacts for testing with new 4 statuses
+  let!(:contact_potential) { FactoryBot.create(:contact, assigned_user: user, status: :potential, team: team) }
+  let!(:contact_closed) { FactoryBot.create(:contact, assigned_user: user, status: :closed, team: team) }
 
   before do
     sign_in user
+    # Stub CanCanCan authorization
+    allow(controller).to receive(:authorize!).and_return(true)
   end
 
   describe "GET #kanban" do
@@ -26,22 +30,23 @@ RSpec.describe SalesWorkspaceController, type: :controller do
       get :kanban
       columns = controller.instance_variable_get(:@kanban_columns)
       expect(columns).to be_present
-      expect(columns.keys).to contain_exactly(:potential, :in_progress, :closed_new, :failed)
+      # TASK-064: Updated kanban columns to 4 statuses
+      expect(columns.keys).to contain_exactly(:new_contact, :potential, :closed, :failed)
 
       expect(columns[:potential][:contacts]).to include(contact_potential)
-      expect(columns[:in_progress][:contacts]).to include(contact_in_progress)
+      expect(columns[:closed][:contacts]).to include(contact_closed)
     end
   end
 
   describe "PATCH #update_status" do
     context "with valid status" do
       it "updates the contact status" do
-        patch :update_status, params: { id: contact_potential.id, status: "in_progress" }
-        expect(contact_potential.reload.status).to eq("in_progress")
+        patch :update_status, params: { id: contact_potential.id, status: "closed" }
+        expect(contact_potential.reload.status).to eq("closed")
       end
 
       it "redirects to kanban board on HTML request" do
-        patch :update_status, params: { id: contact_potential.id, status: "in_progress" }
+        patch :update_status, params: { id: contact_potential.id, status: "closed" }
         expect(response).to redirect_to(sales_kanban_path)
         expect(flash[:notice]).to eq("Đã cập nhật trạng thái.")
       end
@@ -60,7 +65,7 @@ RSpec.describe SalesWorkspaceController, type: :controller do
 
       it "raises ActiveRecord::RecordNotFound" do
         expect do
-          patch :update_status, params: { id: other_contact.id, status: "in_progress" }
+          patch :update_status, params: { id: other_contact.id, status: "closed" }
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end

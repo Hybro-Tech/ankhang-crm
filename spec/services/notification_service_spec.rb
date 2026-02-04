@@ -6,6 +6,11 @@ RSpec.describe NotificationService do
   let(:user) { create(:user) }
   let(:contact) { create(:contact) }
 
+  # Skip smart routing initialization which creates additional notifications
+  before do
+    allow_any_instance_of(Contact).to receive(:initialize_smart_routing_and_broadcast)
+  end
+
   describe ".notify" do
     it "creates a notification for user" do
       expect do

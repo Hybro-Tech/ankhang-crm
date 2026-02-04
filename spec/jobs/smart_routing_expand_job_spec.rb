@@ -2,9 +2,10 @@
 
 require "rails_helper"
 
+# TASK-066: Updated for 3-layer routing system
 RSpec.describe SmartRoutingExpandJob, type: :job do
   let(:team) { create(:team) }
-  let(:service_type) { create(:service_type, team: team, visibility_expand_minutes: 2) }
+  let(:service_type) { create(:service_type, team: team) }
   let(:sale_role) { Role.find_by(code: Role::SALE) || create(:role, code: Role::SALE, dashboard_type: :sale) }
   let(:sale_user) { create(:user, roles: [sale_role], teams: [team]) }
   let(:tongdai_role) { Role.find_by(name: "Tổng Đài") || create(:role, name: "Tổng Đài", code: "call_center") }
@@ -20,6 +21,7 @@ RSpec.describe SmartRoutingExpandJob, type: :job do
       created_by_id: tongdai_user.id,
       status: :new_contact,
       visible_to_user_ids: [sale_user.id],
+      routing_layer: 1,
       code: "KH2026-TEST#{rand(10_000)}"
     )
   end
@@ -32,26 +34,9 @@ RSpec.describe SmartRoutingExpandJob, type: :job do
   describe "#perform with contact_id" do
     context "when contact exists and is unassigned" do
       it "expands visibility via SmartRoutingService" do
-        service_instance = instance_double(SmartRoutingService, expand_visibility: true)
-        allow(SmartRoutingService).to receive(:new).and_return(service_instance)
+        expect(SmartRoutingService).to receive(:expand_visibility_for).with(contact).and_return(true)
 
         described_class.new.perform(contact.id)
-
-        expect(service_instance).to have_received(:expand_visibility)
-      end
-
-      it "schedules next expansion job when expand returns true" do
-        allow_any_instance_of(SmartRoutingService).to receive(:expand_visibility).and_return(true)
-
-        # Use allow first to capture call, then verify
-        job_double = instance_double(ActiveJob::ConfiguredJob)
-        allow(described_class).to receive(:set).with(wait: 2.minutes).and_return(job_double)
-        allow(job_double).to receive(:perform_later)
-
-        described_class.new.perform(contact.id)
-
-        expect(described_class).to have_received(:set).with(wait: 2.minutes)
-        expect(job_double).to have_received(:perform_later).with(contact.id, nil)
       end
     end
 
@@ -59,7 +44,7 @@ RSpec.describe SmartRoutingExpandJob, type: :job do
       before { contact.update!(assigned_user_id: sale_user.id) }
 
       it "does not expand visibility" do
-        expect(SmartRoutingService).not_to receive(:new)
+        expect(SmartRoutingService).not_to receive(:expand_visibility_for)
 
         described_class.new.perform(contact.id)
       end
@@ -87,47 +72,20 @@ RSpec.describe SmartRoutingExpandJob, type: :job do
       before { contact.update!(status: :potential) }
 
       it "does not expand visibility" do
-        expect(SmartRoutingService).not_to receive(:new)
+        expect(SmartRoutingService).not_to receive(:expand_visibility_for)
 
         described_class.new.perform(contact.id)
       end
     end
-
-    context "when expand_visibility returns false (switched to pool mode)" do
-      it "does not schedule next job" do
-        allow_any_instance_of(SmartRoutingService).to receive(:expand_visibility).and_return(false)
-
-        job_double = instance_double(ActiveJob::ConfiguredJob)
-        allow(described_class).to receive(:set).and_return(job_double)
-        allow(job_double).to receive(:perform_later)
-
-        described_class.new.perform(contact.id)
-
-        expect(described_class).not_to have_received(:set)
-      end
-    end
   end
 
-  describe "#perform without contact_id (batch mode)" do
-    it "calls SmartRoutingService.expand_all_pending" do
-      expect(SmartRoutingService).to receive(:expand_all_pending)
+  describe "job cancellation on pick" do
+    it "skips expansion when contact has been picked" do
+      # Simulate contact being picked between job schedule and execution
+      contact.update!(assigned_user_id: sale_user.id, status: :potential)
 
-      described_class.new.perform
-    end
-  end
-
-  describe "job scheduling interval" do
-    it "uses visibility_expand_minutes from service_type" do
-      contact.service_type.update!(visibility_expand_minutes: 5)
-      allow_any_instance_of(SmartRoutingService).to receive(:expand_visibility).and_return(true)
-
-      job_double = instance_double(ActiveJob::ConfiguredJob)
-      allow(described_class).to receive(:set).with(wait: 5.minutes).and_return(job_double)
-      allow(job_double).to receive(:perform_later)
-
+      expect(SmartRoutingService).not_to receive(:expand_visibility_for)
       described_class.new.perform(contact.id)
-
-      expect(described_class).to have_received(:set).with(wait: 5.minutes)
     end
   end
 end

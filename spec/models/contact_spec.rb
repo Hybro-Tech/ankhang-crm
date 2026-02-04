@@ -78,9 +78,9 @@ RSpec.describe Contact, type: :model do
 
   describe "enums" do
     it "defines status enum" do
+      # TASK-064: Simplified to 4 statuses
       expect(described_class.statuses.keys).to match_array(
-        %w[new_contact potential in_progress potential_old closed_new
-           closed_old failed cskh_l1 cskh_l2 closed]
+        %w[new_contact potential failed closed]
       )
     end
   end
