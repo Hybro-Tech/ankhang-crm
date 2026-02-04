@@ -1,7 +1,7 @@
 <%# TASK-035: Real-time subscription for contacts - must be OUTSIDE turbo-frame to persist %>
 <%= turbo_stream_from "user_#{current_user.id}_contacts" %>
 
-<div class="min-h-screen bg-gray-50" 
+<div class="min-h-screen bg-white" 
      data-controller="workspace-tabs highlight"
      data-workspace-tabs-slide-over-outlet="#main-slide-over">
   <!-- Header -->

@@ -96,7 +96,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-50 font-sans text-gray-900">
+  <body class="bg-white font-sans text-gray-900">
     <% if user_signed_in? %>
       <%# Authenticated layout with sidebar %>
       <div class="flex h-screen overflow-hidden">
@@ -115,7 +115,7 @@
           <%= render "shared/confirm_dialog" %>
 
           <%# Scrollable Content %>
-          <div class="flex-1 overflow-auto bg-gray-50 p-6 lg:p-8">
+          <div class="flex-1 overflow-auto bg-white p-6 lg:p-8">
             <%= yield %>
           </div>
         </main>
