@@ -277,7 +277,7 @@ Thêm multi-select provinces vào form Region.
 | **Epic**         | Admin UI   |
 | **Story Points** | 5          |
 | **Priority**     | 🔴 Critical |
-| **Status**       | Backlog    |
+| **Status**       | ✅ Done    |
 
 **Description:**
 Thêm cài đặt giới hạn pick theo loại nhu cầu trong form Employee.

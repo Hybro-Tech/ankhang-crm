@@ -243,7 +243,7 @@ UI cho Admin cấu hình theo SRS v2 Section 6.2.
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Sale, tôi muốn thấy contact mới xuất hiện real-time mà không cần refresh.
@@ -252,10 +252,10 @@ UI cho Admin cấu hình theo SRS v2 Section 6.2.
 WebSocket với ActionCable + Turbo Streams.
 
 **Acceptance Criteria:**
-- [ ] ActionCable setup
-- [ ] Turbo Streams subscription cho contacts channel
-- [ ] Broadcast khi contact.created → List update
-- [ ] Broadcast khi contact.picked → Ẩn nút "Nhận khách" cho users khác
+- [x] ActionCable setup
+- [x] Turbo Streams subscription cho contacts channel
+- [x] Broadcast khi contact.created → List update
+- [x] Broadcast khi contact.picked → Ẩn nút "Nhận khách" cho users khác
 - [ ] Connection status indicator (online/offline)
 
 **Test Cases:**
@@ -272,18 +272,18 @@ WebSocket với ActionCable + Turbo Streams.
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Sale, tôi muốn nhận push notification khi có contact mới ngay cả khi không focus tab.
 
 **Acceptance Criteria:**
-- [ ] Service worker registration
-- [ ] Push subscription management (save to DB)
-- [ ] Permission request UI
-- [ ] Notification content: title, body, icon, click action
-- [ ] Sidekiq job cho batch sending
-- [ ] Click notification → Redirect to contact
+- [x] Service worker registration
+- [x] Push subscription management (save to DB)
+- [x] Permission request UI
+- [x] Notification content: title, body, icon, click action
+- [x] Sidekiq job cho batch sending
+- [x] Click notification → Redirect to contact
 
 **Test Cases:**
 - [ ] User grants permission → Subscription saved
@@ -299,7 +299,7 @@ WebSocket với ActionCable + Turbo Streams.
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là System, tôi muốn contacts tự động mở rộng visibility sau đúng X phút.
@@ -308,10 +308,10 @@ WebSocket với ActionCable + Turbo Streams.
 Setup Solid Queue (Rails 8 built-in) cho scheduled jobs với độ chính xác cao.
 
 **Acceptance Criteria:**
-- [ ] Setup Solid Queue với config polling 0.1s
-- [ ] Khi contact tạo → Schedule `SmartRoutingExpandJob` sau X phút
-- [ ] Job chạy → Expand visibility → Schedule tiếp nếu chưa pick
-- [ ] Job tự dừng khi contact đã được assigned
+- [x] Setup Solid Queue với config polling 0.1s
+- [x] Khi contact tạo → Schedule `SmartRoutingExpandJob` sau X phút
+- [x] Job chạy → Expand visibility → Schedule tiếp nếu chưa pick
+- [x] Job tự dừng khi contact đã được assigned
 
 **Technical Details:**
 ```ruby
@@ -345,7 +345,7 @@ end
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Sale, tôi muốn thấy contacts mới xuất hiện trên màn hình tức thì.
@@ -354,12 +354,12 @@ end
 Implement ActionCable + Turbo Streams cho real-time updates.
 
 **Acceptance Criteria:**
-- [ ] ActionCable setup với Redis adapter
-- [ ] User-specific channels: `user_#{id}_contacts`
-- [ ] Broadcast từ model callbacks hoặc jobs:
-  - [ ] Contact visible → Append to list
-  - [ ] Contact picked → Remove/update row
-  - [ ] Visibility expanded → Append for new users
+- [x] ActionCable setup với Redis adapter
+- [x] User-specific channels: `user_#{id}_contacts`
+- [x] Broadcast từ model callbacks hoặc jobs:
+  - [x] Contact visible → Append to list
+  - [x] Contact picked → Remove/update row
+  - [x] Visibility expanded → Append for new users
 - [ ] Connection status indicator (UI)
 
 **Technical Details:**
@@ -387,7 +387,7 @@ Turbo::StreamsChannel.broadcast_append_to(
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | Backlog |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Sale, tôi muốn nhận thông báo đẩy từ browser khi có khách mới.
@@ -396,12 +396,12 @@ Turbo::StreamsChannel.broadcast_append_to(
 Implement Web Push API với Service Worker.
 
 **Acceptance Criteria:**
-- [ ] `webpush` gem hoặc `web-push` gem
-- [ ] VAPID keys generation & storage
-- [ ] Service Worker: `serviceworker.js`
-- [ ] Permission request flow (UI)
-- [ ] PushSubscription model (user_id, endpoint, keys)
-- [ ] API: Subscribe/Unsubscribe endpoints
+- [x] `webpush` gem hoặc `web-push` gem
+- [x] VAPID keys generation & storage
+- [x] Service Worker: `serviceworker.js`
+- [x] Permission request flow (UI)
+- [x] PushSubscription model (user_id, endpoint, keys)
+- [x] API: Subscribe/Unsubscribe endpoints
 
 **Technical Details:**
 ```ruby
@@ -453,9 +453,9 @@ Webpush.payload_send(
 - [x] Sale có thể Pick contact với rules check ✅
 - [x] Contact status flow hoạt động đúng ✅
 - [x] Admin có thể cấu hình Smart Routing ✅
-- [ ] Scheduled jobs chính xác đến giây
-- [ ] Real-time updates hoạt động
-- [ ] Web Push notifications hoạt động
+- [x] Scheduled jobs chính xác đến giây ✅
+- [x] Real-time updates hoạt động ✅
+- [x] Web Push notifications hoạt động ✅
 
 ---
 

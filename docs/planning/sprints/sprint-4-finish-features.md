@@ -23,7 +23,7 @@
 | **Story Points** | 3 |
 | **Priority** | � High |
 | **Assignee** | |
-| **Status** | 🔵 Ready |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Admin, tôi muốn xem các KPI quan trọng ngay khi vào dashboard.
@@ -52,17 +52,17 @@
 | **Story Points** | 5 |
 | **Priority** | 🟡 High |
 | **Assignee** | |
-| **Status** | 🔵 Ready |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Admin, tôi muốn xem biểu đồ để hiểu xu hướng.
 
 **Acceptance Criteria:**
-- [ ] Pie/Donut chart: Contact status distribution
-- [ ] Line chart: Contacts trend (by day/week/month)
-- [ ] Bar chart: Sales comparison (số contact picked)
-- [ ] Chart library: Chartkick (đã cài) hoặc ApexCharts
-- [ ] Responsive trên mobile
+- [x] Pie/Donut chart: Contact status distribution
+- [x] Line chart: Contacts trend (by day/week/month)
+- [x] Bar chart: Sales comparison (số contact picked)
+- [x] Chart library: Chartkick (đã cài) hoặc ApexCharts
+- [x] Responsive trên mobile
 
 **Test Cases:**
 - [ ] Charts render correctly
@@ -80,16 +80,16 @@
 | **Story Points** | 2 |
 | **Priority** | � Medium |
 | **Assignee** | |
-| **Status** | 🔵 Ready |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Admin, tôi muốn xem ai là top performers.
 
 **Acceptance Criteria:**
-- [ ] Table: Name, Số KH picked, Số KH chốt, Tỷ lệ
-- [ ] Sortable columns
-- [ ] Top 10 mặc định
-- [ ] Filter by team, date range
+- [x] Table: Name, Số KH picked, Số KH chốt, Tỷ lệ
+- [x] Sortable columns
+- [x] Top 10 mặc định
+- [x] Filter by team, date range
 
 **Test Cases:**
 - [ ] Data accurate (không còn mock data)
@@ -108,17 +108,17 @@
 | **Story Points** | 5 |
 | **Priority** | � High |
 | **Assignee** | |
-| **Status** | 🔵 Ready |
+| **Status** | ✅ Done |
 
 **User Story:**
 > Là Admin, tôi muốn xem tất cả hoạt động trong hệ thống.
 
 **Acceptance Criteria:**
-- [ ] List logs với pagination
-- [ ] Filter by: user, action, date range, entity type
-- [ ] Search bằng keyword
-- [ ] Display: timestamp, user, action, entity, IP
-- [ ] Diff view (before/after JSON) cho update actions
+- [x] List logs với pagination
+- [x] Filter by: user, action, date range, entity type
+- [x] Search bằng keyword
+- [x] Display: timestamp, user, action, entity, IP
+- [x] Diff view (before/after JSON) cho update actions
 
 **Test Cases:**
 - [ ] All actions logged
