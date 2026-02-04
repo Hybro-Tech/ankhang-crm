@@ -28,10 +28,11 @@ class SalesWorkspaceController < ApplicationController
     render partial: "contact_list", locals: { contacts: @contacts, tab: :needs_update }, layout: false
   end
 
-  # GET /sales/workspace/tab_in_progress (Turbo Frame)
-  def tab_in_progress
-    load_tab_data(:in_progress)
-    render partial: "contact_list", locals: { contacts: @contacts, tab: :in_progress }, layout: false
+  # GET /sales/workspace/tab_potential (Turbo Frame)
+  # TASK-064: Renamed from tab_in_progress
+  def tab_potential
+    load_tab_data(:potential)
+    render partial: "contact_list", locals: { contacts: @contacts, tab: :potential }, layout: false
   end
 
   # GET /sales/workspace/tab_pending_requests (Turbo Frame) - TASK-052: For Team Leaders
@@ -100,10 +101,10 @@ class SalesWorkspaceController < ApplicationController
                               .needs_info_update
                               .order(updated_at: :asc)
                               .limit(20)
-                when :in_progress
-                  # Contacts being worked on by user
+                when :potential
+                  # TASK-064: Simplified - only potential status
                   current_user.assigned_contacts
-                              .where(status: %i[potential in_progress])
+                              .status_potential
                               .order(updated_at: :desc)
                               .limit(20)
                 else

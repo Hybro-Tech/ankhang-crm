@@ -31,8 +31,8 @@ module Dashboards
       current_contacts = Contact.where(created_at: current_range).count
       previous_contacts = Contact.where(created_at: previous_range).count
 
-      current_closed = Contact.status_closed_new.where(updated_at: current_range).count
-      previous_closed = Contact.status_closed_new.where(updated_at: previous_range).count
+      current_closed = Contact.status_closed.where(updated_at: current_range).count
+      previous_closed = Contact.status_closed.where(updated_at: previous_range).count
 
       @kpi = {
         total_contacts: Contact.count,
@@ -50,7 +50,7 @@ module Dashboards
       total = Contact.count
       return 0 if total.zero?
 
-      closed = Contact.status_closed_new.count
+      closed = Contact.status_closed.count
       ((closed.to_f / total) * 100).round(1)
     end
 
@@ -78,7 +78,7 @@ module Dashboards
       @chart_data = {
         labels: date_range.map { |d| d.strftime("%d/%m") },
         contacts: date_range.map { |date| Contact.where(created_at: date.all_day).count },
-        deals: date_range.map { |date| Contact.status_closed_new.where(updated_at: date.all_day).count }
+        deals: date_range.map { |date| Contact.status_closed.where(updated_at: date.all_day).count }
       }
     end
 

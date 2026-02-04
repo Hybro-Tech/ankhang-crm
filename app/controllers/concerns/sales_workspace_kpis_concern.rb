@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # TASK-052: Sales Workspace KPI calculations
+# TASK-064: Updated for simplified status (4 states)
 # Extracted from SalesWorkspaceController to reduce class length
 module SalesWorkspaceKpisConcern
   extend ActiveSupport::Concern
@@ -11,7 +12,7 @@ module SalesWorkspaceKpisConcern
     @kpis = {
       new_contacts: kpi_new_contacts,
       needs_update: kpi_needs_update,
-      in_progress: kpi_in_progress,
+      potential: kpi_potential,
       appointments_today: kpi_appointments_today
     }
 
@@ -27,8 +28,9 @@ module SalesWorkspaceKpisConcern
     current_user.assigned_contacts.needs_info_update.count
   end
 
-  def kpi_in_progress
-    current_user.assigned_contacts.where(status: %i[potential in_progress]).count
+  # TASK-064: Simplified - only potential status now
+  def kpi_potential
+    current_user.assigned_contacts.status_potential.count
   end
 
   def kpi_appointments_today

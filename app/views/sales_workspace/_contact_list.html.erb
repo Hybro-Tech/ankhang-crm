@@ -75,12 +75,12 @@
           <td class="px-3 py-4 whitespace-nowrap cursor-pointer"
               data-action="click->workspace-tabs#showPreview"
               data-preview-url="<%= sales_workspace_preview_path(contact) %>">
+            <%# TASK-064: Simplified to 4 statuses %>
             <% status_colors = {
               'new_contact' => 'bg-blue-50 text-blue-700 border-blue-100',
-              'potential' => 'bg-yellow-50 text-yellow-700 border-yellow-100',
-              'in_progress' => 'bg-green-50 text-green-700 border-green-100',
-              'closed_new' => 'bg-emerald-50 text-emerald-700 border-emerald-100',
-              'failed' => 'bg-red-50 text-red-700 border-red-100'
+              'potential' => 'bg-teal-50 text-teal-700 border-teal-100',
+              'failed' => 'bg-red-50 text-red-700 border-red-100',
+              'closed' => 'bg-green-50 text-green-700 border-green-100'
             } %>
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= status_colors[contact.status] || 'bg-gray-50 text-gray-700 border-gray-100' %>">
               <%= contact.status_label %>
@@ -142,7 +142,7 @@
                   Không có khách hàng mới
                 <% when :needs_update %>
                   Tuyệt vời! Bạn đã cập nhật hết thông tin
-                <% when :in_progress %>
+                <% when :potential %>
                   Chưa có khách hàng đang chăm sóc
                 <% end %>
               </p>
@@ -152,7 +152,7 @@
                   Hiện tại chưa có khách hàng mới trong khu vực của bạn.
                 <% when :needs_update %>
                   Hãy kiểm tra lại sau nhé.
-                <% when :in_progress %>
+                <% when :potential %>
                   Hãy nhận khách hàng mới để bắt đầu.
                 <% end %>
               </p>

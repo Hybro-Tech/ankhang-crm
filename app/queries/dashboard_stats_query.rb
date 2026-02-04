@@ -2,6 +2,7 @@
 
 # Query Object for dashboard statistics
 # Encapsulates complex dashboard queries with date range calculations
+# TASK-064: Updated to use simplified status (status_closed)
 # rubocop:disable Metrics/ClassLength
 class DashboardStatsQuery
   def initialize(period: "month")
@@ -47,7 +48,7 @@ class DashboardStatsQuery
           "users.id",
           "users.name",
           "COUNT(contacts.id) as picked_count",
-          "SUM(CASE WHEN contacts.status = 'closed_new' THEN 1 ELSE 0 END) as closed_count"
+          "SUM(CASE WHEN contacts.status = 3 THEN 1 ELSE 0 END) as closed_count"
         )
         .group("users.id, users.name")
         .order(closed_count: :desc, picked_count: :desc)
@@ -59,7 +60,7 @@ class DashboardStatsQuery
     {
       labels: date_range.map { |d| d.strftime("%d/%m") },
       contacts: date_range.map { |date| Contact.where(created_at: date.all_day).count },
-      deals: date_range.map { |date| Contact.status_closed_new.where(updated_at: date.all_day).count }
+      deals: date_range.map { |date| Contact.status_closed.where(updated_at: date.all_day).count }
     }
   end
 
@@ -78,11 +79,11 @@ class DashboardStatsQuery
   end
 
   def current_period_closed
-    Contact.status_closed_new.where(updated_at: current_range).count
+    Contact.status_closed.where(updated_at: current_range).count
   end
 
   def previous_period_closed
-    Contact.status_closed_new.where(updated_at: previous_range).count
+    Contact.status_closed.where(updated_at: previous_range).count
   end
 
   def contacts_trend
@@ -97,7 +98,7 @@ class DashboardStatsQuery
     total = Contact.count
     return 0 if total.zero?
 
-    closed = Contact.status_closed_new.count
+    closed = Contact.status_closed.count
     ((closed.to_f / total) * 100).round(1)
   end
 

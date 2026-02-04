@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # CSKH (Customer Service) Dashboard Controller
+# TASK-064: Updated for simplified status (4 states)
 # Handles dashboard for customer service staff managing recovery and after-sales
 module Dashboards
   class CskhController < BaseController
@@ -26,8 +27,9 @@ module Dashboards
                                .limit(Setting.dashboard_top_limit * 2)
     end
 
+    # TASK-064: Changed from status_closed to status_closed
     def load_after_sales_queue
-      @after_sales_queue = Contact.status_closed_new
+      @after_sales_queue = Contact.status_closed
                                   .includes(:assigned_user, :service_type)
                                   .order(updated_at: :desc)
                                   .limit(Setting.dashboard_top_limit * 2)
@@ -36,7 +38,7 @@ module Dashboards
     def load_stats
       @stats = {
         failed_today: Contact.status_failed.where(updated_at: Time.zone.today.all_day).count,
-        closed_today: Contact.status_closed_new.where(updated_at: Time.zone.today.all_day).count,
+        closed_today: Contact.status_closed.where(updated_at: Time.zone.today.all_day).count,
         pending_recovery: Contact.status_failed.count,
         avg_response_time: "15p" # Placeholder - Phase 2
       }

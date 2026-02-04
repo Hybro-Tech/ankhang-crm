@@ -144,7 +144,7 @@ Rails.application.routes.draw do
   get "sales/workspace", to: "sales_workspace#show", as: :sales_workspace
   get "sales/workspace/tab_new_contacts", to: "sales_workspace#tab_new_contacts"
   get "sales/workspace/tab_needs_update", to: "sales_workspace#tab_needs_update"
-  get "sales/workspace/tab_in_progress", to: "sales_workspace#tab_in_progress"
+  get "sales/workspace/tab_potential", to: "sales_workspace#tab_potential" # TASK-064: Renamed from tab_in_progress
   get "sales/workspace/tab_pending_requests", to: "sales_workspace#tab_pending_requests" # TASK-052
   get "sales/workspace/preview/:id", to: "sales_workspace#preview", as: :sales_workspace_preview
   get "sales/workspace/more_appointments", to: "sales_workspace#more_appointments", as: :sales_workspace_more_appointments

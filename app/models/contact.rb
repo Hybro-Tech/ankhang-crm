@@ -48,21 +48,16 @@ class Contact < ApplicationRecord
   loggable category: "contact", skip_fields: %w[visible_to_user_ids last_expanded_at]
 
   # ============================================================================
-  # Enums (SRS v2 Section 5.2 & 5.3)
+  # Enums (SRS v4 Section 5.2 & 5.3)
   # ============================================================================
 
-  # Trạng thái Contact (SRS v2 Section 5.3 - State Machine)
+  # TASK-064: Simplified Contact status (4 states only)
+  # Trạng thái Contact (SRS v4 - State Machine)
   enum :status, {
-    new_contact: 0,       # Mới - Tổng đài vừa tạo
-    potential: 1,         # Tiềm năng - Sale đã nhận
-    in_progress: 2,       # Đang tư vấn
-    potential_old: 3,     # Tiềm năng cũ - Qua tháng mới
-    closed_new: 4,        # Chốt Mới - Thành công (trong tháng)
-    closed_old: 5,        # Chốt Cũ - Thành công (từ tháng trước)
-    failed: 6,            # Thất bại
-    cskh_l1: 7,           # CSKH Level 1
-    cskh_l2: 8,           # CSKH Level 2
-    closed: 9             # Đóng - Kết thúc
+    new_contact: 0,   # Mới - Tổng đài vừa tạo
+    potential: 1,     # Tiềm năng - Sale đã nhận
+    failed: 2,        # Thất bại
+    closed: 3         # Chốt - Thành công
   }, prefix: true
 
   # ============================================================================

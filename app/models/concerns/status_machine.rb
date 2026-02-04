@@ -1,53 +1,36 @@
 # frozen_string_literal: true
 
 # TASK-051: Contact Status State Machine
+# TASK-064: Simplified to 4 states only
 # Defines valid transitions and transition logic
 module StatusMachine
   extend ActiveSupport::Concern
 
   # ============================================================================
-  # Valid Transitions (SRS v3 Section 5.3)
+  # Valid Transitions (SRS v4 - Simplified)
   # ============================================================================
   # Key = current status, Value = array of valid next statuses
   VALID_TRANSITIONS = {
-    new_contact: [:potential], # Mới → Tiềm năng (Sale nhận)
-    potential: %i[in_progress potential_old failed],  # Tiềm năng → Đang tư vấn/Tiềm năng cũ/Thất bại
-    potential_old: %i[closed_old failed in_progress], # Tiềm năng cũ → Chốt Cũ/Thất bại/Đang tư vấn
-    in_progress: %i[closed_new failed], # Đang tư vấn → Chốt Mới/Thất bại
-    closed_new: [],                                      # Chốt Mới - End state
-    closed_old: [],                                      # Chốt Cũ - End state
-    failed: [:cskh_l1],                                  # Thất bại → CSKH L1
-    cskh_l1: %i[closed_new cskh_l2], # CSKH L1 → Chốt Mới/CSKH L2
-    cskh_l2: [:closed],                                  # CSKH L2 → Đóng
-    closed: []                                           # Đóng - End state
+    new_contact: [:potential],          # Mới → Tiềm năng (Sale nhận)
+    potential: %i[closed failed],       # Tiềm năng → Chốt/Thất bại
+    failed: [:potential],               # Thất bại → Tiềm năng (CSKH recovery)
+    closed: [] # Chốt - End state
   }.freeze
 
   # Status labels for UI
   STATUS_LABELS = {
     new_contact: "Mới",
     potential: "Tiềm năng",
-    in_progress: "Đang tư vấn",
-    potential_old: "Tiềm năng cũ",
-    closed_new: "Chốt Mới",
-    closed_old: "Chốt Cũ",
     failed: "Thất bại",
-    cskh_l1: "CSKH L1",
-    cskh_l2: "CSKH L2",
-    closed: "Đóng"
+    closed: "Chốt"
   }.freeze
 
   # Status colors for UI badges
   STATUS_COLORS = {
     new_contact: "bg-blue-100 text-blue-700",
     potential: "bg-teal-100 text-teal-700",
-    in_progress: "bg-yellow-100 text-yellow-700",
-    potential_old: "bg-orange-100 text-orange-700",
-    closed_new: "bg-green-100 text-green-700",
-    closed_old: "bg-green-100 text-green-700",
     failed: "bg-red-100 text-red-700",
-    cskh_l1: "bg-purple-100 text-purple-700",
-    cskh_l2: "bg-purple-100 text-purple-700",
-    closed: "bg-gray-100 text-gray-700"
+    closed: "bg-green-100 text-green-700"
   }.freeze
 
   included do
@@ -127,7 +110,7 @@ module StatusMachine
   # Check if current status is a closed/end state
   def closed_state?(check_status = nil)
     check_status ||= status.to_sym
-    %i[closed_new closed_old closed].include?(check_status.to_sym)
+    check_status.to_sym == :closed
   end
 
   # Check if current status is failed
@@ -135,10 +118,7 @@ module StatusMachine
     status.to_sym == :failed
   end
 
-  # Check if current status is CSKH
-  def cskh_state?
-    %i[cskh_l1 cskh_l2].include?(status.to_sym)
-  end
+  # TASK-064: Removed cskh_state? since CSKH levels no longer exist
 
   private
 

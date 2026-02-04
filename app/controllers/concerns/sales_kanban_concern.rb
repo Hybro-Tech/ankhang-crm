@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Concern for handling Sales Kanban logic
+# TASK-064: Updated for simplified status (4 states)
 module SalesKanbanConcern
   extend ActiveSupport::Concern
 
@@ -47,15 +48,16 @@ module SalesKanbanConcern
     end
   end
 
+  # TASK-064: Simplified to 4 columns matching 4 statuses
   def load_kanban_data
     scope = current_user.assigned_contacts.includes(:service_type)
     @kanban_columns = {
-      potential: { title: "Tiềm năng", icon: "fa-user-plus", color: "orange",
+      new_contact: { title: "Mới", icon: "fa-inbox", color: "blue",
+                     contacts: scope.status_new_contact.limit(20) },
+      potential: { title: "Tiềm năng", icon: "fa-user-plus", color: "teal",
                    contacts: scope.status_potential.limit(20) },
-      in_progress: { title: "Đang đàm phán", icon: "fa-comments", color: "blue",
-                     contacts: scope.status_in_progress.limit(20) },
-      closed_new: { title: "Chốt thành công", icon: "fa-check-circle", color: "green",
-                    contacts: scope.status_closed_new.limit(20) },
+      closed: { title: "Chốt", icon: "fa-check-circle", color: "green",
+                contacts: scope.status_closed.limit(20) },
       failed: { title: "Thất bại", icon: "fa-times-circle", color: "red",
                 contacts: scope.status_failed.limit(20) }
     }

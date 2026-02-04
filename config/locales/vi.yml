@@ -27,16 +27,11 @@ vi:
   # TASK-019: Contact translations
   contacts:
     status:
+      # TASK-064: Simplified to 4 statuses
       new_contact: "Mới"
       potential: "Tiềm năng"
-      in_progress: "Đang tư vấn"
-      potential_old: "Tiềm năng cũ"
-      closed_new: "Chốt Mới"
-      closed_old: "Chốt Cũ"
       failed: "Thất bại"
-      cskh_l1: "CSKH L1"
-      cskh_l2: "CSKH L2"
-      closed: "Đóng"
+      closed: "Chốt"
     source:
       ladi_zalo_hotline: "Ladi Zalo/Hotline"
       facebook: "Facebook"

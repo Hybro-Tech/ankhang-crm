@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Sales Dashboard Controller
+# TASK-064: Updated for simplified status (4 states)
 # Handles dashboard for sales staff showing their assigned contacts and performance
 module Dashboards
   class SalesController < BaseController
@@ -24,7 +25,7 @@ module Dashboards
       @kpi = {
         total_contacts: current_user.assigned_contacts.count,
         new_leads: current_user.assigned_contacts.status_potential.count,
-        won_deals_count: current_user.assigned_contacts.status_closed_new.count,
+        won_deals_count: current_user.assigned_contacts.status_closed.count,
         revenue: 0, # Phase 2
         conversion_rate: calculate_conversion_rate
       }
@@ -35,10 +36,11 @@ module Dashboards
       total = current_user.assigned_contacts.count
       return 0 if total.zero?
 
-      closed = current_user.assigned_contacts.status_closed_new.count
+      closed = current_user.assigned_contacts.status_closed.count
       ((closed.to_f / total) * 100).round(1)
     end
 
+    # TASK-064: Use integer value 3 for closed status
     def build_top_performers
       User.joins(:roles)
           .where(roles: { dashboard_type: :sale }, status: :active)
@@ -47,7 +49,7 @@ module Dashboards
             "users.id",
             "users.name",
             "COUNT(contacts.id) as picked_count",
-            "SUM(CASE WHEN contacts.status = 'closed_new' THEN 1 ELSE 0 END) as closed_count"
+            "SUM(CASE WHEN contacts.status = 3 THEN 1 ELSE 0 END) as closed_count"
           )
           .group("users.id, users.name")
           .order(closed_count: :desc, picked_count: :desc)
@@ -64,9 +66,10 @@ module Dashboards
                                           .limit(Setting.dashboard_top_limit)
     end
 
+    # TASK-064: Simplified - only potential status
     def load_sales_contacts
       @sales_contacts = current_user.assigned_contacts
-                                    .where(status: %i[potential in_progress])
+                                    .status_potential
                                     .order(updated_at: :desc)
                                     .limit(Setting.dashboard_top_limit * 2)
     end
@@ -83,7 +86,7 @@ module Dashboards
       @chart_data = {
         labels: date_range.map { |d| d.strftime("%d/%m") },
         contacts: date_range.map { |date| Contact.where(created_at: date.all_day).count },
-        deals: date_range.map { |date| Contact.status_closed_new.where(updated_at: date.all_day).count }
+        deals: date_range.map { |date| Contact.status_closed.where(updated_at: date.all_day).count }
       }
     end
   end

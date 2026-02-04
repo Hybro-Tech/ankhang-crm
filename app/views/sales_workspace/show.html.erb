@@ -76,16 +76,17 @@
               </span>
             </button>
             <% end %>
+            <%# TASK-064: Renamed from in_progress to potential %>
             <button type="button"
                     class="workspace-tab group relative min-w-0 flex-1 overflow-hidden py-4 px-6 text-sm font-medium text-center border-b-2 focus:z-10 transition-colors"
                     data-workspace-tabs-target="tab"
-                    data-tab="in_progress"
+                    data-tab="potential"
                     data-action="click->workspace-tabs#switchTab">
               <span class="flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-spinner text-green-500"></i>
+                <i class="fa-solid fa-spinner text-teal-500"></i>
                 <span>Đang chăm sóc</span>
-                <span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold bg-green-500 text-white rounded-full">
-                  <%= @kpis[:in_progress] %>
+                <span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold bg-teal-500 text-white rounded-full">
+                  <%= @kpis[:potential] %>
                 </span>
               </span>
             </button>

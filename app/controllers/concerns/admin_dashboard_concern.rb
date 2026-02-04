@@ -20,8 +20,8 @@ module AdminDashboardConcern
       total_contacts: Contact.count,
       total_employees: User.count,
       contacts_this_month: Contact.where(created_at: Time.zone.now.beginning_of_month..).count,
-      won_deals_count: Contact.status_closed_new.count,
-      revenue: Contact.status_closed_new.sum(:estimated_value).to_i,
+      won_deals_count: Contact.status_closed.count,
+      revenue: Contact.status_closed.sum(:estimated_value).to_i,
       conversion_rate: calculate_conversion_rate
     }
   end
@@ -50,7 +50,7 @@ module AdminDashboardConcern
     {
       labels: date_range.map { |d| d.strftime("%d/%m") },
       contacts: date_range.map { |date| Contact.where(created_at: date.all_day).count },
-      deals: date_range.map { |date| Contact.status_closed_new.where(updated_at: date.all_day).count }
+      deals: date_range.map { |date| Contact.status_closed.where(updated_at: date.all_day).count }
     }
   end
 
@@ -58,7 +58,7 @@ module AdminDashboardConcern
     total = Contact.count
     return 0 if total.zero?
 
-    closed = Contact.status_closed_new.count
+    closed = Contact.status_closed.count
     ((closed.to_f / total) * 100).round(1)
   end
 end

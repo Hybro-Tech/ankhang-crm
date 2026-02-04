@@ -20,13 +20,12 @@
     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= @contact.service_type&.name %></td>
     <td class="px-6 py-4 whitespace-nowrap">
       <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+        <%# TASK-064: Simplified to 4 statuses %>
         <%= case @contact.status
             when 'new_contact' then 'bg-blue-100 text-blue-800'
-            when 'potential', 'potential_old' then 'bg-yellow-100 text-yellow-800'
-            when 'in_progress' then 'bg-purple-100 text-purple-800'
-            when 'closed_new', 'closed_old' then 'bg-green-100 text-green-800'
+            when 'potential' then 'bg-teal-100 text-teal-800'
             when 'failed' then 'bg-red-100 text-red-800'
-            when 'cskh_l1', 'cskh_l2' then 'bg-orange-100 text-orange-800'
+            when 'closed' then 'bg-green-100 text-green-800'
             else 'bg-gray-100 text-gray-800'
             end %>">
         <%= @contact.status_label %>

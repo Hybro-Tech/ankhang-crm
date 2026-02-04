@@ -106,8 +106,8 @@ class DashboardController < ApplicationController
     current_contacts = Contact.where(created_at: current_range).count
     previous_contacts = Contact.where(created_at: previous_range).count
 
-    current_closed = Contact.status_closed_new.where(updated_at: current_range).count
-    previous_closed = Contact.status_closed_new.where(updated_at: previous_range).count
+    current_closed = Contact.status_closed.where(updated_at: current_range).count
+    previous_closed = Contact.status_closed.where(updated_at: previous_range).count
 
     {
       total_contacts: Contact.count,
@@ -145,7 +145,7 @@ class DashboardController < ApplicationController
     {
       labels: date_range.map { |d| d.strftime("%d/%m") },
       contacts: date_range.map { |date| Contact.where(created_at: date.all_day).count },
-      deals: date_range.map { |date| Contact.status_closed_new.where(updated_at: date.all_day).count }
+      deals: date_range.map { |date| Contact.status_closed.where(updated_at: date.all_day).count }
     }
   end
 
@@ -153,7 +153,7 @@ class DashboardController < ApplicationController
     total = Contact.count
     return 0 if total.zero?
 
-    closed = Contact.status_closed_new.count
+    closed = Contact.status_closed.count
     ((closed.to_f / total) * 100).round(1)
   end
 
@@ -189,6 +189,7 @@ class DashboardController < ApplicationController
     Contact.group(:status).count
   end
 
+  # TASK-064: Use integer value 3 for closed status
   def build_top_performers(limit = 5)
     User.joins(:roles)
         .where(roles: { dashboard_type: :sale }, status: :active)
@@ -197,7 +198,7 @@ class DashboardController < ApplicationController
           "users.id",
           "users.name",
           "COUNT(contacts.id) as picked_count",
-          "SUM(CASE WHEN contacts.status = 'closed_new' THEN 1 ELSE 0 END) as closed_count"
+          "SUM(CASE WHEN contacts.status = 3 THEN 1 ELSE 0 END) as closed_count"
         )
         .group("users.id, users.name")
         .order(closed_count: :desc, picked_count: :desc)
@@ -302,7 +303,7 @@ class DashboardController < ApplicationController
     @kpi = {
       total_contacts: current_user.assigned_contacts.count,
       new_leads: current_user.assigned_contacts.status_potential.count,
-      won_deals_count: current_user.assigned_contacts.status_closed_new.count,
+      won_deals_count: current_user.assigned_contacts.status_closed.count,
       revenue: 0,
       conversion_rate: 0
     }
@@ -319,10 +320,9 @@ class DashboardController < ApplicationController
                                         .includes(:contact)
                                         .limit(5)
 
-    # Contacts to process (Assigned but not yet closed)
-    # Priority: Potential > New
+    # TASK-064: Simplified - only potential status
     @sales_contacts = current_user.assigned_contacts
-                                  .where(status: %i[potential in_progress])
+                                  .status_potential
                                   .order(updated_at: :desc)
                                   .limit(10)
 
@@ -345,7 +345,7 @@ class DashboardController < ApplicationController
                              .limit(10)
 
     # 2. After-Sales Queue (Closed contacts for follow-up)
-    @after_sales_queue = Contact.status_closed_new
+    @after_sales_queue = Contact.status_closed
                                 .includes(:assigned_user, :service_type)
                                 .order(updated_at: :desc)
                                 .limit(10)
@@ -353,7 +353,7 @@ class DashboardController < ApplicationController
     # Stats for CSKH
     @stats = {
       failed_today: Contact.status_failed.where(updated_at: Time.zone.today.all_day).count,
-      closed_today: Contact.status_closed_new.where(updated_at: Time.zone.today.all_day).count,
+      closed_today: Contact.status_closed.where(updated_at: Time.zone.today.all_day).count,
       pending_recovery: Contact.status_failed.count,
       avg_response_time: "15p" # Placeholder
     }

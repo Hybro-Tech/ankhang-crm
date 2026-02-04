@@ -8,8 +8,7 @@ class ServiceTypesController < ApplicationController
   before_action :authorize_admin!
 
   def index
-    @service_types = ServiceType.includes(:team)
-                                .ordered
+    @service_types = ServiceType.ordered
                                 .page(params[:page])
                                 .per(params[:per_page] || 10)
   end
@@ -18,12 +17,9 @@ class ServiceTypesController < ApplicationController
 
   def new
     @service_type = ServiceType.new
-    @teams = Team.all
   end
 
-  def edit
-    @teams = Team.all
-  end
+  def edit; end
 
   def create
     @service_type = ServiceType.new(service_type_params)
@@ -31,7 +27,6 @@ class ServiceTypesController < ApplicationController
     if @service_type.save
       redirect_to service_types_path, notice: t(".success")
     else
-      @teams = Team.all
       render :new, status: :unprocessable_content
     end
   end
@@ -40,7 +35,6 @@ class ServiceTypesController < ApplicationController
     if @service_type.update(service_type_params)
       redirect_to service_types_path, notice: t(".success")
     else
-      @teams = Team.all
       render :edit, status: :unprocessable_content
     end
   end
@@ -65,7 +59,7 @@ class ServiceTypesController < ApplicationController
   end
 
   def service_type_params
-    # TASK-060: Removed all smart routing fields (now using ENV)
-    params.expect(service_type: %i[name description team_id active position])
+    # TASK-060: Removed team_id and all smart routing fields
+    params.expect(service_type: %i[name description active position])
   end
 end
