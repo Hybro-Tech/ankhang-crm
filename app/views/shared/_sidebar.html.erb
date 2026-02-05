@@ -60,10 +60,12 @@
     <%= sidebar_link "Nhân viên", users_path, "fa-id-card", permission: "employees.view" %>
 
     <%# SECTION 4: TỔ CHỨC - Vùng & Lịch %>
-    <%= sidebar_section "Vùng & Lịch", ["regions.view", "holidays.manage", "saturday_schedules.manage"] %>
+    <%= sidebar_section "Vùng & Lịch", ["regions.view", "provinces.view", "holidays.manage", "saturday_schedules.manage"] %>
     <%= sidebar_link "Vùng/Miền", regions_path, "fa-map-location-dot", permission: "regions.view" %>
+    <%= sidebar_link "Tỉnh/Thành", provinces_path, "fa-map-pin", permission: "provinces.view" %>
     <%= sidebar_link "Lịch nghỉ lễ", holidays_path, "fa-calendar-days", permission: "holidays.manage" %>
     <%= sidebar_link "Lịch Thứ 7", saturday_schedules_path, "fa-calendar-check", permission: "saturday_schedules.manage" %>
+
 
     <%# SECTION 5: QUẢN TRỊ %>
     <%= sidebar_section "Quản trị", ["roles.view", "settings.manage"] %>
