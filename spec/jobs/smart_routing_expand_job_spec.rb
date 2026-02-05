@@ -15,7 +15,7 @@ RSpec.describe SmartRoutingExpandJob, type: :job do
   let(:contact) do
     Contact.create!(
       name: "Test Contact",
-      phone: "0901234567",
+      phone: "09#{rand(10_000_000..99_999_999)}",
       service_type: service_type,
       source: Source.first || create(:source),
       created_by_id: tongdai_user.id,

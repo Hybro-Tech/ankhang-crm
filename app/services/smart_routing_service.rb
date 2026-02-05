@@ -273,7 +273,6 @@ class SmartRoutingService
     Rails.cache.delete(round_robin_cache_key(service_type_id))
   end
 
-
   # Find all sales users in the same region as the contact's province
   def find_regional_sales
     contact_province = @contact.province
