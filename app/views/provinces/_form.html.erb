@@ -46,25 +46,31 @@
           </div>
         </div>
 
-        <%# Code %>
+        <%# Code - Auto-generated readonly %>
         <div>
-          <label for="province_code" class="block text-sm font-medium text-gray-700 mb-2">
-            Mã tỉnh <span class="text-red-500">*</span>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Mã tỉnh <span class="text-gray-400 text-xs font-normal">(tự động)</span>
           </label>
           <div class="relative">
             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
               <i class="fa-solid fa-code text-sm"></i>
             </span>
-            <%= f.text_field :code, 
-                id: "province_code",
-                class: "w-full border border-gray-300 rounded-lg pl-11 pr-4 py-3 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-all font-mono text-base", 
-                placeholder: "VD: 01, 79" %>
+            <% if @province.persisted? && @province.code.present? %>
+              <div class="w-full border border-gray-200 rounded-lg pl-11 pr-4 py-3 bg-gray-50 text-gray-600 font-mono text-base">
+                <%= @province.code %>
+              </div>
+            <% else %>
+              <div class="w-full border border-gray-200 rounded-lg pl-11 pr-4 py-3 bg-gray-50 text-gray-400 italic text-base">
+                Tự động tạo khi lưu
+              </div>
+            <% end %>
           </div>
           <p class="text-xs text-gray-400 mt-1.5 flex items-center">
-            <i class="fa-solid fa-info-circle mr-1"></i>
-            Mã tỉnh theo chuẩn quốc gia
+            <i class="fa-solid fa-magic mr-1"></i>
+            Được tạo tự động từ tên tỉnh/thành
           </p>
         </div>
+
 
         <%# Position %>
         <div>
