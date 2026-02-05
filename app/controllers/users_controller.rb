@@ -65,10 +65,14 @@ class UsersController < ApplicationController
     @service_types = ServiceType.active.ordered
   end
 
+  # rubocop:disable Rails/StrongParametersExpect -- params.expect doesn't work with nested attributes
   def user_params
-    params.expect(user: [:name, :email, :username, :password, :password_confirmation, :status,
-                         :phone, :region_id, :address,
-                         { role_ids: [], team_ids: [],
-                           user_service_type_limits_attributes: %i[id service_type_id max_pick_per_day _destroy] }])
+    params.require(:user).permit(
+      :name, :email, :username, :password, :password_confirmation, :status,
+      :phone, :region_id, :address,
+      role_ids: [], team_ids: [],
+      user_service_type_limits_attributes: %i[id service_type_id max_pick_per_day _destroy]
+    )
   end
+  # rubocop:enable Rails/StrongParametersExpect
 end

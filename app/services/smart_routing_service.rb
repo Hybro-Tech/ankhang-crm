@@ -337,7 +337,7 @@ class SmartRoutingService
   def broadcast_contact_to_user(user)
     Turbo::StreamsChannel.broadcast_prepend_to(
       "user_#{user.id}_contacts",
-      target: "new_contacts_table_body",
+      target: "new_contacts_table_body", # Matches tab: :new_contacts
       partial: "sales_workspace/contact_row_broadcast",
       locals: { contact: @contact }
     )
@@ -373,23 +373,42 @@ class SmartRoutingService
   end
 
   def broadcast_kpi_to_user(user)
-    team_ids = user.teams.pluck(:id)
-    new_contacts_count = Contact.where(status: :new_contact, team_id: team_ids)
-                                .where(assigned_user_id: nil)
-                                .where(
-                                  "visible_to_user_ids IS NULL OR JSON_CONTAINS(visible_to_user_ids, ?)",
-                                  user.id.to_s
-                                )
-                                .count
+    count = calculate_new_contacts_count(user)
+    broadcast_header_kpi(user, count)
+    broadcast_tab_badge(user, count)
+  rescue StandardError => e
+    Rails.logger.error("[SmartRouting] Failed to broadcast KPI to user #{user.id}: #{e.message}")
+  end
 
+  def calculate_new_contacts_count(user)
+    team_ids = user.teams.pluck(:id)
+    Contact.where(status: :new_contact, team_id: team_ids)
+           .where(assigned_user_id: nil)
+           .where("visible_to_user_ids IS NULL OR JSON_CONTAINS(visible_to_user_ids, ?)", user.id.to_s)
+           .count
+  end
+
+  def broadcast_header_kpi(user, count)
     Turbo::StreamsChannel.broadcast_replace_to(
       "user_#{user.id}_contacts",
       target: "kpi_new_contacts",
       partial: "shared/kpi_badge",
-      locals: { count: new_contacts_count }
+      locals: { count: count }
     )
-  rescue StandardError => e
-    Rails.logger.error("[SmartRouting] Failed to broadcast KPI to user #{user.id}: #{e.message}")
+  end
+
+  def broadcast_tab_badge(user, count)
+    badge_classes = [
+      "inline-flex items-center justify-center px-2 py-0.5",
+      "text-xs font-bold bg-blue-500 text-white rounded-full"
+    ].join(" ")
+    badge_html = %(<span id="tab_new_contacts_badge" class="#{badge_classes}">#{count}</span>)
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "user_#{user.id}_contacts",
+      target: "tab_new_contacts_badge",
+      html: badge_html
+    )
   end
 
   # Notify all active sales users (for National Pool)

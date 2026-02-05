@@ -8,22 +8,29 @@ export default class extends Controller {
     index: Number
   }
 
-  connect() {
+  connect () {
     this.indexValue = this.containerTarget.querySelectorAll(".nested-fields:not(.hidden)").length
   }
 
-  add(event) {
+  add (event) {
     event.preventDefault()
-    
+
     const selectEl = this.serviceTypeSelectTarget
-    const selectedOption = selectEl.options[selectEl.selectedIndex]
-    
-    if (!selectEl.value) {
+
+    // Get TomSelect instance if available
+    const tomSelectController = this.application.getControllerForElementAndIdentifier(selectEl, "tom-select")
+    const tomSelectInstance = tomSelectController?.tomSelect
+
+    // Get value from TomSelect or native select
+    const serviceTypeId = tomSelectInstance ? tomSelectInstance.getValue() : selectEl.value
+
+    if (!serviceTypeId) {
       return
     }
 
-    const serviceTypeId = selectEl.value
-    const serviceTypeName = selectedOption.text
+    // Get service type name from option text
+    const selectedOption = selectEl.querySelector(`option[value="${serviceTypeId}"]`)
+    const serviceTypeName = selectedOption ? selectedOption.textContent.trim() : `Service Type ${serviceTypeId}`
 
     // Check if already added
     const existingField = this.containerTarget.querySelector(`[data-service-type-id="${serviceTypeId}"]`)
@@ -41,18 +48,27 @@ export default class extends Controller {
       .replace(/SERVICE_TYPE_NAME/g, serviceTypeName)
 
     this.containerTarget.insertAdjacentHTML("beforeend", newField)
-    
-    // Disable selected option
-    selectedOption.disabled = true
-    selectEl.value = ""
+
+    // Disable selected option and clear TomSelect
+    if (selectedOption) {
+      selectedOption.disabled = true
+    }
+
+    // Clear TomSelect or native select
+    if (tomSelectInstance) {
+      tomSelectInstance.clear()
+      tomSelectInstance.sync() // Sync disabled state to TomSelect
+    } else {
+      selectEl.value = ""
+    }
 
     // Update empty state
     this.updateEmptyState()
   }
 
-  remove(event) {
+  remove (event) {
     event.preventDefault()
-    
+
     const field = event.target.closest(".nested-fields")
     const destroyField = field.querySelector("input[name*='_destroy']")
     const serviceTypeId = field.dataset.serviceTypeId
@@ -77,10 +93,10 @@ export default class extends Controller {
     this.updateEmptyState()
   }
 
-  updateEmptyState() {
+  updateEmptyState () {
     const visibleFields = this.containerTarget.querySelectorAll(".nested-fields:not(.hidden)")
     const emptyState = this.element.querySelector(".empty-state")
-    
+
     if (emptyState) {
       if (visibleFields.length === 0) {
         emptyState.classList.remove("hidden")
