@@ -18,6 +18,7 @@
 
 # TASK-053: System Settings for Smart Routing and other configs
 # Key-value store for application settings
+# rubocop:disable Metrics/ClassLength
 class Setting < ApplicationRecord
   include Loggable
 
@@ -99,7 +100,8 @@ class Setting < ApplicationRecord
     "kanban_column_limit" => { value: "20", description: "Giới hạn contacts mỗi cột Kanban" },
     "notification_dropdown_limit" => { value: "20", description: "Số notifications trong dropdown" },
     "monitoring_window_hours" => { value: "24", description: "Khoảng thời gian monitoring (giờ)" },
-    "stale_contact_days" => { value: "7", description: "Số ngày contact bị coi là cũ" }
+    "stale_contact_days" => { value: "7", description: "Số ngày contact bị coi là cũ" },
+    "routing_expand_minutes" => { value: "2", description: "Thời gian mở rộng pool cho Smart Routing (phút)" }
   }.freeze
 
   # Call Center Settings
@@ -137,6 +139,11 @@ class Setting < ApplicationRecord
     get("stale_contact_days", 7).to_i
   end
 
+  # Smart Routing layer expansion interval
+  def self.routing_expand_minutes
+    get("routing_expand_minutes", 2).to_i
+  end
+
   # Available timezones for dropdown
   AVAILABLE_TIMEZONES = [
     ["Việt Nam (GMT+7)", "Hanoi"],
@@ -155,3 +162,4 @@ class Setting < ApplicationRecord
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

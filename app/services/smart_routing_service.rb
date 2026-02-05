@@ -9,7 +9,7 @@
 class SmartRoutingService
   include NotificationBadgeHelper
 
-  # ENV default - single interval for all layer expansions
+  # Default interval - now read from Setting with ENV fallback
   DEFAULT_ROUTING_EXPAND_MINUTES = 2
 
   # Initialize visibility when contact is created
@@ -253,7 +253,8 @@ class SmartRoutingService
   end
 
   def schedule_next_expansion(layer_name)
-    interval = ENV.fetch("ROUTING_EXPAND_MINUTES", DEFAULT_ROUTING_EXPAND_MINUTES).to_i
+    # Priority: ENV override > Setting > Default constant
+    interval = ENV.fetch("ROUTING_EXPAND_MINUTES", nil)&.to_i || Setting.routing_expand_minutes
     user_id = Current.user&.id
     SmartRoutingExpandJob.set(wait: interval.minutes).perform_later(@contact.id, user_id)
     Rails.logger.info "[SmartRouting] Scheduled #{layer_name} for contact #{@contact.id} in #{interval} minutes"
