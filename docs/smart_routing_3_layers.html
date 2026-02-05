@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Quy Tr&igrave;nh Ph&acirc;n Ph&#x1ed1;i Kh&aacute;ch H&agrave;ng 3 L&#x1edb;p</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="quy-trình-phân-phối-khách-hàng-3-lớp">Quy Trình Phân Phối Khách Hàng 3 Lớp</h1>
+<blockquote>
+<p><strong>Phiên bản:</strong> 1.0<br>
+<strong>Cập nhật:</strong> 05/02/2026</p>
+</blockquote>
+<hr>
+<h2 id="tổng-quan">Tổng Quan</h2>
+<p>Khi Tổng Đài nhập khách hàng mới vào hệ thống, hệ thống sẽ tự động phân phối đến nhân viên Sale theo quy trình 3 lớp:</p>
+<pre><code>Khách hàng mới → Lớp 1 (1 Sale) → Lớp 2 (Vùng miền) → Lớp 3 (Toàn quốc)
+</code></pre>
+<hr>
+<h2 id="chi-tiết-3-lớp">Chi Tiết 3 Lớp</h2>
+<h3 id="-lớp-1-phân-phối-ngẫu-nhiên-t0">🔵 Lớp 1: Phân Phối Ngẫu Nhiên (T+0)</h3>
+<p><strong>Thời điểm:</strong> Ngay khi khách hàng được tạo</p>
+<p><strong>Logic:</strong></p>
+<ul>
+<li>Hệ thống chọn <strong>1 Sale ngẫu nhiên</strong> từ danh sách Sale được cấu hình cho <strong>Loại Dịch Vụ</strong> của khách hàng</li>
+<li><strong>Luân phiên công bằng</strong>: Mỗi Sale được chọn 1 lần, khi tất cả đã được chọn thì bắt đầu vòng mới</li>
+<li>Danh sách luân phiên reset vào đầu mỗi ngày</li>
+</ul>
+<p><strong>Kết quả:</strong></p>
+<ul>
+<li>Sale được chọn nhận thông báo</li>
+<li>Khách hàng chỉ hiển thị cho Sale này trong 2 phút</li>
+</ul>
+<p><strong>Điều kiện bỏ qua:</strong></p>
+<ul>
+<li>Ngoài giờ làm việc → Nhảy thẳng Lớp 3</li>
+<li>Không có Sale nào cấu hình cho loại dịch vụ → Nhảy Lớp 2</li>
+</ul>
+<hr>
+<h3 id="-lớp-2-mở-rộng-vùng-miền-t2-phút">🟡 Lớp 2: Mở Rộng Vùng Miền (T+2 phút)</h3>
+<p><strong>Thời điểm:</strong> 2 phút sau khi tạo khách hàng (nếu chưa ai nhận)</p>
+<p><strong>Logic:</strong></p>
+<ul>
+<li>Từ <strong>Tỉnh/Thành</strong> của khách hàng → Xác định <strong>Vùng/Miền</strong></li>
+<li>Gửi thông báo cho <strong>tất cả Sale</strong> thuộc Vùng/Miền đó</li>
+</ul>
+<p><strong>Kết quả:</strong></p>
+<ul>
+<li>Tất cả Sale trong vùng nhận thông báo</li>
+<li>Khách hàng hiển thị cho tất cả Sale trong vùng</li>
+</ul>
+<p><strong>Điều kiện bỏ qua:</strong></p>
+<ul>
+<li>Không có Sale nào trong vùng → Nhảy Lớp 3</li>
+</ul>
+<hr>
+<h3 id="-lớp-3-mở-rộng-toàn-quốc-t4-phút">🔴 Lớp 3: Mở Rộng Toàn Quốc (T+4 phút)</h3>
+<p><strong>Thời điểm:</strong> 4 phút sau khi tạo khách hàng (nếu vẫn chưa ai nhận)</p>
+<p><strong>Logic:</strong></p>
+<ul>
+<li>Gửi thông báo cho <strong>tất cả Sale</strong> trong hệ thống</li>
+</ul>
+<p><strong>Kết quả:</strong></p>
+<ul>
+<li>Khách hàng hiển thị và có thể nhận bởi bất kỳ Sale nào</li>
+</ul>
+<hr>
+<h2 id="sơ-đồ-quy-trình">Sơ Đồ Quy Trình</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                 KHÁCH HÀNG MỚI ĐƯỢC TẠO                     │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+           ┌──────── Trong giờ làm việc? ────────┐
+           │                                      │
+          Có                                    Không
+           │                                      │
+           ▼                                      │
+┌─────────────────────┐                           │
+│      LỚP 1          │                           │
+│  Chọn 1 Sale        │                           │
+│  (luân phiên)       │                           │
+│  Chờ 2 phút         │                           │
+└─────────────────────┘                           │
+           │                                      │
+           ▼                                      │
+      Đã có người nhận? ──── Có ──────────────────┼──── ✅ HOÀN TẤT
+           │                                      │
+         Không                                    │
+           │                                      │
+           ▼                                      │
+┌─────────────────────┐                           │
+│      LỚP 2          │                           │
+│  Thông báo toàn bộ  │                           │
+│  Sale trong Vùng    │                           │
+│  Chờ 2 phút         │                           │
+└─────────────────────┘                           │
+           │                                      │
+           ▼                                      │
+      Đã có người nhận? ──── Có ──────────────────┼──── ✅ HOÀN TẤT
+           │                                      │
+         Không                                    │
+           │                                      │
+           ▼                                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│                         LỚP 3                               │
+│              Thông báo TOÀN BỘ Sale toàn quốc               │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2 id="cấu-hình-cần-thiết">Cấu Hình Cần Thiết</h2>
+<table>
+<thead>
+<tr>
+<th>Cấu hình</th>
+<th>Mục đích</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Giờ làm việc</strong></td>
+<td>Quyết định có áp dụng Lớp 1,2 hay nhảy thẳng Lớp 3</td>
+</tr>
+<tr>
+<td><strong>Thời gian chờ giữa các lớp</strong></td>
+<td>Mặc định 2 phút, có thể thay đổi</td>
+</tr>
+<tr>
+<td><strong>Sale ↔ Loại Dịch Vụ</strong></td>
+<td>Xác định Sale nào nhận khách hàng loại nào (Lớp 1)</td>
+</tr>
+<tr>
+<td><strong>Sale ↔ Vùng/Miền</strong></td>
+<td>Xác định Sale nào thuộc vùng nào (Lớp 2)</td>
+</tr>
+<tr>
+<td><strong>Tỉnh/Thành ↔ Vùng/Miền</strong></td>
+<td>Mapping địa lý để xác định Lớp 2</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="ví-dụ-thực-tế">Ví Dụ Thực Tế</h2>
+<p><strong>Tình huống:</strong> Khách hàng mới từ Hà Nội, dịch vụ &quot;Thành lập công ty&quot;</p>
+<table>
+<thead>
+<tr>
+<th>Thời gian</th>
+<th>Lớp</th>
+<th>Hành động</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T+0</td>
+<td>1</td>
+<td>Sale A (được cấu hình cho &quot;Thành lập công ty&quot;) nhận thông báo</td>
+</tr>
+<tr>
+<td>T+2 phút</td>
+<td>2</td>
+<td>Sale A không nhận → Tất cả Sale vùng &quot;Miền Bắc&quot; nhận thông báo</td>
+</tr>
+<tr>
+<td>T+4 phút</td>
+<td>3</td>
+<td>Vẫn không ai nhận → Tất cả Sale toàn quốc nhận thông báo</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="lưu-ý">Lưu Ý</h2>
+<ol>
+<li><strong>Luân phiên công bằng</strong>: Mỗi Sale được chọn 1 lần, reset mỗi ngày</li>
+<li><strong>Khi Sale nhận khách hàng</strong>: Quy trình dừng, khách hàng được gán cho Sale đó</li>
+<li><strong>Chỉ áp dụng cho Role Sale</strong>: User có role Sale mới tham gia quy trình này</li>
+</ol>
+
+            
+            
+        </body>
+        </html>
