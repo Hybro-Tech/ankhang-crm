@@ -58,6 +58,6 @@ class RegionsController < ApplicationController
   end
 
   def region_params
-    params.expect(region: %i[name code description position active])
+    params.expect(region: [:name, :code, :description, :position, :active, { province_ids: [] }])
   end
 end

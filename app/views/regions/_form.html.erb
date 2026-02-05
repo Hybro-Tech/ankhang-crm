@@ -1,7 +1,7 @@
-<%# TASK-REGION: Region form partial - UI/UX ProMax %>
-<%= form_with model: @region, local: true, class: "space-y-6" do |f| %>
+<%# Region form partial - UI/UX ProMax with Province multi-select %>
+<%= form_with model: @region, local: true, class: "w-full" do |f| %>
   <% if @region.errors.any? %>
-    <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+    <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
       <div class="flex items-center text-red-800">
         <i class="fa-solid fa-exclamation-triangle mr-2"></i>
         <span class="font-semibold">Có <%= @region.errors.count %> lỗi cần sửa:</span>
@@ -14,98 +14,193 @@
     </div>
   <% end %>
 
-  <%# Main form card %>
-  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-    <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-200">
+  <%# Main form card - Full width %>
+  <div class="w-full bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-gradient-to-r from-emerald-50 to-white px-6 py-4 border-b border-gray-200">
       <h3 class="text-lg font-bold text-gray-900 flex items-center">
-        <i class="fa-solid fa-map-location-dot text-brand-blue mr-2"></i>
+        <i class="fa-solid fa-map-location-dot text-emerald-600 mr-2"></i>
         Thông tin vùng/miền
       </h3>
+      <p class="text-sm text-gray-500 mt-1">Quản lý vùng miền và phân bổ tỉnh thành</p>
     </div>
     
-    <div class="p-6">
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div class="p-6 space-y-6">
+      <%# Basic info section %>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <%# Name %>
         <div>
-          <%= f.label :name, t("regions.fields.name") + " *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.label :name, "Tên vùng/miền *", class: "block text-sm font-medium text-gray-700 mb-2" %>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <i class="fa-solid fa-tag text-gray-400"></i>
             </div>
             <%= f.text_field :name, 
-                class: "block w-full border border-gray-300 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors", 
-                placeholder: "VD: Bắc, Trung, Nam" %>
+                class: "block w-full border border-gray-300 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-base", 
+                placeholder: "VD: Miền Bắc, Miền Nam, Tây Nguyên" %>
           </div>
         </div>
 
         <%# Code %>
         <div>
-          <%= f.label :code, t("regions.fields.code") + " *", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.label :code, "Mã vùng *", class: "block text-sm font-medium text-gray-700 mb-2" %>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <i class="fa-solid fa-code text-gray-400"></i>
             </div>
             <%= f.text_field :code, 
-                class: "block w-full border border-gray-300 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors font-mono", 
-                placeholder: "VD: bac, trung, nam" %>
+                class: "block w-full border border-gray-300 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all font-mono text-base", 
+                placeholder: "VD: mien_bac, mien_nam" %>
           </div>
-          <p class="mt-1.5 text-xs text-gray-500 flex items-center">
+          <p class="mt-2 text-xs text-gray-500 flex items-center">
             <i class="fa-solid fa-info-circle mr-1"></i>
-            Chỉ cho phép chữ thường và dấu gạch dưới
+            Chỉ cho phép chữ thường, số và dấu gạch dưới
           </p>
         </div>
 
         <%# Position %>
         <div>
-          <%= f.label :position, t("regions.fields.position"), class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.label :position, "Thứ tự hiển thị", class: "block text-sm font-medium text-gray-700 mb-2" %>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <i class="fa-solid fa-sort text-gray-400"></i>
             </div>
             <%= f.number_field :position, 
-                class: "block w-full border border-gray-300 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors", 
-                min: 0 %>
+                class: "block w-full border border-gray-300 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-base", 
+                min: 0,
+                placeholder: "0" %>
           </div>
-          <p class="mt-1.5 text-xs text-gray-500">Số nhỏ hơn sẽ hiển thị trước</p>
         </div>
 
-        <%# Active %>
-        <div class="flex items-center pt-8">
-          <div class="flex items-center h-5">
-            <%= f.check_box :active, class: "h-5 w-5 text-brand-blue focus:ring-brand-blue border-gray-300 rounded cursor-pointer" %>
-          </div>
-          <div class="ml-3">
-            <%= f.label :active, t("regions.fields.active"), class: "text-sm font-medium text-gray-900 cursor-pointer" %>
-            <p class="text-xs text-gray-500">Bỏ chọn để ẩn vùng/miền khỏi dropdown</p>
+        <%# Active - Toggle style %>
+        <div class="flex items-center">
+          <div class="bg-gray-50 rounded-lg p-4 w-full flex items-center justify-between">
+            <div>
+              <%= f.label :active, "Trạng thái hoạt động", class: "text-sm font-medium text-gray-900 cursor-pointer" %>
+              <p class="text-xs text-gray-500 mt-0.5">Bỏ chọn để ẩn vùng/miền</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <%= f.check_box :active, class: "sr-only peer" %>
+              <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-100 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+            </label>
           </div>
         </div>
       </div>
 
       <%# Description %>
-      <div class="mt-6">
-        <%= f.label :description, t("regions.fields.description"), class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+      <div>
+        <%= f.label :description, "Mô tả", class: "block text-sm font-medium text-gray-700 mb-2" %>
         <div class="relative">
           <div class="absolute top-3 left-3 pointer-events-none">
             <i class="fa-solid fa-align-left text-gray-400"></i>
           </div>
           <%= f.text_area :description, 
               rows: 3, 
-              class: "block w-full border border-gray-300 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors resize-none", 
-              placeholder: "Mô tả thêm về vùng/miền này (tùy chọn)" %>
+              class: "block w-full border border-gray-300 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none text-base", 
+              placeholder: "Mô tả về vùng/miền này (tùy chọn)" %>
+        </div>
+      </div>
+
+      <%# Province selection - Multi-select grid %>
+      <div class="border-t border-gray-200 pt-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h4 class="text-base font-semibold text-gray-900 flex items-center">
+              <i class="fa-solid fa-map-pin text-emerald-600 mr-2"></i>
+              Tỉnh/Thành thuộc vùng này
+            </h4>
+            <p class="text-sm text-gray-500 mt-1">Chọn các tỉnh/thành phố thuộc vùng/miền</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="selectAllProvinces()" class="text-xs px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors">
+              <i class="fa-solid fa-check-double mr-1"></i>
+              Chọn tất cả
+            </button>
+            <button type="button" onclick="deselectAllProvinces()" class="text-xs px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+              <i class="fa-solid fa-times mr-1"></i>
+              Bỏ chọn
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2" id="province-select-grid">
+          <% Province.active.ordered.each do |province| %>
+            <label class="province-checkbox relative flex items-center p-3 rounded-lg border cursor-pointer transition-all
+                          <%= @region.provinces.include?(province) ? 'bg-emerald-50 border-emerald-500 text-emerald-800' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300' %>">
+              <%= check_box_tag "region[province_ids][]", province.id, @region.provinces.include?(province), 
+                                class: "sr-only province-cb", id: "province_#{province.id}",
+                                data: { province_id: province.id } %>
+              <i class="fa-solid fa-check text-emerald-600 mr-2 <%= @region.provinces.include?(province) ? '' : 'hidden' %>" data-check-icon></i>
+              <span class="text-sm font-medium truncate"><%= province.name %></span>
+            </label>
+          <% end %>
+        </div>
+
+        <%# Selected count %>
+        <div class="mt-4 flex items-center justify-between text-sm">
+          <span class="text-gray-500">
+            Đã chọn: <strong class="text-emerald-600" id="selected-province-count"><%= @region.provinces.count %></strong> tỉnh/thành
+          </span>
+          <span class="text-gray-400">
+            Tổng: <%= Province.active.count %> tỉnh/thành
+          </span>
         </div>
       </div>
     </div>
   </div>
 
-  <%# Actions %>
-  <div class="flex items-center justify-center gap-4 pt-2">
-    <%= link_to regions_path, class: "inline-flex items-center px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors" do %>
-      <i class="fa-solid fa-times mr-2"></i>
-      Hủy bỏ
+  <%# Actions - Centered %>
+  <div class="flex items-center justify-center gap-4 mt-6">
+    <%= link_to regions_path, class: "inline-flex items-center px-6 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-all" do %>
+      <i class="fa-solid fa-arrow-left mr-2"></i>
+      Quay lại
     <% end %>
-    <button type="submit" class="inline-flex items-center px-8 py-2.5 bg-brand-blue text-white rounded-lg hover:bg-blue-900 font-medium shadow-lg shadow-blue-500/30 transition-all cursor-pointer">
+    <button type="submit" class="inline-flex items-center px-8 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium shadow-lg shadow-emerald-500/30 transition-all cursor-pointer">
       <i class="fa-solid fa-save mr-2"></i>
       <%= @region.new_record? ? "Tạo vùng/miền" : "Lưu thay đổi" %>
     </button>
   </div>
 <% end %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.province-cb');
+    
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', function() {
+        const label = this.closest('label');
+        const icon = label.querySelector('[data-check-icon]');
+        
+        if (this.checked) {
+          label.classList.remove('bg-white', 'border-gray-200', 'text-gray-700');
+          label.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
+          icon.classList.remove('hidden');
+        } else {
+          label.classList.add('bg-white', 'border-gray-200', 'text-gray-700');
+          label.classList.remove('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
+          icon.classList.add('hidden');
+        }
+        
+        updateCount();
+      });
+    });
+  });
+
+  function updateCount() {
+    const count = document.querySelectorAll('.province-cb:checked').length;
+    document.getElementById('selected-province-count').textContent = count;
+  }
+
+  function selectAllProvinces() {
+    document.querySelectorAll('.province-cb').forEach(cb => {
+      cb.checked = true;
+      cb.dispatchEvent(new Event('change'));
+    });
+  }
+
+  function deselectAllProvinces() {
+    document.querySelectorAll('.province-cb').forEach(cb => {
+      cb.checked = false;
+      cb.dispatchEvent(new Event('change'));
+    });
+  }
+</script>
