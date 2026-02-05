@@ -205,6 +205,7 @@ class SmartRoutingService
   end
 
   # Find random active Sale who has UserServiceTypeLimit for this contact's service_type
+  # Uses round-robin: skip users already assigned today, reset when all exhausted
   def random_sale_for_service_type
     service_type_id = @contact.service_type_id
     return nil unless service_type_id
@@ -212,14 +213,66 @@ class SmartRoutingService
     sale_role = Role.find_by(code: Role::SALE)
     return nil unless sale_role
 
-    # Find users who have a limit configured for this service type
-    User.joins(:user_roles, :user_service_type_limits)
-        .where(user_roles: { role_id: sale_role.id })
-        .where(user_service_type_limits: { service_type_id: service_type_id })
-        .where(status: :active)
-        .order("RAND()")
-        .first
+    # Get all eligible users for this service type
+    eligible_users = User.joins(:user_roles, :user_service_type_limits)
+                         .where(user_roles: { role_id: sale_role.id })
+                         .where(user_service_type_limits: { service_type_id: service_type_id })
+                         .where(status: :active)
+
+    return nil if eligible_users.empty?
+
+    # Get already assigned user IDs for today (round-robin tracking)
+    assigned_today = get_assigned_today(service_type_id)
+
+    # Filter out users already assigned today
+    available_users = eligible_users.where.not(id: assigned_today)
+
+    # If all users exhausted, reset and use full list
+    if available_users.empty?
+      reset_assigned_today(service_type_id)
+      available_users = eligible_users
+      Rails.logger.info "[SmartRouting] Round-robin reset for service_type #{service_type_id}"
+    end
+
+    # Random select from available users
+    selected_user = available_users.order("RAND()").first
+    return nil unless selected_user
+
+    # Track this assignment
+    mark_user_assigned_today(service_type_id, selected_user.id)
+
+    selected_user
   end
+
+  # ============================================================================
+  # Round-Robin Tracking (using Rails.cache with daily expiry)
+  # ============================================================================
+
+  # Cache key for tracking assigned users today
+  def round_robin_cache_key(service_type_id)
+    date_str = Time.current.in_time_zone(Setting.timezone).to_date.to_s
+    "smart_routing:round_robin:#{service_type_id}:#{date_str}"
+  end
+
+  # Get list of user IDs already assigned today
+  def get_assigned_today(service_type_id)
+    Rails.cache.fetch(round_robin_cache_key(service_type_id)) { [] }
+  end
+
+  # Mark a user as assigned today
+  def mark_user_assigned_today(service_type_id, user_id)
+    key = round_robin_cache_key(service_type_id)
+    assigned = Rails.cache.fetch(key) { [] }
+    assigned << user_id unless assigned.include?(user_id)
+    # Expire at end of day (midnight + 1 day)
+    Rails.cache.write(key, assigned, expires_in: 24.hours)
+  end
+
+  # Reset the round-robin for a service type
+  def reset_assigned_today(service_type_id)
+    Rails.cache.delete(round_robin_cache_key(service_type_id))
+  end
+
 
   # Find all sales users in the same region as the contact's province
   def find_regional_sales
