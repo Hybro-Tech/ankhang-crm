@@ -30,6 +30,7 @@ provinces_data = [
   { code: "22", name: "Quảng Ninh" },
   { code: "24", name: "Bắc Ninh" },
   { code: "25", name: "Phú Thọ" },
+  { code: "31", name: "Thành phố Hải Phòng" },
   { code: "33", name: "Hưng Yên" },
   { code: "37", name: "Ninh Bình" },
   { code: "38", name: "Thanh Hóa" },
