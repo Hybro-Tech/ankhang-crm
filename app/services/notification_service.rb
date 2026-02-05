@@ -79,7 +79,7 @@ class NotificationService
         type: "contact_picked",
         notifiable: contact,
         title: "Đã nhận khách",
-        body: "Bạn đã nhận #{contact.full_name}"
+        body: "Bạn đã nhận #{contact.name}"
       )
     end
 

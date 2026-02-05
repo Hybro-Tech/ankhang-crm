@@ -96,21 +96,9 @@ class Notification < ApplicationRecord
 
   # Returns the URL to navigate when notification is clicked
   # @return [String, nil] The action URL or nil
-  def action_url # rubocop:disable Metrics/CyclomaticComplexity
-    case notification_type
-    when "contact_created", "contact_picked", "contact_assigned"
-      # Redirect to Sales Workspace - New Contacts tab with highlight
-      contact_id = notifiable.is_a?(Contact) ? notifiable.id : nil
-      base_url = "/sales/workspace?tab=new_contacts"
-      contact_id ? "#{base_url}&highlight=contact_#{contact_id}" : base_url
-    when "contact_status_changed", "contact_reminder"
-      # Redirect to specific contact if available
-      notifiable.is_a?(Contact) ? "/contacts/#{notifiable.id}" : "/sales/workspace"
-    when "deal_created", "deal_closed"
-      notifiable.is_a?(Deal) ? "/deals/#{notifiable.id}" : "/deals"
-    when "reassign_requested", "reassign_approved", "reassign_rejected"
-      "/admin/contacts" # Admin manages reassignments
-    end
+  # @see NotificationUrlResolver for type-specific URL logic
+  def action_url
+    NotificationUrlResolver.resolve(self)
   end
 
   private
