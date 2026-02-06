@@ -171,32 +171,40 @@
 <% end %>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  // Use turbo:load for Turbo Drive compatibility (fires on both initial load and Turbo navigations)
+  document.addEventListener('turbo:load', initProvinceCheckboxes);
+  
+  function initProvinceCheckboxes() {
     const checkboxes = document.querySelectorAll('.province-cb');
     
     checkboxes.forEach(cb => {
-      cb.addEventListener('change', function() {
-        const label = this.closest('label');
-        const icon = label.querySelector('[data-check-icon]');
-        
-        if (this.checked) {
-          label.classList.remove('bg-white', 'border-gray-200', 'text-gray-700');
-          label.classList.add('bg-blue-50', 'border-brand-blue', 'text-blue-800');
-          icon.classList.remove('hidden');
-        } else {
-          label.classList.add('bg-white', 'border-gray-200', 'text-gray-700');
-          label.classList.remove('bg-blue-50', 'border-brand-blue', 'text-blue-800');
-          icon.classList.add('hidden');
-        }
-        
-        updateCount();
-      });
+      // Remove old listeners to prevent duplicates
+      cb.removeEventListener('change', handleProvinceChange);
+      cb.addEventListener('change', handleProvinceChange);
     });
-  });
+  }
+  
+  function handleProvinceChange() {
+    const label = this.closest('label');
+    const icon = label.querySelector('[data-check-icon]');
+    
+    if (this.checked) {
+      label.classList.remove('bg-white', 'border-gray-200', 'text-gray-700');
+      label.classList.add('bg-blue-50', 'border-brand-blue', 'text-blue-800');
+      icon.classList.remove('hidden');
+    } else {
+      label.classList.add('bg-white', 'border-gray-200', 'text-gray-700');
+      label.classList.remove('bg-blue-50', 'border-brand-blue', 'text-blue-800');
+      icon.classList.add('hidden');
+    }
+    
+    updateCount();
+  }
 
   function updateCount() {
     const count = document.querySelectorAll('.province-cb:checked').length;
-    document.getElementById('selected-province-count').textContent = count;
+    const countEl = document.getElementById('selected-province-count');
+    if (countEl) countEl.textContent = count;
   }
 
   function selectAllProvinces() {

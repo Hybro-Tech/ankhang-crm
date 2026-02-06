@@ -11,7 +11,7 @@
       <div class="col-span-12 md:col-span-8 flex flex-col h-full">
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex-1 overflow-hidden flex flex-col">
           <div class="p-6 flex-1 overflow-y-auto">
-            <%= turbo_frame_tag "new_contact_form", class: "h-full w-full block" do %>
+            <%= turbo_frame_tag "new_contact_form", class: "h-full w-full block", data: { turbo_cache: false } do %>
               <%= render "contacts/form_call_center", contact: @contact %>
             <% end %>
           </div>

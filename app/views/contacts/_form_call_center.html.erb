@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "new_contact_form", class: "h-full w-full block", data: { turbo_action: "advance" } do %>
+<%= turbo_frame_tag "new_contact_form", class: "h-full w-full block", data: { turbo_action: "advance", turbo_cache: false } do %>
   <%= form_with(model: contact, url: contacts_path, 
       data: { 
         controller: "reset-form call-center-mode", 
