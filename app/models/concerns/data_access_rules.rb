@@ -38,6 +38,14 @@ module DataAccessRules
     # Sales Workspace access
     can :access, :sales_workspace if permission_codes.include?("sales_workspace.access")
 
+    # TASK-072: CSKH Workspace access
+    if permission_codes.include?("cskh_workspace.access")
+      can :show, :cskh_workspace
+      can :tab_blacklist, :cskh_workspace
+      can :tab_inspection, :cskh_workspace
+      can :takeover, :cskh_workspace
+    end
+
     # SECURITY-AUDIT: Reassign requests management (Super Admin only)
     can :manage, :reassign_requests if @is_super_admin
 

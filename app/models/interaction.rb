@@ -52,6 +52,8 @@ class Interaction < ApplicationRecord
   # Callbacks
   # ============================================
   after_save :sync_appointment_to_contact, if: :interaction_method_appointment?
+  # TASK-073: Update contact last_interaction_at for CSKH blacklist
+  after_create_commit :update_contact_last_interaction
 
   # ============================================
   # Scopes
@@ -101,5 +103,10 @@ class Interaction < ApplicationRecord
 
     # Using update to follow Rails validations, though we're only updating a timestamp
     contact.update(next_appointment: scheduled_at)
+  end
+
+  # TASK-073: Update contact's last_interaction_at for CSKH blacklist feature
+  def update_contact_last_interaction
+    contact.update_column(:last_interaction_at, Time.current) # rubocop:disable Rails/SkipsModelValidations
   end
 end

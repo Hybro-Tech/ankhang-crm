@@ -101,7 +101,8 @@ class Setting < ApplicationRecord
     "notification_dropdown_limit" => { value: "20", description: "Số notifications trong dropdown" },
     "monitoring_window_hours" => { value: "24", description: "Khoảng thời gian monitoring (giờ)" },
     "stale_contact_days" => { value: "7", description: "Số ngày contact bị coi là cũ" },
-    "routing_expand_minutes" => { value: "2", description: "Thời gian mở rộng pool cho Smart Routing (phút)" }
+    "routing_expand_minutes" => { value: "2", description: "Thời gian mở rộng pool cho Smart Routing (phút)" },
+    "max_appointment_days" => { value: "30", description: "Số ngày tối đa cho lịch hẹn (thanh tra CSKH)" }
   }.freeze
 
   # Call Center Settings
@@ -142,6 +143,11 @@ class Setting < ApplicationRecord
   # Smart Routing layer expansion interval
   def self.routing_expand_minutes
     get("routing_expand_minutes", 2).to_i
+  end
+
+  # TASK-076: CSKH Inspection threshold
+  def self.max_appointment_days
+    get("max_appointment_days", 30).to_i
   end
 
   # Available timezones for dropdown

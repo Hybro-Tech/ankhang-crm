@@ -43,6 +43,9 @@ class ApplicationController < ActionController::Base
     elsif can?(:view_call_center, :dashboards)
       # TASK-049: Redirect Call Center staff to their dashboard
       dashboard_call_center_path
+    elsif can?(:show, :cskh_workspace)
+      # CSKH Workspace: Default landing for CSKH role
+      cskh_workspace_path
     else
       super
     end

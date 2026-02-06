@@ -79,6 +79,9 @@ permissions_data = [
   # TASK-RBAC: Feature access permissions
   { code: "sales_workspace.access", name: "Truy cập Workspace", category: "Dashboard",
     description: "Truy cập Sales Workspace" },
+  # TASK-072: CSKH Workspace access
+  { code: "cskh_workspace.access", name: "Truy cập CSKH Workspace", category: "Dashboard",
+    description: "Truy cập CSKH Workspace và các tính năng" },
   { code: "reassign_requests.approve", name: "Duyệt yêu cầu chuyển", category: "Yêu cầu",
     description: "Duyệt yêu cầu chuyển giao khách hàng" },
 
@@ -166,11 +169,12 @@ sale_codes = %w[
 ]
 roles["Sale"].permissions = Permission.where(code: sale_codes)
 
-# CSKH - Contact access for care + CSKH dashboard + view_team (can see team contacts)
+# CSKH - Contact access for care + CSKH dashboard + view_team + CSKH workspace
 cskh_codes = %w[
   contacts.view contacts.edit
   contacts.view_team
   dashboards.view_cskh
+  cskh_workspace.access
 ]
 roles["CSKH"].permissions = Permission.where(code: cskh_codes)
 

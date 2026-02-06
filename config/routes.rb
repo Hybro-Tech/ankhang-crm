@@ -162,6 +162,15 @@ Rails.application.routes.draw do
   get "sales/kanban", to: "sales_workspace#kanban", as: :sales_kanban
   patch "sales/kanban/update_status/:id", to: "sales_workspace#update_status", as: :sales_kanban_update_status
 
+  # CSKH Workspace (TASK-072: Workspace riêng cho role CSKH)
+  namespace :cskh do
+    get "workspace", to: "workspace#show", as: :workspace
+    get "workspace/tab_queue", to: "workspace#tab_blacklist"
+    get "workspace/tab_aftercare", to: "workspace#tab_aftercare"
+    get "workspace/tab_inspection", to: "workspace#tab_inspection"
+    post "workspace/takeover/:id", to: "workspace#takeover", as: :workspace_takeover
+  end
+
   # Demo page for testing UI components (TASK-006)
   get "demo", to: "demo#index", as: :demo
 

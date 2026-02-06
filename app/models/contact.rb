@@ -163,6 +163,21 @@ class Contact < ApplicationRecord
     where("email IS NULL OR email = '' OR notes IS NULL OR notes = '' OR updated_at < ?", 7.days.ago)
   }
 
+  # TASK-073: CSKH Blacklist - failed contacts OR stale contacts (no interaction in 24h)
+  scope :blacklist, lambda {
+    failed_contacts = where(status: :failed)
+    stale_contacts = where.not(assigned_user_id: nil)
+                          .where.not(status: %i[failed closed])
+                          .where("last_interaction_at < ? OR last_interaction_at IS NULL", 24.hours.ago)
+    failed_contacts.or(stale_contacts)
+  }
+
+  # TASK-075: CSKH Inspection - contacts with appointment too far in the future
+  scope :long_appointment, lambda {
+    max_days = Setting.max_appointment_days
+    where("next_appointment > ?", Date.current + max_days.days)
+  }
+
   # ============================================================================
   # Class Methods
   # ============================================================================

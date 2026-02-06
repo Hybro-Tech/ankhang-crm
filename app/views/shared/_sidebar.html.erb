@@ -4,7 +4,15 @@
   <%# Logo %>
   <div class="h-16 flex items-center px-6 border-b border-blue-800 bg-brand-blue shadow-sm">
     <i class="fa-solid fa-scale-balanced text-white text-2xl mr-3"></i>
-    <% logo_path = current_user.sale_staff? ? sales_workspace_path : root_path %>
+    <% 
+      logo_path = if current_user.sale_staff? 
+                    sales_workspace_path 
+                  elsif can_access?("cskh_workspace.access")
+                    cskh_workspace_path
+                  else 
+                    root_path 
+                  end 
+    %>
     <%= link_to "AnKhangCRM", logo_path, class: "font-bold text-xl tracking-wide text-white hover:text-gray-200" %>
   </div>
 
@@ -43,6 +51,17 @@
     <% unless current_user.admin? %>
       <%= sidebar_link "Workspace", sales_workspace_path, "fa-briefcase", permission: "dashboards.view_sales" %>
       <%= sidebar_link "Kanban", sales_kanban_path, "fa-columns", permission: "dashboards.view_sales" %>
+    <% end %>
+    
+    <%# CSKH Workspace - First item for CSKH role %>
+    <% if can_access?("cskh_workspace.access") %>
+      <% cskh_active = current_page?(cskh_workspace_path) %>
+      <% cskh_class = cskh_active ? "bg-white text-[#0B387A] rounded-lg shadow-md font-bold" : "text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium" %>
+      <% cskh_icon_class = cskh_active ? "text-brand-orange" : "text-blue-300" %>
+      <a href="<%= cskh_workspace_path %>" class="flex items-center px-4 py-2.5 <%= cskh_class %>">
+        <i class="fa-solid fa-headset w-6 <%= cskh_icon_class %>"></i>
+        <span>CSKH Workspace</span>
+      </a>
     <% end %>
 
     <%# SECTION 2: CORE CRM - Kinh doanh %>

@@ -4,6 +4,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["tab", "frame"]
   static outlets = ["slide-over"]
+  static values = { basePath: { type: String, default: "/sales/workspace" } }
 
   connect () {
     // Set initial active tab
@@ -19,8 +20,8 @@ export default class extends Controller {
     // Update active state
     this.setActiveTab(button)
 
-    // Load tab content via Turbo
-    const url = `/sales/workspace/tab_${tabName}`
+    // Load tab content via Turbo using configurable base path
+    const url = `${this.basePathValue}/tab_${tabName}`
     this.frameTarget.src = url
   }
 
