@@ -9,12 +9,12 @@ export default class extends Controller {
     subscribed: Boolean
   }
 
-  connect() {
+  connect () {
     this.checkSupport()
     this.updateUI()
   }
 
-  checkSupport() {
+  checkSupport () {
     if (!('serviceWorker' in navigator)) {
       console.warn('[WebPush] Service Workers not supported')
       this.disable('Trình duyệt không hỗ trợ')
@@ -30,7 +30,7 @@ export default class extends Controller {
     return true
   }
 
-  async updateUI() {
+  async updateUI () {
     if (!this.checkSupport()) return
 
     const registration = await navigator.serviceWorker.getRegistration()
@@ -43,21 +43,27 @@ export default class extends Controller {
     this.subscribedValue = !!subscription
   }
 
-  subscribedValueChanged() {
+  subscribedValueChanged () {
     if (this.hasButtonTarget) {
+      // Remove all state classes first
+      this.buttonTarget.classList.remove(
+        'bg-brand-primary', 'bg-gray-600', 'bg-green-600', 'hover:bg-green-700',
+        'bg-red-100', 'text-red-700', 'hover:bg-red-200', 'text-white', 'hover:bg-blue-800'
+      )
+
       if (this.subscribedValue) {
+        // Enabled state: Green background
         this.buttonTarget.textContent = '🔔 Đã bật thông báo'
-        this.buttonTarget.classList.remove('bg-brand-primary')
-        this.buttonTarget.classList.add('bg-gray-600')
+        this.buttonTarget.classList.add('bg-green-600', 'text-white', 'hover:bg-green-700')
       } else {
+        // Disabled state: Light red background
         this.buttonTarget.textContent = '🔕 Bật thông báo'
-        this.buttonTarget.classList.remove('bg-gray-600')
-        this.buttonTarget.classList.add('bg-brand-primary')
+        this.buttonTarget.classList.add('bg-red-100', 'text-red-700', 'hover:bg-red-200')
       }
     }
   }
 
-  disable(message) {
+  disable (message) {
     if (this.hasButtonTarget) {
       this.buttonTarget.disabled = true
       this.buttonTarget.textContent = message
@@ -65,7 +71,7 @@ export default class extends Controller {
     }
   }
 
-  async toggle() {
+  async toggle () {
     if (this.subscribedValue) {
       await this.unsubscribe()
     } else {
@@ -73,7 +79,7 @@ export default class extends Controller {
     }
   }
 
-  async subscribe() {
+  async subscribe () {
     try {
       // 1. Register Service Worker
       const registration = await navigator.serviceWorker.register('/service-worker.js')
@@ -128,7 +134,7 @@ export default class extends Controller {
     }
   }
 
-  async unsubscribe() {
+  async unsubscribe () {
     try {
       const registration = await navigator.serviceWorker.getRegistration()
       if (!registration) return
@@ -157,7 +163,7 @@ export default class extends Controller {
     }
   }
 
-  showStatus(message, type) {
+  showStatus (message, type) {
     if (this.hasStatusTarget) {
       this.statusTarget.textContent = message
       this.statusTarget.classList.toggle('text-green-600', type === 'success')
@@ -171,7 +177,7 @@ export default class extends Controller {
   }
 
   // Convert base64 VAPID key to Uint8Array
-  urlBase64ToUint8Array(base64String) {
+  urlBase64ToUint8Array (base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4)
     const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
     const rawData = window.atob(base64)

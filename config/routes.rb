@@ -23,6 +23,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # User personal settings (notification preferences)
+  resource :settings, only: [:show], controller: 'settings'
+
   # Roles management (TASK-016)
   resources :roles do
     member do

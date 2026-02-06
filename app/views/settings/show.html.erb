@@ -1,0 +1,49 @@
+<%# User Personal Settings Page %>
+<div class="w-full py-8">
+  <%# Header %>
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+      <i class="fa-solid fa-gear text-brand-blue"></i>
+      Cài đặt
+    </h1>
+    <p class="mt-2 text-gray-600">Quản lý thông báo và cài đặt cá nhân</p>
+  </div>
+
+  <%# Web Push Notification Section %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 bg-brand-blue">
+      <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+        <i class="fa-solid fa-bell"></i>
+        Thông báo đẩy
+      </h2>
+      <p class="text-blue-100 text-sm mt-1">Nhận thông báo trực tiếp trên trình duyệt</p>
+    </div>
+    
+    <div class="p-6" data-controller="push-subscription">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-900">Web Push Notification</p>
+          <p class="text-xs text-gray-500 mt-1">Bật để nhận thông báo khi có khách hàng mới, yêu cầu chuyển giao...</p>
+        </div>
+        
+        <button 
+          data-push-subscription-target="button"
+          data-action="click->push-subscription#toggle"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-red-100 text-red-700 hover:bg-red-200">
+          🔕 Bật thông báo
+        </button>
+      </div>
+      
+      <%# Status message %>
+      <div data-push-subscription-target="status" class="hidden mt-3 text-sm"></div>
+      
+      <%# Browser support notice %>
+      <div class="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+        <p class="text-xs text-blue-700 flex items-center gap-2">
+          <i class="fa-solid fa-info-circle"></i>
+          Thông báo đẩy yêu cầu trình duyệt hỗ trợ và cho phép hiển thị thông báo.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

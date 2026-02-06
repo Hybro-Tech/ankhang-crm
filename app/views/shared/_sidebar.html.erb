@@ -70,7 +70,19 @@
     <%# SECTION 5: QUẢN TRỊ %>
     <%= sidebar_section "Quản trị", ["roles.view", "settings.manage"] %>
     <%= sidebar_link "Phân quyền", roles_path, "fa-user-shield", permission: "roles.view" %>
-    <%= sidebar_link "Cài đặt hệ thống", admin_settings_path, "fa-gear", permission: "settings.manage" %>
+    <%= sidebar_link "Cài đặt hệ thống", admin_settings_path, "fa-sliders", permission: "settings.manage" %>
+
+    <%# Personal Settings - Available for ALL roles %>
+    <% unless current_user.super_admin? %>
+      <div class="pt-6 pb-2 px-4 text-xs font-bold text-blue-300 uppercase tracking-wider">Cài đặt</div>
+      <% settings_active = current_page?(settings_path) %>
+      <% settings_class = settings_active ? "bg-white text-[#0B387A] rounded-lg shadow-md font-bold" : "text-blue-100 hover:text-white hover:bg-blue-800 rounded-lg transition-colors font-medium" %>
+      <% settings_icon_class = settings_active ? "text-brand-orange" : "text-blue-300" %>
+      <a href="<%= settings_path %>" class="flex items-center px-4 py-2.5 <%= settings_class %>">
+        <i class="fa-solid fa-gear w-6 <%= settings_icon_class %>"></i>
+        <span>Cài đặt cá nhân</span>
+      </a>
+    <% end %>
 
     <%# SECTION 6: BÁO CÁO & LOGS - Bottom %>
     <%= sidebar_section "Báo cáo & Logs", ["reports.view", "logs.view"] %>
