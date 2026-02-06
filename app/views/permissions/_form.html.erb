@@ -1,0 +1,112 @@
+<%# TASK-RBAC: Permission Form Partial - matching Roles form pattern %>
+<%= form_with model: permission, local: true, class: "space-y-6" do |f| %>
+  <%# Error messages %>
+  <% if permission.errors.any? %>
+    <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+      <div class="flex items-center text-red-800">
+        <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+        <span class="font-semibold">Có <%= permission.errors.count %> lỗi cần sửa:</span>
+      </div>
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside ml-6">
+        <% permission.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Form Card %>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-bold text-gray-900 flex items-center">
+        <i class="fa-solid fa-key text-brand-orange mr-2"></i>
+        Thông tin Permission
+      </h3>
+    </div>
+    
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <%# Code %>
+        <div>
+          <%= f.label :code, class: "block text-sm font-medium text-gray-700 mb-1.5" do %>
+            Mã Code <span class="text-red-500">*</span>
+          <% end %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-code text-gray-400"></i>
+            </div>
+            <%= f.text_field :code, 
+                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors font-mono",
+                placeholder: "VD: contacts.export" %>
+          </div>
+          <p class="mt-1.5 text-xs text-gray-500">Format: subject.action (VD: contacts.view)</p>
+        </div>
+        
+        <%# Name %>
+        <div>
+          <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1.5" do %>
+            Tên hiển thị <span class="text-red-500">*</span>
+          <% end %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-tag text-gray-400"></i>
+            </div>
+            <%= f.text_field :name, 
+                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                placeholder: "VD: Xuất báo cáo" %>
+          </div>
+        </div>
+        
+        <%# Category %>
+        <div>
+          <%= f.label :category, "Danh mục", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fa-solid fa-folder text-gray-400"></i>
+            </div>
+            <%= f.text_field :category,
+                list: "category-suggestions",
+                class: "w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors",
+                placeholder: "VD: Khách hàng" %>
+            <datalist id="category-suggestions">
+              <% @categories.each do |cat| %>
+                <option value="<%= cat %>">
+              <% end %>
+            </datalist>
+          </div>
+          <p class="mt-1.5 text-xs text-gray-500">Chọn từ danh sách hoặc nhập mới</p>
+        </div>
+        
+        <%# Description %>
+        <div class="md:col-span-2">
+          <%= f.label :description, "Mô tả", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.text_area :description, rows: 2,
+              class: "w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-colors resize-none",
+              placeholder: "Mô tả chi tiết quyền này..." %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Warning %>
+  <div class="p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
+    <div class="flex items-start">
+      <i class="fa-solid fa-triangle-exclamation text-amber-600 mt-0.5 mr-3"></i>
+      <div class="text-sm text-amber-800">
+        <p class="font-semibold">Lưu ý quan trọng:</p>
+        <p class="mt-1">Permission mới chỉ có tác dụng khi code đã có sẵn logic kiểm tra quyền tương ứng.</p>
+      </div>
+    </div>
+  </div>
+
+  <%# Action Buttons - matching Roles form %>
+  <div class="flex items-center justify-end gap-4">
+    <%= link_to permissions_path, class: "px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium transition-colors" do %>
+      Hủy bỏ
+    <% end %>
+    <button type="submit" class="px-6 py-2.5 bg-[#0B387A] text-white rounded-lg hover:bg-blue-900 font-medium shadow transition-all cursor-pointer">
+      <i class="fa-solid fa-save mr-2"></i>
+      <%= permission.new_record? ? "Tạo Permission" : "Lưu thay đổi" %>
+    </button>
+  </div>
+<% end %>

@@ -68,8 +68,9 @@
 
 
     <%# SECTION 5: QUẢN TRỊ %>
-    <%= sidebar_section "Quản trị", ["roles.view", "settings.manage"] %>
+    <%= sidebar_section "Quản trị", ["roles.view", "permissions.view", "settings.manage"] %>
     <%= sidebar_link "Phân quyền", roles_path, "fa-user-shield", permission: "roles.view" %>
+    <%= sidebar_link "Permissions", permissions_path, "fa-key", permission: "permissions.view" %>
     <%= sidebar_link "Cài đặt hệ thống", admin_settings_path, "fa-sliders", permission: "settings.manage" %>
 
     <%# Personal Settings - Available for ALL roles %>

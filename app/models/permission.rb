@@ -27,10 +27,19 @@ class Permission < ApplicationRecord
   validates :code, presence: true, uniqueness: true
   validates :name, presence: true
 
-  # Group permissions by category for matrix display
+  # Scopes
+  scope :active, -> { where(active: true) }
+  scope :ordered, -> { order(:category, :code) }
+
+  # Group permissions by category for matrix display (only active)
   # Returns Hash { category_name => [permissions] }
   def self.grouped_by_category
-    order(:category, :code).group_by(&:category)
+    active.ordered.group_by(&:category)
+  end
+
+  # Group all permissions including inactive (for admin management)
+  def self.grouped_by_category_all
+    ordered.group_by(&:category)
   end
 
   # Extract action from code (e.g., "contacts.view" -> "view")

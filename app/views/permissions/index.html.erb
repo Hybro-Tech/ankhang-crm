@@ -1,0 +1,108 @@
+<%# TASK-RBAC: Permissions Index - Single table with category separators %>
+<% content_for :title, "Quản lý Permissions" %>
+
+<%# Page Title & Action %>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Danh sách Permissions</h1>
+    <p class="text-sm text-gray-500 mt-1">Quản lý quyền hệ thống (<%= Permission.count %> mục)</p>
+  </div>
+  <%= link_to new_permission_path, class: "bg-[#0B387A] text-white px-4 py-2 rounded-lg shadow hover:bg-blue-900 transition flex items-center" do %>
+    <i class="fa-solid fa-plus mr-2"></i> Thêm Permission
+  <% end %>
+</div>
+
+<%# Single Table with Category Separators %>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+  <table class="min-w-full">
+    <thead class="bg-gray-50 border-b border-gray-200">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Code</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Tên</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Mô tả</th>
+        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Roles</th>
+        <th class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Trạng thái</th>
+        <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @permissions.each do |category, perms| %>
+        <%# Category Header Row %>
+        <tr class="bg-blue-50 border-t-2 border-b border-blue-200">
+          <td colspan="6" class="px-6 py-3">
+            <div class="flex items-center">
+              <i class="<%= category_icon_class(category) %> text-brand-blue mr-2"></i>
+              <span class="font-bold text-brand-blue"><%= category || "Chưa phân loại" %></span>
+              <span class="ml-2 text-xs text-gray-500">(<%= perms.size %> quyền)</span>
+            </div>
+          </td>
+        </tr>
+        
+        <%# Permission Rows %>
+        <% perms.each do |perm| %>
+          <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100 <%= 'opacity-50 bg-gray-50' unless perm.active? %>">
+            <td class="px-6 py-3 whitespace-nowrap">
+              <code class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono">
+                <%= perm.code %>
+              </code>
+            </td>
+            <td class="px-6 py-3 whitespace-nowrap">
+              <span class="text-sm font-medium text-gray-900"><%= perm.name %></span>
+            </td>
+            <td class="px-6 py-3 text-sm text-gray-500">
+              <%= truncate(perm.description, length: 50) %>
+            </td>
+            <td class="px-6 py-3 text-center">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                <%= perm.roles.count %>
+              </span>
+            </td>
+            <td class="px-6 py-3 text-center">
+              <%= form_with url: toggle_active_permission_path(perm), method: :patch, local: true, class: "inline" do %>
+                <label class="relative inline-block w-10 h-5 cursor-pointer">
+                  <input type="checkbox" 
+                         class="sr-only peer"
+                         <%= 'checked' if perm.active? %>
+                         onchange="this.form.submit()">
+                  <span class="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-[#0B387A]"></span>
+                  <span class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></span>
+                </label>
+              <% end %>
+            </td>
+            <td class="px-6 py-3 text-right text-sm font-medium">
+              <%= link_to edit_permission_path(perm), class: "text-[#0B387A] hover:text-blue-900 mr-3" do %>
+                <i class="fa-solid fa-pen-to-square"></i>
+              <% end %>
+              <% if perm.roles.empty? %>
+                <%= button_to permission_path(perm), method: :delete, class: "text-red-600 hover:text-red-900", 
+                    data: { turbo_confirm: "Bạn có chắc muốn xóa permission '#{perm.name}'?" }, form: { class: "inline" } do %>
+                  <i class="fa-solid fa-trash"></i>
+                <% end %>
+              <% else %>
+                <button class="text-gray-300 cursor-not-allowed" title="Đang có <%= perm.roles.count %> role sử dụng">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%# Legend %>
+<div class="mt-4 flex items-center gap-6 text-sm text-gray-500">
+  <div class="flex items-center">
+    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800 mr-2">
+      <i class="fa-solid fa-check-circle mr-1"></i>Active
+    </span>
+    Đang áp dụng
+  </div>
+  <div class="flex items-center">
+    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-red-100 text-red-800 mr-2">
+      <i class="fa-solid fa-times-circle mr-1"></i>Inactive
+    </span>
+    Đã tắt
+  </div>
+</div>

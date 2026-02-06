@@ -24,12 +24,19 @@ Rails.application.routes.draw do
   end
 
   # User personal settings (notification preferences)
-  resource :settings, only: [:show], controller: 'settings'
+  resource :settings, only: [:show], controller: "settings"
 
   # Roles management (TASK-016)
   resources :roles do
     member do
       post :clone
+    end
+  end
+
+  # TASK-RBAC: Permissions management (Super Admin only)
+  resources :permissions, except: [:show] do
+    member do
+      patch :toggle_active
     end
   end
 

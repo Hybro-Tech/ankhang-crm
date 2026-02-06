@@ -24,6 +24,15 @@ vi:
       system_role_error: "Không thể xóa system role."
     clone:
       success: "Vai trò đã được sao chép. Vui lòng đổi tên và cấu hình quyền."
+  # TASK-RBAC: Permissions management translations
+  permissions:
+    create:
+      success: "Permission đã được tạo thành công."
+    update:
+      success: "Permission đã được cập nhật."
+    destroy:
+      success: "Permission đã được xóa."
+      in_use_error: "Không thể xóa vì đang được %{count} vai trò sử dụng."
   # TASK-019: Contact translations
   contacts:
     status:

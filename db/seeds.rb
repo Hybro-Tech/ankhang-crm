@@ -89,7 +89,13 @@ permissions_data = [
 
   # Cài đặt hệ thống (Settings)
   { code: "settings.manage", name: "Quản lý", category: "Cài đặt",
-    description: "Quản lý cài đặt hệ thống (giờ làm việc, Smart Routing)" }
+    description: "Quản lý cài đặt hệ thống (giờ làm việc, Smart Routing)" },
+
+  # TASK-RBAC: Permissions management
+  { code: "permissions.view", name: "Xem", category: "Permissions", description: "Xem danh sách permissions" },
+  { code: "permissions.create", name: "Tạo", category: "Permissions", description: "Tạo permission mới" },
+  { code: "permissions.edit", name: "Sửa", category: "Permissions", description: "Chỉnh sửa permission" },
+  { code: "permissions.delete", name: "Xóa", category: "Permissions", description: "Xóa permission" }
 ]
 
 Rails.logger.debug { "➡️ Creating #{permissions_data.size} permissions..." }
