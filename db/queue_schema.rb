@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_04_091507) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_06_032221) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -107,6 +107,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_04_091507) do
     t.string "address"
     t.datetime "last_interaction_at"
     t.integer "routing_layer", comment: "Smart Routing layer: 1=Team, 2=Regional, 3=National"
+    t.string "identity_source", limit: 10, default: "phone", null: false
     t.index ["assigned_user_id", "status"], name: "index_contacts_on_assignee_and_status"
     t.index ["assigned_user_id"], name: "index_contacts_on_assigned_user_id"
     t.index ["code"], name: "index_contacts_on_code", unique: true

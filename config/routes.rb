@@ -63,6 +63,7 @@ Rails.application.routes.draw do
     member do
       post :pick
       post :update_status # TASK-051: State Machine
+      get :qr_code
     end
     collection do
       get :check_phone

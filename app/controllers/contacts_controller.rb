@@ -5,7 +5,7 @@
 # rubocop:disable Metrics/ClassLength
 class ContactsController < ApplicationController
   before_action :authenticate_user!
-  load_and_authorize_resource except: %i[check_phone check_identity recent update_status]
+  load_and_authorize_resource except: %i[check_phone check_identity recent update_status qr_code]
   before_action :set_contact, only: [:update_status]
   before_action :set_filter_options, only: :index
 
@@ -171,6 +171,22 @@ class ContactsController < ApplicationController
     end
   end
 
+  # GET /contacts/:id/qr_code
+  # Serves the QR code image with correct content-type for inline display
+  def qr_code
+    @contact = Contact.find(params[:id])
+    authorize! :read, @contact
+
+    if @contact.zalo_qr.attached? && @contact.zalo_qr.blob.present?
+      send_data @contact.zalo_qr.download,
+                type: @contact.zalo_qr.content_type,
+                disposition: :inline,
+                filename: @contact.zalo_qr.filename.to_s
+    else
+      head :not_found
+    end
+  end
+
   # POST /contacts/:id/update_status
   # TASK-051: State Machine - Change contact status
   def update_status
@@ -240,7 +256,7 @@ class ContactsController < ApplicationController
 
   def contact_params
     params.expect(
-      contact: %i[name phone email zalo_link zalo_id zalo_qr
+      contact: %i[name phone email zalo_link zalo_id zalo_qr identity_source
                   service_type_id source_id status province_id address
                   team_id assigned_user_id next_appointment notes]
     )
