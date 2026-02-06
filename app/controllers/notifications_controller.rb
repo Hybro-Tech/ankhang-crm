@@ -2,8 +2,10 @@
 
 # TASK-057: Controller for notifications
 # Handles notification listing, marking as read
+# SECURITY-AUDIT: Personal notifications - scoped to current_user
 class NotificationsController < ApplicationController
   before_action :authenticate_user!
+  skip_authorization_check # Personal notifications - no role-specific restriction
 
   # GET /notifications
   def index

@@ -2,8 +2,10 @@
 
 # Handles push subscription management from browser
 # API endpoints for Service Worker subscription lifecycle
+# SECURITY-AUDIT: Browser push subscriptions - scoped to current_user
 class PushSubscriptionsController < ApplicationController
   before_action :authenticate_user!
+  skip_authorization_check # Browser push subscriptions - scoped to current_user
 
   # POST /push_subscriptions
   # Called when browser subscribes to push notifications

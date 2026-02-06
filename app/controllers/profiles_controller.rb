@@ -2,8 +2,10 @@
 
 # TASK-PROFILE: User profile management
 # Allows users to view/edit personal info, change password, and view activity history
+# SECURITY-AUDIT: Personal profile - accessible to all authenticated users
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
+  skip_authorization_check # Personal profile - accessible to all authenticated users
   before_action :set_user
 
   # GET /profile

@@ -26,6 +26,7 @@ module PermissionMapping
     interactions: "Interaction",
     reassign_requests: "ReassignRequest",
     regions: "Region",
+    provinces: "Province", # SECURITY-AUDIT: Added missing mapping
     dashboards: nil,
     sales_workspace: nil,
     solid_queue: nil,

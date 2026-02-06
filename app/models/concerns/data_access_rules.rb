@@ -38,6 +38,9 @@ module DataAccessRules
     # Sales Workspace access
     can :access, :sales_workspace if permission_codes.include?("sales_workspace.access")
 
+    # SECURITY-AUDIT: Reassign requests management (Super Admin only)
+    can :manage, :reassign_requests if @is_super_admin
+
     # Reassign request approval (permission OR team leader)
     # TASK-PERF: managed_team is pre-loaded by Ability
     return unless permission_codes.include?("reassign_requests.approve") || user.managed_team.present?
